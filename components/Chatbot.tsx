@@ -20,7 +20,7 @@ export function Chatbot() {
         {messages.length === 0 && (
           <div className='flex flex-col justify-center items-center h-full'>
             <Image
-              src='/images/logo.jpg'
+              src='/images/logo.png'
               className='w-70 h-70 object-cover rounded-lg'
               width={256}
               height={256}
@@ -35,7 +35,7 @@ export function Chatbot() {
             message.role === 'assistant' ? (
               <div key={message.id} className='flex items-start gap-3'>
                 <Image
-                  src='/images/logo.jpg'
+                  src='/images/logo.png'
                   className='object-cover rounded-lg'
                   width={40}
                   height={40}

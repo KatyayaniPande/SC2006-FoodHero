@@ -8,7 +8,7 @@ const Header: React.FC = () => {
   return (
     <header className="flex justify-between items-center mb-12 bg-white shadow-md p-4">
       <div className="flex items-center text-3xl font-bold text-[#A2C765]">
-        <img src="/images/logo.jpg" className="h-10 inline-block mr-2"/>
+        <img src="/images/logo.png" className="h-10 inline-block mr-2"/>
         Food Hero
       </div>
       <nav className="flex items-center space-x-6 text-lg">

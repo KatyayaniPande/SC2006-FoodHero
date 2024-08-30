@@ -32,7 +32,7 @@ const HomePage: React.FC = () => {
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="mb-4">
-              <img src="/images/logo.jpg" alt="Our Mission" className="mx-auto w-12 h-12"/>
+              <img src="/images/people.png" alt="Our Mission" className="mx-auto w-12 h-12"/>
             </div>
             <h3 className="text-xl font-semibold mb-2">Our Mission</h3>
             <p className="text-gray-700 mb-4">We strive to eliminate food wastage by redistributing excess food to those in need.</p>
@@ -45,7 +45,7 @@ const HomePage: React.FC = () => {
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="mb-4">
-              <img src="/images/logo.jpg" alt="Our Values" className="mx-auto w-12 h-12"/>
+              <img src="/images/people.png" alt="Our Values" className="mx-auto w-12 h-12"/>
             </div>
             <h3 className="text-xl font-semibold mb-2">Our Values</h3>
             <p className="text-gray-700 mb-4">We value sustainability, compassion, and community support.</p>
@@ -58,7 +58,7 @@ const HomePage: React.FC = () => {
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="mb-4">
-              <img src="/images/logo.jpg" alt="What We Do" className="mx-auto w-12 h-12"/>
+              <img src="/images/people.png" alt="What We Do" className="mx-auto w-12 h-12"/>
             </div>
             <h3 className="text-xl font-semibold mb-2">What We Do</h3>
             <p className="text-gray-700 mb-4">We collect surplus food from businesses and distribute it to charities and families in need.</p>
