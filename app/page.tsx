@@ -21,8 +21,7 @@ const HomePage: React.FC = () => {
               <h2 className="text-2xl font-semibold mb-4">Work with Us</h2>
               <p className="text-gray-700 mb-4">
                 Join our mission to eliminate food wastage and make a positive impact on the community.
-                Whether you're a business looking to donate surplus food, a charity looking to receive donations,
-                or an individual looking to volunteer your time and skills, there's a place for you at Food Hero.
+                Whether you're a business looking to donate surplus food or a charity looking to receive donations there's a place for everyone at Food Hero.
               </p>
               <div className="flex flex-col md:flex-row">
                 <button
@@ -37,12 +36,7 @@ const HomePage: React.FC = () => {
                 >
                   Get Started as a Beneficiary
                 </button>
-                <button
-                  className="bg-[#4CAF50] text-white px-6 py-3 rounded hover:bg-[#45a049]"
-                  onClick={() => router.push('/signup?type=volunteer')}
-                >
-                  Join Us as a Volunteer
-                </button>
+                
               </div>
             </div>
           </div>
@@ -97,9 +91,9 @@ const HomePage: React.FC = () => {
           </div>
         </section>
 
-        {/* Additional Sections as before */}
+        
         {/* Impact Section */}
-        <section className="bg-white rounded-lg shadow-md p-8 mb-8 text-center">
+        <section className="bg-white rounded-lg shadow-md p-8 mb-8 text-center mt-10">
           <h2 className="text-2xl font-bold mb-4">Our Impact</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
