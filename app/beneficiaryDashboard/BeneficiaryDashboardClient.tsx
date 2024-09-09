@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardBody,
   Typography,
+  Button,
 } from '@material-tailwind/react';
 import BeneficiaryCard from './BeneficiaryCard';
 import Header from '@/components/Header';
@@ -26,8 +27,10 @@ export interface Request {
   numberOfServings: number;
 }
 
-export default function BeneficiaryDashboardClient({ beneficiaries }: { beneficiaries: Request[] }) {
-  const [requests, setRequests] = useState<Request[]>([]);
+export default function BeneficiaryDashboardClient() {
+  const [activeTab, setActiveTab] = useState('myRequests');
+  const [myRequests, setMyRequests] = useState<Request[]>([]);
+  const [requestsToFulfill, setRequestsToFulfill] = useState<Request[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,12 +38,17 @@ export default function BeneficiaryDashboardClient({ beneficiaries }: { benefici
       try {
         const session = await getSession();
         const email = session?.user?.email;
-        console.log(email);
-        const response = await axios.get(`/api/requests?email=${email}`);
-        setRequests(response.data);
-        console.log(response.data);
+        
+        // Fetching 'My Requests'
+        const myRequestsResponse = await axios.get(`/api/requests?email=${email}`);
+        setMyRequests(myRequestsResponse.data);
+        
+        // Fetching 'Requests to Fulfill'
+        const fulfillRequestsResponse = await axios.get(`/api/requests-to-fulfill`);
+        setRequestsToFulfill(fulfillRequestsResponse.data);
+
       } catch (error) {
-        console.error("Error fetching requests:", error);
+        console.error('Error fetching requests:', error);
       } finally {
         setLoading(false);
       }
@@ -65,6 +73,23 @@ export default function BeneficiaryDashboardClient({ beneficiaries }: { benefici
           </button>
         </Link>
       </div>
+
+      {/* Tab Navigation */}
+      <div className="flex mb-6">
+        <button
+          className={`px-4 py-2 ${activeTab === 'myRequests' ? 'bg-green-500 text-white' : 'bg-white text-black'} rounded-l-lg`}
+          onClick={() => setActiveTab('myRequests')}
+        >
+          My Requests
+        </button>
+        <button
+          className={`px-4 py-2 ${activeTab === 'requestsToFulfill' ? 'bg-green-500 text-white' : 'bg-white text-black'} rounded-r-lg`}
+          onClick={() => setActiveTab('requestsToFulfill')}
+        >
+          Requests to Fulfill
+        </button>
+      </div>
+
       <div className='flex gap-8'>
         {/* Left Column for Welcome Card */}
         <div className='flex-1 min-w-[30%]'>
@@ -92,20 +117,44 @@ export default function BeneficiaryDashboardClient({ beneficiaries }: { benefici
                 variant='h5'
                 className='mb-4 text-gray-400'
               >
-              
+                Manage your requests or fulfill others' requests.
               </Typography>
             </CardBody>
           </Card>
         </div>
 
         <div className='flex-1 min-w-[70%] max-h-[calc(100vh-100px)] overflow-y-auto'>
-          <h1 className='text-2xl font-bold mb-4 text-black'>My requests</h1>
-          {requests.map((request, index) => (
-            <BeneficiaryCard
-              key={index} // Add a unique key prop here
-              request={request}
-            />
-          ))}
+          {activeTab === 'myRequests' && (
+            <div>
+              <h1 className='text-2xl font-bold mb-4 text-black'>My Requests</h1>
+              {myRequests.length > 0 ? (
+                myRequests.map((request, index) => (
+                  <BeneficiaryCard
+                    key={index} // Add a unique key prop here
+                    request={request}
+                  />
+                ))
+              ) : (
+                <p>No requests found.</p>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'requestsToFulfill' && (
+            <div>
+              <h1 className='text-2xl font-bold mb-4 text-black'>Requests to Fulfill</h1>
+              {requestsToFulfill.length > 0 ? (
+                requestsToFulfill.map((request, index) => (
+                  <BeneficiaryCard
+                    key={index} // Add a unique key prop here
+                    request={request}
+                  />
+                ))
+              ) : (
+                <p>No requests to fulfill at this time.</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
