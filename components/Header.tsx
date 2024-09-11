@@ -34,7 +34,20 @@ const Header: React.FC = () => {
         <a href="/beneficiaryDashboard" className="text-gray-700 hover:text-[#A2C765]">Dashboard</a>
       )}
       <a href="/chatbot" className="text-gray-700 hover:text-[#A2C765]">Chatbot</a>
-      <a href="/about" className="text-gray-700 hover:text-[#A2C765]">About</a>
+      <div
+        className="relative inline-block text-gray-700"
+        onMouseEnter={() => setDropdownOpen(true)}
+        onMouseLeave={() => setDropdownOpen(false)}
+      >
+        <a href="#" className="hover:text-[#A2C765]">About</a>
+        {isDropdownOpen && (
+          <div className="absolute bg-white shadow-md mt-1 rounded-md">
+            <a href="/mission" className="block px-4 py-2 hover:bg-gray-100 hover:text-[#A2C765]">Our Mission</a>
+            <a href="/values" className="block px-4 py-2 hover:bg-gray-100 hover:text-[#A2C765]">Our Values</a>
+            <a href="/what-we-do" className="block px-4 py-2 hover:bg-gray-100 hover:text-[#A2C765]">What We Do</a>
+          </div>
+        )}
+      </div>
       <a href="/feedback" className="text-gray-700 hover:text-[#A2C765]">Feedback</a>
       <button
         onClick={() => signOut({ callbackUrl: '/' })}

@@ -1,4 +1,4 @@
-'use client';
+"use client"
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -9,9 +9,9 @@ import {
   Typography,
   Button,
 } from '@material-tailwind/react';
-import DonationCard from './DonationCard'; // Ensure correct import path
-import RequestCard from './RequestCard'; // Ensure correct import path
-import Header from '@/components/Header'; // Adjust the path as needed
+import DonationCard from './DonationCard';
+import RequestCard from './RequestCard';
+import Header from '@/components/Header';
 import Link from 'next/link';
 import { getSession } from 'next-auth/react';
 
@@ -43,6 +43,7 @@ export interface Request {
 }
 
 export default function DonorDashboardClient() {
+  
   const [activeTab, setActiveTab] = useState('donations');
   const [donations, setDonations] = useState<Donation[]>([]);
   const [requests, setRequests] = useState<Request[]>([]);
@@ -52,11 +53,13 @@ export default function DonorDashboardClient() {
     async function fetchData() {
       try {
         const session = await getSession();
-        const email = session?.user.email;
+        const email = session?.user?.email;
 
+        // Fetch user-specific donations
         const donationsRes = await axios.get(`/api/donations?email=${email}`);
         setDonations(donationsRes.data);
 
+        // Fetch all beneficiary requests (no filtering by email)
         const requestsRes = await axios.get(`/api/requests`);
         setRequests(requestsRes.data);
       } catch (error) {

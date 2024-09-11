@@ -14,7 +14,7 @@ import {
   FaQuestionCircle,
 } from 'react-icons/fa';
 import { FaBowlFood } from 'react-icons/fa6';
-import { Request } from './BeneficiaryDashboardClient';
+import { Donation } from './DonorDashboardClient'; // Adjust this import based on your structure
 import { useState, useEffect } from 'react';
 import { AiOutlineNumber } from 'react-icons/ai';
 import { FaRegStar } from 'react-icons/fa6';
@@ -22,26 +22,28 @@ import { FaTruck } from 'react-icons/fa';
 import { FaPersonChalkboard } from 'react-icons/fa6';
 import { IoLocation } from 'react-icons/io5';
 
-interface RequestCardProps {
-  request: Request;
+interface DonorCardProps {
+  donation: Donation;
 }
 
-const BeneficiaryCard: React.FC<RequestCardProps> = ({ request }) => {
+const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
   const [isCooked, setIsCooked] = useState(false);
-  const [isSelfCollection, setIsSelfCollection] = useState(false);
+  const [isSelfPickUp, setIsSelfPickUp] = useState(false);
   const [isDelivery, setIsDelivery] = useState(false);
 
   useEffect(() => {
-    if (request.foodType === 'Cooked Food') {
+    if (donation.foodType === 'Cooked Food') {
       setIsCooked(true);
     }
 
-    if (request.deliveryMethod === 'Self-Collection') {
-      setIsSelfCollection(true);
+    if (donation.deliveryMethod === 'Scheduled Pickup') {
+      setIsSelfPickUp(true);
+      setIsDelivery(false);
     } else {
       setIsDelivery(true);
+      setIsSelfPickUp(false);
     }
-  }, [request]);
+  }, [donation]);
 
   return (
     <Card
@@ -55,61 +57,61 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request }) => {
           className='mb-2'
         >
           <FaBowlFood className='inline-block mr-2' />
-          {request.foodName} {isCooked || `[${request.foodCategory}]`}
+          {donation.foodName} {isCooked || `[${donation.foodCategory}]`}
         </Typography>
 
         <Typography className='mb-2'>
           <AiOutlineNumber className='inline-block mr-2' />
-          {isCooked ? `Number of servings: ${request.numberOfServings}` : `Quantity: ${request.quantity}`}
+          {isCooked ? `Number of servings: ${donation.numberOfServings}` : `Quantity: ${donation.quantity}`}
         </Typography>
 
         <Typography className='mb-2'>
           <FaClock className='inline-block mr-2' />
-          Need by: {request.needByTime}
+          Best Before: {donation.bestBeforeDate || 'No best before date specified'}
         </Typography>
 
         <Typography className='mb-2'>
           <FaRegStar className='inline-block mr-2' />
-          Special Request: {request.specialRequest}
+          Special Handling: {donation.specialHandling || 'No special handling required'}
         </Typography>
 
         {isDelivery && (
           <>
             <Typography className='mb-2'>
               <FaTruck className='inline-block mr-2' />
-              Delivery Method: {request.deliveryMethod}
+              Delivery Method: {donation.deliveryMethod}
             </Typography>
             <Typography className='mb-2'>
               <FaClock className='inline-block mr-2' />
-              Delivery Time: {request.deliveryTime}
+              Drop-Off Time: {donation.dropOffTime}
             </Typography>
             <Typography className='mb-2'>
               <IoLocation className='inline-block mr-2' />
-              Delivery Location: {request.deliveryLocation}
+              Drop-Off Location: {donation.dropOffLocation || 'No drop-off location specified'}
             </Typography>
           </>
         )}
 
-        {isSelfCollection && (
+        {isSelfPickUp && (
           <>
             <Typography className='mb-2'>
               <FaPersonChalkboard className='inline-block mr-2' />
-              Delivery Method: {request.deliveryMethod}
+              Pick-up Time: {donation.pickUpTime || 'No pick-up time specified'}
             </Typography>
             <Typography className='mb-2'>
-              <FaClock className='inline-block mr-2' />
-              Pick-up Time: {request.deliveryTime}
+              <IoLocation className='inline-block mr-2' />
+              Pick-up Location: {donation.pickUpLocation || 'No pick-up location specified'}
             </Typography>
           </>
         )}
       </CardBody>
       <CardFooter className='pt-0'>
         <Button className='text-white bg-black'>
-          Withdraw
+          Accept
         </Button>
       </CardFooter>
     </Card>
   );
 };
 
-export default BeneficiaryCard;
+export default DonorCard;

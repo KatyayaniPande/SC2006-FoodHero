@@ -30,14 +30,23 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const email = searchParams.get('email');
     const collection = await getCollection();
-    // find donations made by donor with user.email
-    const requests = await collection.find({ 'user.email': email }).toArray();
+
+    let requests;
+
+    if (email) {
+      // If email is provided, find requests for that specific user
+      requests = await collection.find({ 'user.email': email }).toArray();
+    } else {
+      // If no email is provided, return all requests
+      requests = await collection.find({}).toArray();
+    }
+
     return NextResponse.json(requests, { status: 200 });
   } catch (error) {
     console.error('MongoDB connection error:', error);
     return NextResponse.json(
       { message: 'Internal server error' },
-      { status: 404 }
+      { status: 500 }
     );
   }
 }

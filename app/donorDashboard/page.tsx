@@ -8,16 +8,19 @@ export interface DonationCardProps {
 export default async function DonorDashboardPage() {
   const appUrl = process.env.APP_URL;
 
-  // Fetch data on the server side
-  const res = await fetch(`${appUrl}/api/donations`, {
-    cache: "no-store",
-  });
-  const donations = await res.json();
+  // Fetch donations and requests data on the server side
+  const [donationsRes, requestsRes] = await Promise.all([
+    fetch(`${appUrl}/api/donations`, { cache: "no-store" }),
+    fetch(`${appUrl}/api/requests`, { cache: "no-store" }), // Fetch all requests
+  ]);
+
+  const donations = await donationsRes.json();
+  const requests = await requestsRes.json();
 
   return (
     <div className="min-h-screen overflow-auto bg-gray-100 p-8"> {/* Ensure scrollability */}
       {/* Render the client component and pass the data as props */}
-      <DonationDashboardClient donation={donations} />
+      <DonationDashboardClient donations={donations} requests={requests} />
     </div>
   );
 }

@@ -29,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import React, { Suspense } from 'react';
+import React, { Suspense, useState, useEffect} from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Tabs, TabsList, TabsContent, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
@@ -76,9 +76,49 @@ const adminSignupScheme = z.object({
 
 function Cards() {
   const router = useRouter();
+  const [businessNames, setBusinessNames] = useState([]);
+  const [businessAddresses, setBusinessAddresses] = useState([]);
+  const [selectedBusiness, setSelectedBusiness] = useState('');
+  
   const searchParams = useSearchParams();
   const form = searchParams?.get(QUERY_PARAM_NAME) ?? '';
   const formToRender = LOGIN_TYPES.includes(form) ? form : LOGIN_TYPES[0];
+
+  useEffect(() => {
+    const datasetId = "d_1bf762ee1d6d7fb61192cb442fb2f5b4";
+    const url = `https://data.gov.sg/api/action/datastore_search?resource_id=${datasetId}`;
+  
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const records = data.result.records;
+        
+        // Initialize an empty object to store business names and their corresponding addresses
+        const businessNameMap = {};
+  
+        records.forEach(record => {
+          // Normalize the business name to lowercase to ensure case-insensitive matching
+          const normalizedBusinessName = record.business_name.toLowerCase();
+          
+          // If the business name doesn't exist in the map, initialize it with an empty array
+          if (!businessNameMap[normalizedBusinessName]) {
+            businessNameMap[normalizedBusinessName] = [];
+          }
+  
+          // Push the premise address into the array for that business name, storing all branch addresses
+          businessNameMap[normalizedBusinessName].push(record.premise_address);
+        });
+  
+        // Set the unique business names and their corresponding addresses in state
+        setBusinessNames(Object.keys(businessNameMap));
+        setBusinessAddresses(businessNameMap); // This stores the map of business names to their addresses
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+  
+
 
   const donorSignupForm = useForm<z.infer<typeof donorSignupScheme>>({
     resolver: zodResolver(donorSignupScheme),
@@ -270,23 +310,65 @@ function Cards() {
                     >
                       <p className='mt-4 font-bold'>Details</p>
                       <FormField
-                        control={donorSignupForm.control}
-                        name='agency'
-                        render={({ field }) => {
-                          return (
-                            <FormItem>
-                              <FormLabel>Organisation Name</FormLabel>
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  placeholder='Organisation Name...'
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          );
-                        }}
-                      />
+  control={donorSignupForm.control}
+  name="agency"
+  render={({ field }) => {
+    return (
+      <FormItem>
+        <FormLabel>Organisation Name</FormLabel>
+        <FormControl>
+          <Select
+            onValueChange={(value) => {
+              field.onChange(value); // Update the agency (business name)
+              setSelectedBusiness(value); // Set selected business to show related addresses
+            }}
+          >
+            <SelectTrigger style={{ backgroundColor: 'white' }}>
+              <SelectValue placeholder="Select an organisation" />
+            </SelectTrigger>
+            <SelectContent style={{ backgroundColor: 'white' }}>
+              {businessNames.map((name, index) => (
+                <SelectItem key={index} value={name}>
+                  {name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    );
+  }}
+/>
+
+<FormField
+  control={donorSignupForm.control}
+  name="address"
+  render={({ field }) => {
+    return (
+      <FormItem>
+        <FormLabel>Premise Address</FormLabel>
+        <FormControl>
+          <Select onValueChange={field.onChange}>
+            <SelectTrigger style={{ backgroundColor: 'white' }}>
+              <SelectValue placeholder="Select a premise address" />
+            </SelectTrigger>
+            <SelectContent style={{ backgroundColor: 'white' }}>
+              {selectedBusiness && businessAddresses[selectedBusiness]?.map((address, index) => (
+                <SelectItem key={index} value={address}>
+                  {address}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    );
+  }}
+/>
+
+
                       <FormField
                         control={donorSignupForm.control}
                         name='uen'
@@ -341,22 +423,7 @@ function Cards() {
                           );
                         }}
                       />
-                      <FormField
-                        control={donorSignupForm.control}
-                        name='address'
-                        render={({ field }) => {
-                          return (
-                            <FormItem>
-                              <FormLabel>Address</FormLabel>
-                              <FormControl>
-                                <Input {...field} placeholder='Address...' />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          );
-                        }}
-                      />
-
+                 
                       <p className='mt-4 font-bold'>Certification Status</p>
                       <FormField
                         control={donorSignupForm.control}
@@ -789,3 +856,5 @@ export default function Home() {
     </div>
   );
 }
+
+

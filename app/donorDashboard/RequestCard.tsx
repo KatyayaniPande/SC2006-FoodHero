@@ -1,5 +1,4 @@
-'use client';
-
+import { useRouter } from 'next/navigation';
 import {
   Card,
   CardBody,
@@ -9,28 +8,34 @@ import {
 } from '@material-tailwind/react';
 import {
   FaClock,
-  FaCalendarAlt,
-  FaUtensils,
-  FaQuestionCircle,
+  FaTruck,
 } from 'react-icons/fa';
 import { FaBowlFood } from 'react-icons/fa6';
-import { Request } from './BeneficiaryDashboardClient'; // Ensure correct import path
 import { useState, useEffect } from 'react';
 import { AiOutlineNumber } from 'react-icons/ai';
-import { FaRegStar } from 'react-icons/fa6';
-import { FaTruck } from 'react-icons/fa';
-import { FaPersonChalkboard } from 'react-icons/fa6';
+import { FaRegStar, FaPersonChalkboard } from 'react-icons/fa6';
 import { IoLocation } from 'react-icons/io5';
 
 interface RequestCardProps {
-  request: Request;
-  onAccept: (requestId: string) => void; // Function to handle the accept action
+  request: {
+    foodName: string;
+    foodType: string;
+    foodCategory?: string;
+    numberOfServings?: number;
+    quantity?: number;
+    needByTime: string;
+    specialRequest?: string;
+    deliveryMethod: string;
+    deliveryTime?: string;
+    deliveryLocation?: string;
+  };
 }
 
-const RequestCard: React.FC<RequestCardProps> = ({ request, onAccept }) => {
+const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
   const [isCooked, setIsCooked] = useState(false);
   const [isSelfCollection, setIsSelfCollection] = useState(false);
   const [isDelivery, setIsDelivery] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (request.foodType === 'Cooked Food') {
@@ -44,12 +49,32 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onAccept }) => {
     }
   }, [request]);
 
+  const handleDonateClick = () => {
+    const queryString = new URLSearchParams({
+      foodName: request.foodName,
+      foodType: request.foodType,
+      foodCategory: request.foodCategory || '',
+      numberOfServings: request.numberOfServings?.toString() || '',
+      quantity: request.quantity?.toString() || '',
+      needByTime: request.needByTime,
+      specialRequest: request.specialRequest || '',
+      deliveryMethod: request.deliveryMethod,
+      deliveryTime: request.deliveryTime || '',
+      deliveryLocation: request.deliveryLocation || '',
+    }).toString();
+
+    router.push(`/donate?${queryString}`);
+  };
+
   return (
-    <Card shadow={false} className='relative mb-4 border border-black rounded-lg p-4'>
+    <Card
+      shadow={false}
+      className='relative mb-4 border border-gray-300 rounded-lg p-4 bg-white'
+    >
       <CardBody>
         <Typography variant='h5' color='blue-gray' className='mb-2'>
           <FaBowlFood className='inline-block mr-2' />
-          {request.foodName} {isCooked && `[${request.foodCategory}]`}
+          {request.foodName} {isCooked || `[${request.foodCategory}]`}
         </Typography>
 
         <Typography className='mb-2'>
@@ -62,10 +87,12 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onAccept }) => {
           Need by: {request.needByTime}
         </Typography>
 
-        <Typography className='mb-2'>
-          <FaRegStar className='inline-block mr-2' />
-          Special Request: {request.specialRequest}
-        </Typography>
+        {request.specialRequest && (
+          <Typography className='mb-2'>
+            <FaRegStar className='inline-block mr-2' />
+            Special Request: {request.specialRequest}
+          </Typography>
+        )}
 
         {isDelivery && (
           <>
@@ -99,11 +126,8 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onAccept }) => {
       </CardBody>
 
       <CardFooter className='pt-0'>
-        <Button
-          className='text-white bg-green-500 hover:bg-green-600'
-          onClick={() => onAccept(request.title)} // Trigger the accept function
-        >
-          Accept
+        <Button onClick={handleDonateClick} className='text-white bg-black'>
+          Donate
         </Button>
       </CardFooter>
     </Card>

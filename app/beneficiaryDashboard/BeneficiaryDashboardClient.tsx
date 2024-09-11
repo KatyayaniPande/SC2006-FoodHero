@@ -10,6 +10,7 @@ import {
   Button,
 } from '@material-tailwind/react';
 import BeneficiaryCard from './BeneficiaryCard';
+import DonorCard from './DonorCard';
 import Header from '@/components/Header';
 import Link from 'next/link';
 import { getSession } from 'next-auth/react';
@@ -30,11 +31,11 @@ export interface Request {
 export default function BeneficiaryDashboardClient() {
   const [activeTab, setActiveTab] = useState('myRequests');
   const [myRequests, setMyRequests] = useState<Request[]>([]);
-  const [requestsToFulfill, setRequestsToFulfill] = useState<Request[]>([]);
+  const [availableDonations, setAvailableDonations] = useState<Donation[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchRequests() {
+    async function fetchData() {
       try {
         const session = await getSession();
         const email = session?.user?.email;
@@ -43,9 +44,9 @@ export default function BeneficiaryDashboardClient() {
         const myRequestsResponse = await axios.get(`/api/requests?email=${email}`);
         setMyRequests(myRequestsResponse.data);
         
-        // Fetching 'Requests to Fulfill'
-        const fulfillRequestsResponse = await axios.get(`/api/requests-to-fulfill`);
-        setRequestsToFulfill(fulfillRequestsResponse.data);
+        // Fetching 'Available Donations'
+        const availableDonationsResponse = await axios.get(`/api/donations`);
+        setAvailableDonations(availableDonationsResponse.data);
 
       } catch (error) {
         console.error('Error fetching requests:', error);
@@ -53,7 +54,7 @@ export default function BeneficiaryDashboardClient() {
         setLoading(false);
       }
     }
-    fetchRequests();
+    fetchData();
   }, []);
 
   if (loading) {
@@ -83,10 +84,10 @@ export default function BeneficiaryDashboardClient() {
           My Requests
         </button>
         <button
-          className={`px-4 py-2 ${activeTab === 'requestsToFulfill' ? 'bg-green-500 text-white' : 'bg-white text-black'} rounded-r-lg`}
-          onClick={() => setActiveTab('requestsToFulfill')}
+          className={`px-4 py-2 ${activeTab === 'availableDonations' ? 'bg-green-500 text-white' : 'bg-white text-black'} rounded-r-lg`}
+          onClick={() => setActiveTab('availableDonations')}
         >
-          Requests to Fulfill
+          Available Donations
         </button>
       </div>
 
@@ -117,7 +118,7 @@ export default function BeneficiaryDashboardClient() {
                 variant='h5'
                 className='mb-4 text-gray-400'
               >
-                Manage your requests or fulfill others' requests.
+                Manage your requests or view available donations.
               </Typography>
             </CardBody>
           </Card>
@@ -140,18 +141,18 @@ export default function BeneficiaryDashboardClient() {
             </div>
           )}
 
-          {activeTab === 'requestsToFulfill' && (
+          {activeTab === 'availableDonations' && (
             <div>
-              <h1 className='text-2xl font-bold mb-4 text-black'>Requests to Fulfill</h1>
-              {requestsToFulfill.length > 0 ? (
-                requestsToFulfill.map((request, index) => (
-                  <BeneficiaryCard
+              <h1 className='text-2xl font-bold mb-4 text-black'>Available Donations</h1>
+              {availableDonations.length > 0 ? (
+                availableDonations.map((donation, index) => (
+                  <DonorCard
                     key={index} // Add a unique key prop here
-                    request={request}
+                    donation={donation}
                   />
                 ))
               ) : (
-                <p>No requests to fulfill at this time.</p>
+                <p>No available donations at this time.</p>
               )}
             </div>
           )}
