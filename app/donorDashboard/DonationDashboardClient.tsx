@@ -33,14 +33,21 @@ export interface Donation {
   consumeByTiming: string;
   pickUpTime: string;
   dropOffTime: string;
+  status: 'new' | 'matched' | 'awaitingpickup' | 'awaitingdelivery' | 'delivered'; // Add status field
 }
+
 
 export interface Request {
   title: string;
   description: string;
   quantity: number;
   deadline: string;
+  status: 'new' | 'matched' | 'awaitingpickup' | 'awaitingdelivery' | 'delivered'; // Add status field
+
 }
+
+
+
 
 export default function DonorDashboardClient() {
   
@@ -143,14 +150,31 @@ export default function DonorDashboardClient() {
           {activeTab === 'donations' && (
             <div>
               <h1 className='text-2xl font-bold mb-4 text-black'>My Donations</h1>
-              {donations.length > 0 ? (
-                donations.map((donation, index) => (
-                  <DonationCard
-                    key={index} // Add a unique key prop here
-                    donation={donation}
-                  />
-                ))
-              ) : (
+              {donations.length > 0 || requests.length > 0 ? (
+        <>
+          {/* Donations with status 'new' */}
+          {donations
+            .filter((donation) => donation.status === 'new')  // Filter for donations with status 'new'
+            .map((donation, index) => (
+              <DonationCard
+                key={`donation-${index}`} // Use a unique key
+                donation={donation}
+              />
+            ))
+          }
+
+          {/* Requests with status 'matched' */}
+          {requests
+            .filter((request) => request.status === 'matched')  // Filter for requests with status 'matched'
+            .map((request, index) => (
+              <RequestCard
+                key={`request-${index}`} // Use a unique key
+                request={request}
+              />
+            ))
+          }
+        </>
+      ) : (
                 <p>No donations found.</p>
               )}
             </div>
@@ -160,13 +184,15 @@ export default function DonorDashboardClient() {
             <div>
               <h1 className='text-2xl font-bold mb-4 text-black'>Requests to Fulfill</h1>
               {requests.length > 0 ? (
-                requests.map((request, index) => (
-                  <RequestCard
-                    key={index} // Add a unique key prop here
-                    request={request}
-                  />
-                ))
-              ) : (
+      requests
+        .filter((request) => request.status === 'new')  // Filter for requests with status 'new'
+        .map((request, index) => (
+          <RequestCard
+            key={index} // Add a unique key prop here
+            request={request}
+          />
+        ))
+    ) : (
                 <p>No requests to fulfill at this time.</p>
               )}
             </div>

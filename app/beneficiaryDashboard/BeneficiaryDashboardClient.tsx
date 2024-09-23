@@ -26,6 +26,7 @@ export interface Request {
   deliveryLocation: string;
   quantity: number;
   numberOfServings: number;
+  status: 'new' | 'matched' | 'awaitingpickup' | 'awaitingdelivery' | 'delivered'; // Add status field
 }
 
 export default function BeneficiaryDashboardClient() {
@@ -128,14 +129,31 @@ export default function BeneficiaryDashboardClient() {
           {activeTab === 'myRequests' && (
             <div>
               <h1 className='text-2xl font-bold mb-4 text-black'>My Requests</h1>
-              {myRequests.length > 0 ? (
-                myRequests.map((request, index) => (
-                  <BeneficiaryCard
-                    key={index} // Add a unique key prop here
-                    request={request}
-                  />
-                ))
-              ) : (
+              {myRequests.length > 0 || availableDonations.length > 0 ? (
+  <>
+    {/* My Requests with status 'new' */}
+    {myRequests
+      .filter((request) => request.status === 'new')  // Filter for requests with status 'new'
+      .map((request, index) => (
+        <BeneficiaryCard
+          key={`request-${index}`}  // Use a unique key
+          request={request}
+        />
+      ))
+    }
+
+    {/* Available Donations with status 'matched' */}
+    {availableDonations
+      .filter((donation) => donation.status === 'matched')  // Filter for donations with status 'matched'
+      .map((donation, index) => (
+        <DonorCard
+          key={`donation-${index}`}  // Use a unique key
+          donation={donation}
+        />
+      ))
+    }
+  </>
+) : (
                 <p>No requests found.</p>
               )}
             </div>
@@ -145,13 +163,15 @@ export default function BeneficiaryDashboardClient() {
             <div>
               <h1 className='text-2xl font-bold mb-4 text-black'>Available Donations</h1>
               {availableDonations.length > 0 ? (
-                availableDonations.map((donation, index) => (
-                  <DonorCard
-                    key={index} // Add a unique key prop here
-                    donation={donation}
-                  />
-                ))
-              ) : (
+        availableDonations
+          .filter((donation) => donation.status === 'new')  // Filter for donations with status 'new'
+          .map((donation, index) => (
+            <DonorCard
+              key={`donation-${index}`}  // Use a unique key
+              donation={donation}
+            />
+          ))
+      ) : (
                 <p>No available donations at this time.</p>
               )}
             </div>

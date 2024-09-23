@@ -39,6 +39,7 @@ export async function POST(request: Request) {
         quantity,
         specialHandling,
         agencyName,
+        status,
         
       } = body;
 
@@ -57,7 +58,8 @@ export async function POST(request: Request) {
         specialHandling,
         agencyName: agencyName || '',
         createdAt: new Date(),
-        user: user
+        user: user,
+        status,
       };
 
       // Insert the new donation into the "donations" collection
@@ -82,6 +84,7 @@ export async function POST(request: Request) {
         numberOfServings,
         specialHandling,
         agencyName,
+        status,
       } = body;
 
       // create new donation object
@@ -100,6 +103,7 @@ export async function POST(request: Request) {
         specialHandling,
         agencyName: agencyName || '',
         createdAt: new Date(),
+        status,
       };
 
       // Insert the new donation into the "donations" collection

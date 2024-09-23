@@ -1,5 +1,5 @@
 'use client';
-
+import { ChevronLeft } from "lucide-react";
 import React from 'react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -115,6 +115,7 @@ const Request = () => {
 
     const data = {
       ...values,
+      status: "new", // Set initial status to "new"
       foodType: foodType,
       user: user,
     };
@@ -151,7 +152,7 @@ const Request = () => {
           deliveryMethod: '',
         });
         setSelectedCategory('');
-
+        router.push("/beneficiaryDashboard");
         toast({
           title: 'Success!',
           description: 'Your request has been submitted successfully.',
@@ -176,13 +177,26 @@ const Request = () => {
 
       {/* Form Content */}
       <section className='bg-white rounded-lg shadow-lg p-12 mb-12 flex justify-center'>
-        <div className='flex flex-col items-center w-full max-w-4xl'>
-          <h1 className='text-2xl font-bold mb-2'>Request for Food</h1>
-          <p className='text-sm text-gray-700 mb-7'>
-            Require food for your organisation? Fill in the form below to
-            request for food donations from our donors. We will do our best to
-            match you with a donor as soon as possible!
-          </p>
+      <div className="relative w-full">
+  <h1 className="text-2xl font-bold mb-2 text-center">Request for Food</h1>
+  <p className="text-sm text-gray-700 mb-7 text-center pt-4">
+  Require food for your organisation? Fill in the form below to
+      request for food donations from our donors. We will do our best to
+      match you with a donor as soon as possible!
+    </p>
+  {/* Back button aligned to the left */}
+  <div className="absolute top-0 left-0">
+    <Button
+      onClick={() => router.push("/beneficiaryDashboard")}
+      variant="outline"
+      size="sm"
+      className="flex items-center border-none"
+    >
+      <ChevronLeft className="h-4 w-4 mr-2" />
+      Back
+    </Button>
+  </div>
+
 
           <div className='flex justify-center space-x-4 mb-6'>
             <button
@@ -394,10 +408,10 @@ const Request = () => {
                             field.onChange(value); // Updates the form state
                           }}
                         >
-                          <SelectTrigger className='w-full shadow-sm'>
+                          <SelectTrigger className='w-full shadow-sm bg-white'>
                             <SelectValue placeholder='Select Food Category' />
                           </SelectTrigger>
-                          <SelectContent className='w-full'>
+                          <SelectContent className='w-full bg-white'>
                             <SelectItem value='Vegetables'>
                               Vegetables
                             </SelectItem>

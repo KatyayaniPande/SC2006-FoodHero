@@ -16,8 +16,27 @@ import { AiOutlineNumber } from 'react-icons/ai';
 import { FaRegStar, FaPersonChalkboard } from 'react-icons/fa6';
 import { IoLocation } from 'react-icons/io5';
 
+// Utility function to determine the status color
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'new':
+      return 'bg-blue-300'; // New = Light Blue
+    case 'matched':
+      return 'bg-yellow-500'; // Matched = Yellow
+    case 'awaitingpickup':
+      return 'bg-orange-500'; // Awaiting Pickup = Orange
+    case 'awaitingdelivery':
+      return 'bg-purple-500'; // Awaiting Delivery = Purple
+    case 'delivered':
+      return 'bg-green-500'; // Delivered = Green
+    default:
+      return 'bg-gray-500'; // Default = Gray
+  }
+};
+
 interface RequestCardProps {
   request: {
+    _id: string; // Ensure that _id (donationId) is included in the request object
     foodName: string;
     foodType: string;
     foodCategory?: string;
@@ -28,6 +47,7 @@ interface RequestCardProps {
     deliveryMethod: string;
     deliveryTime?: string;
     deliveryLocation?: string;
+    status: 'new' | 'matched' | 'awaitingpickup' | 'awaitingdelivery' | 'delivered';
   };
 }
 
@@ -49,21 +69,35 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
     }
   }, [request]);
 
-  const handleDonateClick = () => {
-    const queryString = new URLSearchParams({
-      foodName: request.foodName,
-      foodType: request.foodType,
-      foodCategory: request.foodCategory || '',
-      numberOfServings: request.numberOfServings?.toString() || '',
-      quantity: request.quantity?.toString() || '',
-      needByTime: request.needByTime,
-      specialRequest: request.specialRequest || '',
-      deliveryMethod: request.deliveryMethod,
-      deliveryTime: request.deliveryTime || '',
-      deliveryLocation: request.deliveryLocation || '',
-    }).toString();
+  const handleDonateClick = async () => {
+    if (!request._id) {
+      alert('Donation ID is missing.');
+      return;
+    }
+    try {
+      const response = await fetch('/api/statusUpdate', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          donationId: request._id, // Use the _id from the request object as donationId
+          currentStatus: request.status, // Pass the current status
+        }),
+      });
 
-    router.push(`/donate?${queryString}`);
+      if (response.ok) {
+        const data = await response.json();
+        alert(`Success: ${data.message}`);
+        window.location.reload();
+      } else {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.error}`);
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+      alert('An error occurred while updating the donation status.');
+    }
   };
 
   return (
@@ -71,6 +105,11 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
       shadow={false}
       className='relative mb-4 border border-gray-300 rounded-lg p-4 bg-white'
     >
+      {/* Status badge */}
+      <div className={`absolute top-2 right-2 text-white text-sm font-semibold px-2 py-1 rounded-md ${getStatusColor(request.status)}`}>
+        {request.status}
+      </div>
+
       <CardBody>
         <Typography variant='h5' color='blue-gray' className='mb-2'>
           <FaBowlFood className='inline-block mr-2' />

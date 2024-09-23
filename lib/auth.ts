@@ -32,7 +32,7 @@ export const userOptions: NextAuthOptions = {
         );
 
         if (!passwordMatch) {
-          throw new Error('Password is wrong');
+          throw new Error('The username/password you entered is incorrect.Please try again');
         }
         return user;
       },

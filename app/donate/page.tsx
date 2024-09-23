@@ -134,6 +134,7 @@ const Donate = () => {
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
 
+/*
   // If query params are available, pre-fill the form
   useEffect(() => {
     const foodName = searchParams.get("foodName");
@@ -151,6 +152,8 @@ const Donate = () => {
         cookedForm.setValue("deliveryMethod", searchParams.get("deliveryMethod") || "");
         cookedForm.setValue("pickUpTime", searchParams.get("deliveryTime") || "");
         cookedForm.setValue("pickUpLocation", searchParams.get("deliveryLocation") || "");
+        cookedForm.setValue("pickUpLocation", searchParams.get("deliveryLocation") || "");
+        
       } else {
         nonCookedForm.setValue("foodName", foodName);
         nonCookedForm.setValue("quantity", Number(searchParams.get("quantity") || 0));
@@ -163,6 +166,8 @@ const Donate = () => {
       }
     }
   }, [searchParams, cookedForm, nonCookedForm]);
+*/
+
 
   // Helper function to convert file to Base64
   const convertToBase64 = (file: File): Promise<string> => {
@@ -204,7 +209,8 @@ const Donate = () => {
 
     const data = {
       ...values,
-      user: {
+       status: "new",
+        user: {
         email: session.user.email,
         agency: session.user.agency,
         address: session.user.address,
@@ -220,6 +226,7 @@ const Donate = () => {
     console.log(data);
 
     try {
+
       const response = await fetch("/api/donation", {
         method: "POST",
         headers: {

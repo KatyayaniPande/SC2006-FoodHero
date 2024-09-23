@@ -10,35 +10,36 @@ const HomePage: React.FC = () => {
       <Header />
       <main>
         {/* Enhanced Work with Us Section */}
-        <section className="bg-white rounded-lg shadow-md p-8 mb-8 text-center">
-          <h1 className="text-4xl font-bold mb-4">Food Hero Portal</h1>
-          <div className="flex flex-col md:flex-row justify-center items-center">
-            <img
-              src="/images/donate pic.jpg"
-              className="w-75 h-75 object-cover rounded-lg"
-            />
-            <div className="mt-8 md:mt-0 md:ml-8 text-left">
-              <h2 className="text-2xl font-semibold mb-4">Work with Us</h2>
-              <p className="text-gray-700 mb-4">
-                Join our mission to eliminate food wastage and make a positive impact on the community.
-                Whether you're a business looking to donate surplus food or a charity looking to receive donations there's a place for everyone at Food Hero.
-              </p>
-              <div className="flex flex-col md:flex-row">
-                <button
-                  className="bg-[#A2C765] text-white px-6 py-3 rounded hover:bg-[#8FA556] mb-4 md:mb-0 md:mr-4"
-                  onClick={() => router.push('/signup?type=donor')}
-                >
-                  Get Started as a Donor
-                </button>
-                <button
-                  className="bg-[#8FA556] text-white px-6 py-3 rounded hover:bg-[#A2C765] mb-4 md:mb-0 md:mr-4"
-                  onClick={() => router.push('/signup?type=beneficiary')}
-                >
-                  Get Started as a Beneficiary
-                </button>
-                
-              </div>
+        <section className="bg-white rounded-lg shadow-md p-8 mb-8 flex flex-col md:flex-row items-center justify-between">
+          {/* Text and Buttons */}
+          <div className="md:w-1/2 text-center md:text-left">
+            <h1 className="text-4xl font-bold mb-4">Food Donation</h1>
+            <p className="text-gray-700 mb-4">
+              Join our mission to eliminate food wastage and make a positive impact on the community. Whether you're a business looking to donate surplus food, or an individual looking to receive donations, there's a place for you at Food Hero.
+            </p>
+            <div className="flex flex-col md:flex-row justify-center md:justify-start">
+              <button
+                className="bg-[#A2C765] text-white px-6 py-3 rounded hover:bg-[#8FA556] mb-4 md:mb-0 md:mr-4"
+                onClick={() => router.push('/signup?type=donor')}
+              >
+                Get Started As A Donor
+              </button>
+              <button
+                className="bg-[#8FA556] text-white px-6 py-3 rounded hover:bg-[#A2C765] mb-4 md:mb-0 md:mr-4"
+                onClick={() => router.push('/signup?type=beneficiary')}
+              >
+                Get Started As A Beneficiary
+              </button>
             </div>
+          </div>
+
+          {/* Image */}
+          <div className="md:w-1/2 mt-8 md:mt-0 flex justify-center md:justify-end">
+            <img
+              src="\images\logo2.jpg"
+              className="w-full h-auto max-w-sm object-cover rounded-lg"
+              
+            />
           </div>
         </section>
 
@@ -46,7 +47,7 @@ const HomePage: React.FC = () => {
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="mb-4">
-              <img src="/images/people.png" alt="Our Mission" className="mx-auto w-12 h-12"/>
+              <img src="/images/people.png" alt="Our Mission" className="mx-auto w-12 h-12" />
             </div>
             <h3 className="text-xl font-semibold mb-2">Our Mission</h3>
             <p className="text-gray-700 mb-4">
@@ -61,7 +62,7 @@ const HomePage: React.FC = () => {
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="mb-4">
-              <img src="/images/people.png" alt="Our Values" className="mx-auto w-12 h-12"/>
+              <img src="/images/people.png" alt="Our Values" className="mx-auto w-12 h-12" />
             </div>
             <h3 className="text-xl font-semibold mb-2">Our Values</h3>
             <p className="text-gray-700 mb-4">
@@ -76,7 +77,7 @@ const HomePage: React.FC = () => {
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="mb-4">
-              <img src="/images/people.png" alt="What We Do" className="mx-auto w-12 h-12"/>
+              <img src="/images/people.png" alt="What We Do" className="mx-auto w-12 h-12" />
             </div>
             <h3 className="text-xl font-semibold mb-2">What We Do</h3>
             <p className="text-gray-700 mb-4">
@@ -91,7 +92,6 @@ const HomePage: React.FC = () => {
           </div>
         </section>
 
-        
         {/* Impact Section */}
         <section className="bg-white rounded-lg shadow-md p-8 mb-8 text-center mt-10">
           <h2 className="text-2xl font-bold mb-4">Our Impact</h2>

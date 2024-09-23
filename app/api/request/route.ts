@@ -26,6 +26,7 @@ export async function POST(request: Request) {
 
     if (body.foodType === 'Non-Cooked Food') {
       const {
+        status,
         foodType,
         deliveryMethod,
         needByTime,
@@ -40,6 +41,7 @@ export async function POST(request: Request) {
 
       // create a new donation object
       const newDonation = {
+        status,
         foodType,
         deliveryMethod,
         needByTime,
@@ -50,6 +52,7 @@ export async function POST(request: Request) {
         quantity,
         specialRequest,
         user,
+        
       };
 
       // Insert the new donation into the "donations" collection
@@ -61,6 +64,7 @@ export async function POST(request: Request) {
     } else {
       // foodType is cooked food
       const {
+        status,
         foodType,
         deliveryMethod,
         needByTime,
@@ -71,10 +75,12 @@ export async function POST(request: Request) {
         numberOfServings,
         specialRequest,
         user,
+       
       } = body;
 
       // create new donation object
       const newDonation = {
+        status,
         foodType,
         deliveryMethod,
         needByTime: needByTime || null,
@@ -86,6 +92,7 @@ export async function POST(request: Request) {
         specialRequest,
         createdAt: new Date(),
         user,
+       
       };
 
       // Insert the new donation into the "donations" collection

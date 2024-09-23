@@ -1,5 +1,9 @@
 'use client';
 
+
+import { ProgressBar } from '@/components/ui/progress-bar';
+ // Assuming you have a ProgressBar component
+
 import {
   Form,
   FormControl,
@@ -34,9 +38,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Tabs, TabsList, TabsContent, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 
-{
-  /* Custom imports */
-}
+
 import {
   HYGIENE_RATING,
   LOGIN_TYPES,
@@ -84,6 +86,51 @@ function Cards() {
   const form = searchParams?.get(QUERY_PARAM_NAME) ?? '';
   const formToRender = LOGIN_TYPES.includes(form) ? form : LOGIN_TYPES[0];
 
+
+  // Password strength calculation function
+  function calculatePasswordStrength(password) {
+    let strength = 0;
+    if (password.length >= 8) strength += 1;
+    if (/[A-Z]/.test(password)) strength += 1;
+    if (/[a-z]/.test(password)) strength += 1;
+    if (/\d/.test(password)) strength += 1;
+    if (/\W/.test(password)) strength += 1;
+  
+    return strength;
+  }
+  
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [passwordFeedback, setPasswordFeedback] = useState('');
+  
+  const handlePasswordChange = (e) => {
+    const password = e.target.value;
+    const strength = calculatePasswordStrength(password);
+    setPasswordStrength(strength);
+  
+    // Provide feedback based on password strength
+    switch (strength) {
+      case 0:
+      case 1:
+        setPasswordFeedback('Too Weak');
+        break;
+      case 2:
+        setPasswordFeedback('Weak');
+        break;
+      case 3:
+        setPasswordFeedback('Medium');
+        break;
+      case 4:
+        setPasswordFeedback('Strong');
+        break;
+      case 5:
+        setPasswordFeedback('Very Strong');
+        break;
+      default:
+        setPasswordFeedback('');
+    }
+  };
+  
+
   useEffect(() => {
     const datasetId = "d_1bf762ee1d6d7fb61192cb442fb2f5b4";
     const url = `https://data.gov.sg/api/action/datastore_search?resource_id=${datasetId}`;
@@ -98,7 +145,7 @@ function Cards() {
   
         records.forEach(record => {
           // Normalize the business name to lowercase to ensure case-insensitive matching
-          const normalizedBusinessName = record.business_name.toLowerCase();
+          const normalizedBusinessName = record.business_name.toUpperCase();
           
           // If the business name doesn't exist in the map, initialize it with an empty array
           if (!businessNameMap[normalizedBusinessName]) {
@@ -497,24 +544,35 @@ function Cards() {
                         }}
                       />
                       <FormField
-                        control={donorSignupForm.control}
-                        name='password'
-                        render={({ field }) => {
-                          return (
-                            <FormItem>
-                              <FormLabel>Password</FormLabel>
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  placeholder='Password...'
-                                  type='password'
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          );
-                        }}
-                      />
+  control={donorSignupForm.control}
+  name='password'
+  render={({ field }) => {
+    return (
+      <FormItem>
+        <FormLabel>Password</FormLabel>
+        <FormControl>
+          <Input
+            {...field}
+            placeholder='Password...'
+            type='password'
+            onChange={(e) => {
+              handlePasswordChange(e); // Update password strength
+              field.onChange(e); // Pass value to the form handler
+            }}
+          />
+        </FormControl>
+        <FormMessage />
+        <div className='mt-2'>
+          <ProgressBar value={(passwordStrength / 5) * 100} /> {/* Password strength progress */}
+          <p className={`text-sm mt-1 ${passwordStrength <= 2 ? 'text-red-600' : 'text-green-600'}`}>
+            {passwordFeedback}
+          </p>
+        </div>
+      </FormItem>
+    );
+  }}
+/>
+
                       <FormField
                         control={donorSignupForm.control}
                         name='confirm_password'
