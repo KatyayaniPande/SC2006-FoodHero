@@ -29,7 +29,7 @@ interface DonorCardProps {
 const getStatusColor = (status: string) => {
   switch (status) {
     case 'new':
-      return 'bg-blue-500'; // New = Blue
+      return 'bg-blue-300'; // New = Blue
     case 'matched':
       return 'bg-yellow-500'; // Matched = Yellow
     case 'awaitingpickup':
@@ -151,12 +151,15 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
         )}
       </CardBody>
       <CardFooter className='pt-0'>
+        {donation.status === 'new' && (
         <Button className='text-white bg-black' onClick={handleAcceptClick}>
           Accept
         </Button>
+        )}
       </CardFooter>
     </Card>
   );
 };
+
 
 export default DonorCard;

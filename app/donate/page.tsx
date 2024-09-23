@@ -504,10 +504,10 @@ const Donate = () => {
                               field.onChange(value); // Updates the form state
                             }}
                           >
-                            <SelectTrigger className="w-full shadow-sm">
+                            <SelectTrigger className="w-full shadow-sm bg-white">
                               <SelectValue placeholder="Select Food Type" />
                             </SelectTrigger>
-                            <SelectContent className="w-full">
+                            <SelectContent className="w-full bg-white">
                               <SelectItem value="Vegetables">
                                 Vegetables
                               </SelectItem>

@@ -165,10 +165,13 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
       </CardBody>
 
       <CardFooter className='pt-0'>
-        <Button onClick={handleDonateClick} className='text-white bg-black'>
-          Donate
-        </Button>
-      </CardFooter>
+  {request.status === 'new' && (
+    <Button onClick={handleDonateClick} className='text-white bg-black'>
+      Donate
+    </Button>
+  )}
+</CardFooter>
+
     </Card>
   );
 };

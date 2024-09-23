@@ -12,18 +12,21 @@ import {
   FaCalendarAlt,
   FaUtensils,
   FaQuestionCircle,
+  FaTruck,
 } from 'react-icons/fa';
-import { FaBowlFood } from 'react-icons/fa6';
+import {
+  FaBowlFood,
+  FaRegStar,
+  FaPersonChalkboard,
+} from 'react-icons/fa6';
+import { AiOutlineNumber } from 'react-icons/ai';
+import { IoLocation } from 'react-icons/io5';
 import { Request } from './BeneficiaryDashboardClient';
 import { useState, useEffect } from 'react';
-import { AiOutlineNumber } from 'react-icons/ai';
-import { FaRegStar } from 'react-icons/fa6';
-import { FaTruck } from 'react-icons/fa';
-import { FaPersonChalkboard } from 'react-icons/fa6';
-import { IoLocation } from 'react-icons/io5';
 
 interface RequestCardProps {
   request: Request;
+  onDelete?: (id: string) => void;
 }
 
 // Utility function to determine the status color
@@ -43,90 +46,111 @@ const getStatusColor = (status: string) => {
       return 'bg-gray-500'; // Default = Gray
   }
 };
-const BeneficiaryCard: React.FC<RequestCardProps> = ({ request }) => {
+
+const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
+  // Hooks
   const [isCooked, setIsCooked] = useState(false);
   const [isSelfCollection, setIsSelfCollection] = useState(false);
   const [isDelivery, setIsDelivery] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
 
+  // Effects
   useEffect(() => {
-    if (request.foodType === 'Cooked Food') {
-      setIsCooked(true);
-    }
-
-    if (request.deliveryMethod === 'Self-Collection') {
-      setIsSelfCollection(true);
-    } else {
-      setIsDelivery(true);
-    }
+    setIsCooked(request.foodType === 'Cooked Food');
+    setIsSelfCollection(request.deliveryMethod === 'Self-Collection');
+    setIsDelivery(request.deliveryMethod !== 'Self-Collection');
   }, [request]);
 
+  // Early return after hooks
+  if (isDeleted) return null;
+
+  // Handler for deleting the request
+  const handleDelete = async () => {
+    const confirmed = window.confirm('Are you sure you want to delete this request?');
+    if (confirmed) {
+      try {
+        const response = await fetch(`/api/requests?id=${request._id}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          alert('Request deleted successfully.');
+          setIsDeleted(true);
+          if (onDelete) onDelete(request._id);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        console.error('Error deleting request:', error);
+        alert('An error occurred while deleting the request.');
+      }
+    }
+  };
+
+  // Component render
   return (
     <Card shadow={false} className='relative mb-4 border border-black rounded-lg p-4'>
-  <div className={`absolute top-2 right-2 text-black text-sm font-semibold px-2 py-1 rounded-md ${getStatusColor(request.status)}`}>
-    {request.status}
-  </div>
-  <CardBody>
-    <Typography
-      variant='h5'
-      color='blue-gray'
-      className='mb-2'
-    >
-      <FaBowlFood className='inline-block mr-2' />
-      {request.foodName} {isCooked || `[${request.foodCategory}]`}
-    </Typography>
-
-    <Typography className='mb-2'>
-      <AiOutlineNumber className='inline-block mr-2' />
-      {isCooked ? `Number of servings: ${request.numberOfServings}` : `Quantity: ${request.quantity}`}
-    </Typography>
-
-    <Typography className='mb-2'>
-      <FaClock className='inline-block mr-2' />
-      Need by: {request.needByTime}
-    </Typography>
-
-    <Typography className='mb-2'>
-      <FaRegStar className='inline-block mr-2' />
-      Special Request: {request.specialRequest}
-    </Typography>
-
-    {isDelivery && (
-      <>
-        <Typography className='mb-2'>
-          <FaTruck className='inline-block mr-2' />
-          Delivery Method: {request.deliveryMethod}
+      <div className={`absolute top-2 right-2 text-black text-sm font-semibold px-2 py-1 rounded-md ${getStatusColor(request.status)}`}>
+        {request.status}
+      </div>
+      <CardBody>
+        <Typography variant='h5' color='blue-gray' className='mb-2'>
+          <FaBowlFood className='inline-block mr-2' />
+          {request.foodName} {!isCooked && `[${request.foodCategory}]`}
         </Typography>
+
+        <Typography className='mb-2'>
+          <AiOutlineNumber className='inline-block mr-2' />
+          {isCooked ? `Number of servings: ${request.numberOfServings}` : `Quantity: ${request.quantity}`}
+        </Typography>
+
         <Typography className='mb-2'>
           <FaClock className='inline-block mr-2' />
-          Delivery Time: {request.deliveryTime}
+          Need by: {request.needByTime}
         </Typography>
-        <Typography className='mb-2'>
-          <IoLocation className='inline-block mr-2' />
-          Delivery Location: {request.deliveryLocation}
-        </Typography>
-      </>
-    )}
 
-    {isSelfCollection && (
-      <>
         <Typography className='mb-2'>
-          <FaPersonChalkboard className='inline-block mr-2' />
-          Delivery Method: {request.deliveryMethod}
+          <FaRegStar className='inline-block mr-2' />
+          Special Request: {request.specialRequest}
         </Typography>
-        <Typography className='mb-2'>
-          <FaClock className='inline-block mr-2' />
-          Pick-up Time: {request.deliveryTime}
-        </Typography>
-      </>
-    )}
-  </CardBody>
-  <CardFooter className='pt-0'>
-    <Button className='text-white bg-black'>
-      Withdraw
-    </Button>
-  </CardFooter>
-</Card>
 
+        {isDelivery && (
+          <>
+            <Typography className='mb-2'>
+              <FaTruck className='inline-block mr-2' />
+              Delivery Method: {request.deliveryMethod}
+            </Typography>
+            <Typography className='mb-2'>
+              <FaClock className='inline-block mr-2' />
+              Delivery Time: {request.deliveryTime}
+            </Typography>
+            <Typography className='mb-2'>
+              <IoLocation className='inline-block mr-2' />
+              Delivery Location: {request.deliveryLocation}
+            </Typography>
+          </>
+        )}
+
+        {isSelfCollection && (
+          <>
+            <Typography className='mb-2'>
+              <FaPersonChalkboard className='inline-block mr-2' />
+              Delivery Method: {request.deliveryMethod}
+            </Typography>
+            <Typography className='mb-2'>
+              <FaClock className='inline-block mr-2' />
+              Pick-up Time: {request.deliveryTime}
+            </Typography>
+          </>
+        )}
+      </CardBody>
+      <CardFooter className='pt-0'>
+        <Button className='text-white bg-black' onClick={handleDelete}>
+          Withdraw
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
 

@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { getSession } from 'next-auth/react';
 
 export interface Donation {
+  _id: string;
   foodName: string;
   foodType: string;
   foodCategory: string;
@@ -77,6 +78,11 @@ export default function DonorDashboardClient() {
     }
     fetchData();
   }, []);
+
+  const handleWithdraw = (id) => {
+    // Remove the withdrawn donation from the state
+    setDonations(donations.filter((donation) => donation._id !== id));
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -159,6 +165,7 @@ export default function DonorDashboardClient() {
               <DonationCard
                 key={`donation-${index}`} // Use a unique key
                 donation={donation}
+                onWithdraw={handleWithdraw}
               />
             ))
           }

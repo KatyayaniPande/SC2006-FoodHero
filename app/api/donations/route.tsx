@@ -1,4 +1,4 @@
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import { MongoClient, ServerApiVersion, ObjectId } from 'mongodb';
 import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
@@ -44,6 +44,41 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(donations, { status: 200 });
   } catch (error) {
     console.error('MongoDB connection error:', error);
+    return NextResponse.json(
+      { message: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        { message: 'Donation ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const collection = await getCollection();
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 1) {
+      return NextResponse.json(
+        { message: 'Donation deleted successfully' },
+        { status: 200 }
+      );
+    } else {
+      return NextResponse.json(
+        { message: 'Donation not found' },
+        { status: 404 }
+      );
+    }
+  } catch (error) {
+    console.error('Error deleting donation:', error);
     return NextResponse.json(
       { message: 'Internal server error' },
       { status: 500 }
