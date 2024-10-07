@@ -26,6 +26,8 @@ const getStatusColor = (status: string) => {
       return "bg-blue-300"; // New = Blue
     case "matched":
       return "bg-yellow-500"; // Matched = Yellow
+    case "inwarehouse":
+      return "bg-green-500"; // Matched = Yellow
     case "awaitingpickup":
       return "bg-orange-500"; // Awaiting Pickup = Orange
     case "awaitingdelivery":
@@ -37,7 +39,10 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const DonationCard: React.FC<DonationCardProps> = ({ donation, onWithdraw }) => {
+const DonationCard: React.FC<DonationCardProps> = ({
+  donation,
+  onWithdraw,
+}) => {
   const [isCooked, setIsCooked] = useState(false);
   const [isSelfPickUp, setIsSelfPickUp] = useState(false);
   const [isDelivery, setIsDelivery] = useState(false);
@@ -55,20 +60,20 @@ const DonationCard: React.FC<DonationCardProps> = ({ donation, onWithdraw }) => 
     }
   }, [donation]);
 
-    // Handler for the Withdraw button
+  // Handler for the Withdraw button
   const handleWithdraw = async () => {
     const confirmed = window.confirm(
-      'Are you sure you want to withdraw this donation?'
+      "Are you sure you want to withdraw this donation?"
     );
     if (confirmed) {
       try {
         const response = await fetch(`/api/donations?id=${donation._id}`, {
-          method: 'DELETE',
+          method: "DELETE",
         });
 
         if (response.ok) {
           // Donation deleted successfully
-          alert('Donation withdrawn successfully.');
+          alert("Donation withdrawn successfully.");
           setIsDeleted(true); // Update state to remove the card from UI
           // Optionally, you can call a parent function to refresh the donations list
           if (onWithdraw) onWithdraw(donation._id);
@@ -77,12 +82,41 @@ const DonationCard: React.FC<DonationCardProps> = ({ donation, onWithdraw }) => 
           alert(`Error: ${errorData.message}`);
         }
       } catch (error) {
-        console.error('Error deleting donation:', error);
-        alert('An error occurred while withdrawing the donation.');
+        console.error("Error deleting donation:", error);
+        alert("An error occurred while withdrawing the donation.");
       }
     }
   };
 
+  const handleMarkAsDelivered = async () => {
+    const confirmed = window.confirm("Have you delivered to the warehouse?");
+    if (confirmed) {
+      try {
+        const response = await fetch("/api/statusUpdate", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            donationId: donation._id, // Use the _id from the request object as donationId
+            currentStatus: donation.status, // Pass the current status
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          alert(`Success: ${data.message}`);
+          window.location.reload();
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.error}`);
+        }
+      } catch (error) {
+        console.error("Error updating status:", error);
+        alert("An error occurred while updating the donation status.");
+      }
+    }
+  };
 
   return (
     <Card
@@ -165,12 +199,28 @@ const DonationCard: React.FC<DonationCardProps> = ({ donation, onWithdraw }) => 
         )}
       </CardBody>
       <CardFooter className="pt-0">
-        <Button className="text-white" onClick={handleWithdraw}>
-          Withdraw
-        </Button>
+        {/* Only render buttons if the status is not 'inwarehouse' */}
+        {donation.status !== "inwarehouse" && (
+          <>
+            {/* Show both Withdraw and Mark as Delivered when the status is 'matched' */}
+            {donation.status === "matched" && (
+              <>
+                <Button className="text-white " onClick={handleMarkAsDelivered}>
+                  Mark as Delivered
+                </Button>
+              </>
+            )}
+
+            {/* If it's not matched but status is something else, show only Withdraw */}
+            {donation.status !== "matched" && (
+              <Button className="text-white" onClick={handleWithdraw}>
+                Withdraw
+              </Button>
+            )}
+          </>
+        )}
       </CardFooter>
     </Card>
   );
 };
-
 export default DonationCard;
