@@ -134,7 +134,7 @@ const Donate = () => {
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
 
-/*
+  /*
   // If query params are available, pre-fill the form
   useEffect(() => {
     const foodName = searchParams.get("foodName");
@@ -167,7 +167,6 @@ const Donate = () => {
     }
   }, [searchParams, cookedForm, nonCookedForm]);
 */
-
 
   // Helper function to convert file to Base64
   const convertToBase64 = (file: File): Promise<string> => {
@@ -209,8 +208,8 @@ const Donate = () => {
 
     const data = {
       ...values,
-       status: "new",
-        user: {
+      status: "new",
+      user: {
         email: session.user.email,
         agency: session.user.agency,
         address: session.user.address,
@@ -226,7 +225,6 @@ const Donate = () => {
     console.log(data);
 
     try {
-
       const response = await fetch("/api/donation", {
         method: "POST",
         headers: {
@@ -269,313 +267,318 @@ const Donate = () => {
         setPreviewImages([]);
         setSelectedCategory("");
       }
-       // Redirect to donor dashboard
-       router.push("/donorDashboard");
-      } catch (error) {
-        console.error("Error submitting donation: ", error);
+      // Redirect to donor dashboard
+      router.push("/donorDashboard");
+    } catch (error) {
+      console.error("Error submitting donation: ", error);
+    }
+  }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    console.log(files);
+    if (files) {
+      const previews = files.map((file) => URL.createObjectURL(file));
+      setPreviewImages(previews);
+      if (foodType === "Non-Cooked Food") {
+        nonCookedForm.setValue("foodImages", files);
+      } else {
+        cookedForm.setValue("foodImages", files); // Store files in the form state
       }
     }
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files || []);
-      console.log(files);
-      if (files) {
-        const previews = files.map((file) => URL.createObjectURL(file));
-        setPreviewImages(previews);
-        if (foodType === "Non-Cooked Food") {
-          nonCookedForm.setValue("foodImages", files);
-        } else {
-          cookedForm.setValue("foodImages", files); // Store files in the form state
-        }
-      }
-    };
-    return (
-      <div className="bg-gray-100 min-h-screen p-8">
-        {/* Navigation Bar */}
-        <Header />
-  
-        {/* Form Content */}
-        <section className="bg-white rounded-lg shadow-lg p-12 mb-12 flex justify-center relative">
-          <div className="flex flex-col items-center w-full max-w-4xl">
-            <h1 className="text-2xl font-bold mb-2">Donate Food</h1>
-            <p className="text-sm text-gray-700 mb-7">
-              Help us make a difference, one meal at a time. Share your food today!
-            </p>
-            <div className="absolute top-9 left-10">
-              <Button
-                onClick={() => router.push("/donorDashboard")}
-                variant="outline"
-                size="sm"
-                className="flex items-center border-none"
+  };
+  return (
+    <div className="bg-gray-100 min-h-screen p-8">
+      {/* Navigation Bar */}
+      <Header />
+
+      {/* Form Content */}
+      <section className="bg-white rounded-lg shadow-lg p-12 mb-12 flex justify-center relative">
+        <div className="flex flex-col items-center w-full max-w-4xl">
+          <h1 className="text-2xl font-bold mb-2">Donate Food</h1>
+          <p className="text-sm text-gray-700 mb-7">
+            Help us make a difference, one meal at a time. Share your food
+            today!
+          </p>
+          <div className="absolute top-9 left-10">
+            <Button
+              onClick={() => router.push("/donorDashboard")}
+              variant="outline"
+              size="sm"
+              className="flex items-center border-none"
+            >
+              <ChevronLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+          </div>
+          <div className="flex justify-center space-x-4 mb-6">
+            <button
+              className={`px-4 py-2 rounded-md font-semibold ${
+                foodType === "Non-Cooked Food"
+                  ? "bg-green-600 text-white"
+                  : "bg-gray-100 text-gray-700"
+              }`}
+              onClick={() => setFoodType("Non-Cooked Food")}
+            >
+              Non-Cooked Food
+            </button>
+            <button
+              className={`px-4 py-2 rounded-md font-semibold ${
+                foodType === "Cooked Food"
+                  ? "bg-green-600 text-white"
+                  : "bg-gray-100 text-gray-700"
+              }`}
+              onClick={() => setFoodType("Cooked Food")}
+            >
+              Cooked Food
+            </button>
+          </div>
+
+          {foodType === "Cooked Food" ? (
+            <Form key="cookedForm" {...cookedForm}>
+              <form
+                onSubmit={cookedForm.handleSubmit(onSubmit)}
+                className="space-y-4 w-full max-w-s mx-auto"
               >
-                <ChevronLeft className="h-4 w-4 mr-2" />
-                Back
-              </Button>
-            </div>
-            <div className="flex justify-center space-x-4 mb-6">
-              <button
-                className={`px-4 py-2 rounded-md font-semibold ${
-                  foodType === "Non-Cooked Food"
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-100 text-gray-700"
-                }`}
-                onClick={() => setFoodType("Non-Cooked Food")}
-              >
-                Non-Cooked Food
-              </button>
-              <button
-                className={`px-4 py-2 rounded-md font-semibold ${
-                  foodType === "Cooked Food"
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-100 text-gray-700"
-                }`}
-                onClick={() => setFoodType("Cooked Food")}
-              >
-                Cooked Food
-              </button>
-            </div>
-  
-            {foodType === "Cooked Food" ? (
-              <Form key="cookedForm" {...cookedForm}>
-                <form
-                  onSubmit={cookedForm.handleSubmit(onSubmit)}
-                  className="space-y-4 w-full max-w-s mx-auto"
-                >
-                  {/* Cooked food form fields */}
-                  <FormField
-                    control={cookedForm.control}
-                    name="foodName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Food Name</FormLabel>
-                        <FormControl>
-                          <Input className="shadow-sm" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-  
-                  <FormField
-                    control={cookedForm.control}
-                    name="timePrepared"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Date and Time of Preparation</FormLabel>
-                        <FormControl>
-                          <Input
-                            className="shadow-sm"
-                            type="datetime-local"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-  
-                  <FormField
-                    control={cookedForm.control}
-                    name="consumeByTiming"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Consume By Timing</FormLabel>
-                        <FormControl>
-                          <Input
-                            className="shadow-sm"
-                            type="datetime-local"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-  
-                  <FormField
-                    control={cookedForm.control}
-                    name="numberOfServings"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Number of Servings</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min="1"
-                            {...field}
-                            onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                            className="w-full shadow-sm"
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          This does not have to be accurate. An estimate will do!
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-  
-                  <FormField
-                    control={cookedForm.control}
-                    name="foodImages"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Food Images</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="file"
-                            multiple
-                            ref={fileInputRef}
-                            accept="image/*"
-                            className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                            onChange={handleFileChange}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                        {previewImages.length > 0 && (
-                          <div className="flex justify-center my-4">
-                            <Carousel
-                              opts={{
-                                align: "center",
-                              }}
-                              className="w-full max-w-sm"
-                            >
-                              <CarouselContent>
-                                {previewImages.map((src, index) => (
-                                  <CarouselItem key={index}>
-                                    <div className="p-1">
-                                      <Image
-                                        src={src}
-                                        objectFit="contain"
-                                        width={244}
-                                        height={244}
-                                        alt={`Food preview ${index + 1}`}
-                                        className="w-full h-auto rounded-md"
-                                      />
-                                    </div>
-                                  </CarouselItem>
-                                ))}
-                              </CarouselContent>
-                              <CarouselPrevious type="button" />
-                              <CarouselNext type="button" />
-                            </Carousel>
-                          </div>
-                        )}
-                      </FormItem>
-                    )}
-                  />
-  
-                  <div className="flex justify-end">
-                    <Button type="submit">Submit</Button>
-                  </div>
-                </form>
-              </Form>
-            ) : (
-              <Form key="nonCookedForm" {...nonCookedForm}>
-                <form
-                  onSubmit={nonCookedForm.handleSubmit(onSubmit)}
-                  className="space-y-4 w-full max-w-s mx-auto"
-                >
-                  {/* Non-cooked food form fields */}
-                  <FormField
-                    control={nonCookedForm.control}
-                    name="foodName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Food Name</FormLabel>
-                        <FormControl>
-                          <Input className="w-full shadow-sm" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-  
-                  <FormField
-                    control={nonCookedForm.control}
-                    name="foodCategory"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Food Category</FormLabel>
-                        <FormControl>
-                          <Select
-                            value={field.value || ""}
-                            onValueChange={(value) => {
-                              setSelectedCategory(value);
-                              field.onChange(value); // Updates the form state
+                {/* Cooked food form fields */}
+                <FormField
+                  control={cookedForm.control}
+                  name="foodName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Food Name</FormLabel>
+                      <FormControl>
+                        <Input className="shadow-sm" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={cookedForm.control}
+                  name="timePrepared"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date and Time of Preparation</FormLabel>
+                      <FormControl>
+                        <Input
+                          className="shadow-sm"
+                          type="datetime-local"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={cookedForm.control}
+                  name="consumeByTiming"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Consume By Timing</FormLabel>
+                      <FormControl>
+                        <Input
+                          className="shadow-sm"
+                          type="datetime-local"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={cookedForm.control}
+                  name="numberOfServings"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Number of Servings</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="1"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.valueAsNumber)
+                          }
+                          className="w-full shadow-sm"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        This does not have to be accurate. An estimate will do!
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={cookedForm.control}
+                  name="foodImages"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Food Images</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          multiple
+                          ref={fileInputRef}
+                          accept="image/*"
+                          className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                          onChange={handleFileChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                      {previewImages.length > 0 && (
+                        <div className="flex justify-center my-4">
+                          <Carousel
+                            opts={{
+                              align: "center",
                             }}
+                            className="w-full max-w-sm"
                           >
-                            <SelectTrigger className="w-full shadow-sm bg-white">
-                              <SelectValue placeholder="Select Food Type" />
-                            </SelectTrigger>
-                            <SelectContent className="w-full bg-white">
-                              <SelectItem value="Vegetables">
-                                Vegetables
-                              </SelectItem>
-                              <SelectItem value="Canned Food">
-                                Canned Food
-                              </SelectItem>
-                              <SelectItem value="Fruits">Fruits</SelectItem>
-                              <SelectItem value="Dry Goods">Dry Goods</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-  
-                  <FormField
-                    control={nonCookedForm.control}
-                    name="quantity"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Quantity of Items</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) =>
-                              field.onChange(e.target.valueAsNumber)
-                            }
-                            className="w-full shadow-sm"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-  
-                  <FormField
-                    control={nonCookedForm.control}
-                    name="bestBeforeDate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Best Before Date</FormLabel>
-                        <FormControl>
-                          <Input className="shadow-sm" type="date" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-  
-                  <FormField
-                    control={nonCookedForm.control}
-                    name="foodImages"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Food Images</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="file"
-                            multiple
-                            ref={fileInputRef}
-                            accept="image/*"
-                            className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                            onChange={handleFileChange}
-                          />
-                        </FormControl>
-                        <FormMessage />
+                            <CarouselContent>
+                              {previewImages.map((src, index) => (
+                                <CarouselItem key={index}>
+                                  <div className="p-1">
+                                    <Image
+                                      src={src}
+                                      objectFit="contain"
+                                      width={244}
+                                      height={244}
+                                      alt={`Food preview ${index + 1}`}
+                                      className="w-full h-auto rounded-md"
+                                    />
+                                  </div>
+                                </CarouselItem>
+                              ))}
+                            </CarouselContent>
+                            <CarouselPrevious type="button" />
+                            <CarouselNext type="button" />
+                          </Carousel>
+                        </div>
+                      )}
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex justify-end">
+                  <Button type="submit">Submit</Button>
+                </div>
+              </form>
+            </Form>
+          ) : (
+            <Form key="nonCookedForm" {...nonCookedForm}>
+              <form
+                onSubmit={nonCookedForm.handleSubmit(onSubmit)}
+                className="space-y-4 w-full max-w-s mx-auto"
+              >
+                {/* Non-cooked food form fields */}
+                <FormField
+                  control={nonCookedForm.control}
+                  name="foodName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel style={{ color: "black" }}>
+                        Food Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input className="w-full shadow-sm" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={nonCookedForm.control}
+                  name="foodCategory"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Food Category</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value || ""}
+                          onValueChange={(value) => {
+                            setSelectedCategory(value);
+                            field.onChange(value); // Updates the form state
+                          }}
+                        >
+                          <SelectTrigger className="w-full shadow-sm bg-white">
+                            <SelectValue placeholder="Select Food Type" />
+                          </SelectTrigger>
+                          <SelectContent className="w-full bg-white">
+                            <SelectItem value="Vegetables">
+                              Vegetables
+                            </SelectItem>
+                            <SelectItem value="Canned Food">
+                              Canned Food
+                            </SelectItem>
+                            <SelectItem value="Fruits">Fruits</SelectItem>
+                            <SelectItem value="Dry Goods">Dry Goods</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={nonCookedForm.control}
+                  name="quantity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quantity of Items</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.valueAsNumber)
+                          }
+                          className="w-full shadow-sm"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={nonCookedForm.control}
+                  name="bestBeforeDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Best Before Date</FormLabel>
+                      <FormControl>
+                        <Input className="shadow-sm" type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={nonCookedForm.control}
+                  name="foodImages"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Food Images</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          multiple
+                          ref={fileInputRef}
+                          accept="image/*"
+                          className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                          onChange={handleFileChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
                       {previewImages.length > 0 && (
                         <div className="flex justify-center my-4">
                           <Carousel
@@ -614,7 +617,9 @@ const Donate = () => {
                   name="specialHandling"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Special Storage/Handling Requirements</FormLabel>
+                      <FormLabel>
+                        Special Storage/Handling Requirements
+                      </FormLabel>
                       <FormControl>
                         <Input className="shadow-sm" {...field} />
                       </FormControl>

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Card,
@@ -6,23 +6,19 @@ import {
   CardFooter,
   Typography,
   Button,
-} from '@material-tailwind/react';
+} from "@material-tailwind/react";
 import {
   FaClock,
   FaCalendarAlt,
   FaUtensils,
   FaQuestionCircle,
   FaTruck,
-} from 'react-icons/fa';
-import {
-  FaBowlFood,
-  FaRegStar,
-  FaPersonChalkboard,
-} from 'react-icons/fa6';
-import { AiOutlineNumber } from 'react-icons/ai';
-import { IoLocation } from 'react-icons/io5';
-import { Request } from './BeneficiaryDashboardClient';
-import { useState, useEffect } from 'react';
+} from "react-icons/fa";
+import { FaBowlFood, FaRegStar, FaPersonChalkboard } from "react-icons/fa6";
+import { AiOutlineNumber } from "react-icons/ai";
+import { IoLocation } from "react-icons/io5";
+import { Request } from "./BeneficiaryDashboardClient";
+import { useState, useEffect } from "react";
 
 interface RequestCardProps {
   request: Request;
@@ -32,18 +28,18 @@ interface RequestCardProps {
 // Utility function to determine the status color
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'new':
-      return 'bg-blue-300'; // New = Blue
-    case 'matched':
-      return 'bg-yellow-500'; // Matched = Yellow
-    case 'awaitingpickup':
-      return 'bg-orange-500'; // Awaiting Pickup = Orange
-    case 'awaitingdelivery':
-      return 'bg-purple-500'; // Awaiting Delivery = Purple
-    case 'delivered':
-      return 'bg-green-500'; // Delivered = Green
+    case "new":
+      return "bg-blue-300"; // New = Blue
+    case "matched":
+      return "bg-yellow-500"; // Matched = Yellow
+    case "awaitingpickup":
+      return "bg-orange-500"; // Awaiting Pickup = Orange
+    case "awaitingdelivery":
+      return "bg-purple-500"; // Awaiting Delivery = Purple
+    case "delivered":
+      return "bg-green-500"; // Delivered = Green
     default:
-      return 'bg-gray-500'; // Default = Gray
+      return "bg-gray-500"; // Default = Gray
   }
 };
 
@@ -56,9 +52,9 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
 
   // Effects
   useEffect(() => {
-    setIsCooked(request.foodType === 'Cooked Food');
-    setIsSelfCollection(request.deliveryMethod === 'Self-Collection');
-    setIsDelivery(request.deliveryMethod !== 'Self-Collection');
+    setIsCooked(request.foodType === "Cooked Food");
+    setIsSelfCollection(request.deliveryMethod === "Self-Collection");
+    setIsDelivery(request.deliveryMethod !== "Self-Collection");
   }, [request]);
 
   // Early return after hooks
@@ -66,15 +62,17 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
 
   // Handler for deleting the request
   const handleDelete = async () => {
-    const confirmed = window.confirm('Are you sure you want to delete this request?');
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this request?"
+    );
     if (confirmed) {
       try {
         const response = await fetch(`/api/requests?id=${request._id}`, {
-          method: 'DELETE',
+          method: "DELETE",
         });
 
         if (response.ok) {
-          alert('Request deleted successfully.');
+          alert("Request deleted successfully.");
           setIsDeleted(true);
           if (onDelete) onDelete(request._id);
         } else {
@@ -82,51 +80,60 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
           alert(`Error: ${errorData.message}`);
         }
       } catch (error) {
-        console.error('Error deleting request:', error);
-        alert('An error occurred while deleting the request.');
+        console.error("Error deleting request:", error);
+        alert("An error occurred while deleting the request.");
       }
     }
   };
 
   // Component render
   return (
-    <Card shadow={false} className='relative mb-4 border border-black rounded-lg p-4'>
-      <div className={`absolute top-2 right-2 text-black text-sm font-semibold px-2 py-1 rounded-md ${getStatusColor(request.status)}`}>
+    <Card
+      shadow={false}
+      className="relative mb-4 border border-black rounded-lg p-4"
+    >
+      <div
+        className={`absolute top-2 right-2 text-black text-sm font-semibold px-2 py-1 rounded-md ${getStatusColor(
+          request.status
+        )}`}
+      >
         {request.status}
       </div>
       <CardBody>
-        <Typography variant='h5' color='blue-gray' className='mb-2'>
-          <FaBowlFood className='inline-block mr-2' />
+        <Typography variant="h5" color="blue-gray" className="mb-2">
+          <FaBowlFood className="inline-block mr-2" />
           {request.foodName} {!isCooked && `[${request.foodCategory}]`}
         </Typography>
 
-        <Typography className='mb-2'>
-          <AiOutlineNumber className='inline-block mr-2' />
-          {isCooked ? `Number of servings: ${request.numberOfServings}` : `Quantity: ${request.quantity}`}
+        <Typography className="mb-2">
+          <AiOutlineNumber className="inline-block mr-2" />
+          {isCooked
+            ? `Number of servings: ${request.numberOfServings}`
+            : `Quantity: ${request.quantity}`}
         </Typography>
 
-        <Typography className='mb-2'>
-          <FaClock className='inline-block mr-2' />
+        <Typography className="mb-2">
+          <FaClock className="inline-block mr-2" />
           Need by: {request.needByTime}
         </Typography>
 
-        <Typography className='mb-2'>
-          <FaRegStar className='inline-block mr-2' />
+        <Typography className="mb-2">
+          <FaRegStar className="inline-block mr-2" />
           Special Request: {request.specialRequest}
         </Typography>
 
         {isDelivery && (
           <>
-            <Typography className='mb-2'>
-              <FaTruck className='inline-block mr-2' />
+            <Typography className="mb-2">
+              <FaTruck className="inline-block mr-2" />
               Delivery Method: {request.deliveryMethod}
             </Typography>
-            <Typography className='mb-2'>
-              <FaClock className='inline-block mr-2' />
+            <Typography className="mb-2">
+              <FaClock className="inline-block mr-2" />
               Delivery Time: {request.deliveryTime}
             </Typography>
-            <Typography className='mb-2'>
-              <IoLocation className='inline-block mr-2' />
+            <Typography className="mb-2">
+              <IoLocation className="inline-block mr-2" />
               Delivery Location: {request.deliveryLocation}
             </Typography>
           </>
@@ -134,21 +141,23 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
 
         {isSelfCollection && (
           <>
-            <Typography className='mb-2'>
-              <FaPersonChalkboard className='inline-block mr-2' />
+            <Typography className="mb-2">
+              <FaPersonChalkboard className="inline-block mr-2" />
               Delivery Method: {request.deliveryMethod}
             </Typography>
-            <Typography className='mb-2'>
-              <FaClock className='inline-block mr-2' />
+            <Typography className="mb-2">
+              <FaClock className="inline-block mr-2" />
               Pick-up Time: {request.deliveryTime}
             </Typography>
           </>
         )}
       </CardBody>
-      <CardFooter className='pt-0'>
-        <Button className='text-white bg-black' onClick={handleDelete}>
-          Withdraw
-        </Button>
+      <CardFooter className="pt-0">
+        {request.status === "new" && (
+          <Button className="text-white bg-black" onClick={handleDelete}>
+            Withdraw
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
