@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Adjust the path accordingly
 
 // MongoDB URI and client setup
 const uri = process.env.MONGODB_URI;
 if (!uri) {
   throw new Error("Environment variable MONGODB_URI is not defined");
 }
+
 const client = new MongoClient(uri, {
   serverSelectionTimeoutMS: 30000,
   connectTimeoutMS: 30000,
@@ -17,23 +20,23 @@ const client = new MongoClient(uri, {
   },
 });
 
-// Define valid status transitions
-const statusTransitions = {
-  new: "matched",
-  matched: "inwarehouse",
-  // awaitingpickup: "awaitingdelivery",
-  inwarehouse: "awaitingdelivery",
-  awaitingdelivery: "delivered",
-};
-
-// Function to connect to a specific collection
+// Function to ensure the MongoDB client is connected
 async function connectToDB(collectionName: string) {
-  if (!client.isConnected) {
+  if (!client.topology || !client.topology.isConnected()) {
     await client.connect();
   }
   return client.db("database").collection(collectionName);
 }
 
+// Define valid status transitions
+const statusTransitions: Record<string, string> = {
+  new: "matched",
+  matched: "inwarehouse",
+  inwarehouse: "awaitingdelivery",
+  awaitingdelivery: "delivered",
+};
+
+// Function to determine which collection the donationId belongs to
 async function detectCollection(donationId: string): Promise<string> {
   // Try finding the document in the 'requests' collection first
   const requestsCollection = await connectToDB("requests");
@@ -56,11 +59,10 @@ async function detectCollection(donationId: string): Promise<string> {
   }
 
   // If not found in either collection, throw an error
-  throw new Error(
-    "Unable to determine the collection for the provided donationId"
-  );
+  throw new Error("Unable to determine the collection for the provided donationId");
 }
 
+// Handler function to update donation status
 export async function PUT(request: NextRequest) {
   try {
     const requestBody = await request.json();
@@ -85,6 +87,19 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    // Retrieve the session to get the user email
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.email) {
+      console.error("User is not authenticated");
+      return NextResponse.json(
+        { error: "User is not authenticated" },
+        { status: 401 }
+      );
+    }
+
+    const email = session.user.email;
+
     // Autodetect collection by fetching the document from either 'requests' or 'donations'
     const collectionName = await detectCollection(donationId);
 
@@ -101,15 +116,12 @@ export async function PUT(request: NextRequest) {
     }
 
     console.log(
-      `Updating ${collectionName} with _id:`,
-      donationId,
-      "to status:",
-      nextStatus
+      `Updating ${collectionName} with _id: ${donationId} to status: ${nextStatus} and updating donoremail to: ${email}`
     );
 
     const result = await collection.updateOne(
       { _id: new ObjectId(donationId) }, // Match by _id
-      { $set: { status: nextStatus } }
+      { $set: { status: nextStatus, donoremail: email } } // Update status and donoremail
     );
 
     // Log the result of the query
@@ -136,11 +148,11 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: `Donation status in ${collectionName} successfully updated to '${nextStatus}'`,
+        message: `Donation status in ${collectionName} successfully updated to '${nextStatus}' and donor email updated to '${email}'`,
       },
       { status: 200 }
     );
-  } catch (e) {
+  } catch (e: any) {
     console.error("Error updating donation status:", e.message || e);
     return NextResponse.json(
       { error: "Internal server error occurred" },
