@@ -13,9 +13,6 @@ const config: Config = {
         'custom-dark-green' : '#398378',
         'custom-darker-green' : '#306e65',
       },
-      boxShadow: {
-        'text': '0 2px 4px rgba(0, 0, 0, 0.4)',
-      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

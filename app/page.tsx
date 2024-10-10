@@ -113,7 +113,7 @@ const HomePage: React.FC = () => {
         </section>
 
         {/* Testimonials Section */}
-        <section className="bg-gray-200 p-8 rounded-lg mb-8 text-center">
+        <section className="bg-gray-200 p-8 rounded-lg mb-8 text-center shadow-md">
           <h2 className="text-2xl font-bold mb-4">Testimonials</h2>
           <p className="italic">
             "Food Hero has made a real impact in our community. The redistribution efforts have provided
@@ -123,29 +123,41 @@ const HomePage: React.FC = () => {
 
         {/* Footer Section */}
         <footer className="bg-gray-900 text-white p-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <h3 className="font-semibold">About Us</h3>
-              <ul>
-                <li><a href="/about" className="hover:underline">Our Story</a></li>
-                <li><a href="/team" className="hover:underline">Team</a></li>
-                <li><a href="/contact" className="hover:underline">Contact</a></li>
+              <h3 className="font-semibold mb-4">About Us</h3>
+              {/* <a href="/about" className="hover:underline">Our Story</a>
+              <a href="/team" className="hover:underline">Team</a>
+              <a href="/contact" className="hover:underline">Contact</a> */}
+              <ul className="space-y-4 text-gray-300">
+                <li><a href="/about" className="hover:text-white hover:underline">Our Story</a></li>
+                <li><a href="/team" className="hover:text-white hover:underline">Team</a></li>
+                <li><a href="/contact" className="hover:text-white hover:underline">Contact</a></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold">Get Involved</h3>
-              <ul>
-                <li><a href="/signup?type=donor" className="hover:underline">Donate Food</a></li>
-                <li><a href="/signup?type=partner" className="hover:underline">Partner with Us</a></li>
+              <h3 className="font-semibold mb-4">Get Involved</h3>
+              <ul className="space-y-4 text-gray-300">
+                <li><a href="/signup?type=donor" className="hover:text-white hover:underline">Donate Food</a></li>
+                <li><a href="/signup?type=partner" className="hover:text-white hover:underline">Partner with Us</a></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold">Connect</h3>
-              <ul>
-                <li><a href="#" className="hover:underline">Facebook</a></li>
-                <li><a href="#" className="hover:underline">Twitter</a></li>
-                <li><a href="#" className="hover:underline">Instagram</a></li>
+              <h3 className="font-semibold mb-4">Connect</h3>
+              <ul className="space-y-4 text-gray-300">
+                <li><a href="#" className="hover:text-white hover:underline">Facebook</a></li>
+                <li><a href="#" className="hover:text-white hover:underline">Twitter</a></li>
+                <li><a href="#" className="hover:text-white hover:underline">Instagram</a></li>
               </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Address</h3>
+                <div className="text-gray-300">
+                  <p>218 Pandan Loop, Level 6, Singapore 128408</p>
+                  <p className="font-semibold mt-2">Operating Hours:</p>
+                  <p>Monday to Friday 9.30am - 6pm</p>
+                  <p>Saturday 10am - 5pm</p>
+                </div>
             </div>
           </div>
         </footer>
