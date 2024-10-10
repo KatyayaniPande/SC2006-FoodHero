@@ -98,15 +98,15 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="flex justify-between items-center mb-12">
+    <header className="flex justify-between items-center mb-12 bg-white shadow-md">
       <div>
         <a href="/"><img 
           src="/images/logo.png"
-          className="h-36 w-auto"
+          className="h-36"
           alt="foodherologo"
         /></a>
       </div>
-      <nav className="flex items-center space-x-16 text-xl">
+      <nav className="flex items-center space-x-16 text-xl mr-6">
         {role ? (
           <>
             {/* Conditionally render the dashboard link based on the user's role */}
