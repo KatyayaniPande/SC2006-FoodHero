@@ -98,62 +98,61 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="flex justify-between items-center mb-12 bg-white shadow-md p-4">
-      <div className="flex items-center text-3xl font-bold text-[#A2C765]">
-        <img
+    <header className="flex justify-between items-center mb-12">
+      <div>
+        <a href="/"><img 
           src="/images/logo.png"
-          className="h-10 inline-block mr-2"
-          alt="logo"
-        />
-        Food Hero
+          className="h-36 w-auto"
+          alt="foodherologo"
+        /></a>
       </div>
-      <nav className="flex items-center space-x-6 text-lg">
+      <nav className="flex items-center space-x-16 text-xl">
         {role ? (
           <>
             {/* Conditionally render the dashboard link based on the user's role */}
             {role === 'donor' ? (
               <a
                 href="/donorDashboard"
-                className="text-gray-700 hover:text-[#A2C765]"
+                className="text-black hover:text-custom-dark-green"
               >
                 Dashboard
               </a>
             ) : (
               <a
                 href="/beneficiaryDashboard"
-                className="text-gray-700 hover:text-[#A2C765]"
+                className="text-black hover:text-custom-dark-green"
               >
                 Dashboard
               </a>
             )}
-            <a href="/chatbot" className="text-gray-700 hover:text-[#A2C765]">
+            <a href="/chatbot" className="text-black hover:text-custom-dark-green">
               Chatbot
             </a>
             <div
-              className="relative inline-block text-gray-700"
+              className="relative inline-block text-black"
               onMouseEnter={() => setDropdownOpen(true)}
               onMouseLeave={() => setDropdownOpen(false)}
             >
-              <a href="#" className="hover:text-[#A2C765]">
+              <a href="#" className="hover:text-custom-dark-green">
                 About
               </a>
               {isDropdownOpen && (
                 <div className="absolute bg-white shadow-md mt-1 rounded-md">
                   <a
                     href="/mission"
-                    className="block px-4 py-2 hover:bg-gray-100 hover:text-[#A2C765]"
+                    className="block px-4 py-2 hover:bg-gray-100 hover:text-custom-dark-green"
                   >
                     Our Mission
                   </a>
                   <a
                     href="/values"
-                    className="block px-4 py-2 hover:bg-gray-100 hover:text-[#A2C765]"
+                    className="block px-4 py-2 hover:bg-gray-100 hover:text-custom-dark-green"
                   >
                     Our Values
                   </a>
                   <a
                     href="/what-we-do"
-                    className="block px-4 py-2 hover:bg-gray-100 hover:text-[#A2C765]"
+                    className="block px-4 py-2 hover:bg-gray-100 hover:text-custom-dark-green"
                   >
                     What We Do
                   </a>
@@ -162,26 +161,26 @@ const Header: React.FC = () => {
             </div>
             <a
               href="/feedback"
-              className="text-gray-700 hover:text-[#A2C765]"
+              className="text-black hover:text-custom-dark-green"
             >
               Feedback
             </a>
             <button
               onClick={() => signOut({ callbackUrl: '/' })}
-              className="bg-[#3b7f5a] text-white px-4 py-2 rounded-full hover:bg-[#2e6347] shadow-lg"
+              className="bg-custom-dark-green text-white text-2xl font-bold px-10 py-3 rounded-full hover:bg-custom-darker-green shadow-xl"
             >
               Log Out
             </button>
             {/* Notifications Icon with Dropdown */}
             <div
-              className="relative inline-block text-gray-700"
+              className="relative inline-block text-black"
               onMouseEnter={() => setIsNotifOpen(true)}
               onMouseLeave={() => setIsNotifOpen(false)}
             >
-              <a href="#" className="hover:text-[#A2C765]">
+              <a href="#" className="hover:text-custom-dark-green">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 inline-block"
+                  className="h-7 w-7 inline-block"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -252,49 +251,49 @@ const Header: React.FC = () => {
           </>
         ) : (
           <>
-            <a href="/" className="text-gray-700 hover:text-[#A2C765]">
+            <a href="/" className="text-black hover:text-custom-dark-green">
               Home
             </a>
-            <a href="/chatbot" className="text-gray-700 hover:text-[#A2C765]">
+            <a href="/chatbot" className="text-black hover:text-custom-dark-green">
               Chatbot
             </a>
             <div
-              className="relative inline-block text-gray-700"
+              className="relative inline-block text-black"
               onMouseEnter={() => setDropdownOpen(true)}
               onMouseLeave={() => setDropdownOpen(false)}
             >
-              <a href="#" className="hover:text-[#A2C765]">
+              <a href="#" className="hover:text-custom-dark-green">
                 About
               </a>
               {isDropdownOpen && (
                 <div className="absolute bg-white shadow-md mt-1 rounded-md">
                   <a
                     href="/mission"
-                    className="block px-4 py-2 hover:bg-gray-100 hover:text-[#A2C765]"
+                    className="block px-4 py-2 hover:bg-gray-100 hover:text-custom-dark-green"
                   >
                     Our Mission
                   </a>
                   <a
                     href="/values"
-                    className="block px-4 py-2 hover:bg-gray-100 hover:text-[#A2C765]"
+                    className="block px-4 py-2 hover:bg-gray-100  hover:text-custom-dark-green"
                   >
                     Our Values
                   </a>
                   <a
                     href="/what-we-do"
-                    className="block px-4 py-2 hover:bg-gray-100 hover:text-[#A2C765]"
+                    className="block px-4 py-2 hover:bg-gray-100  hover:text-custom-dark-green"
                   >
                     What We Do
                   </a>
                 </div>
               )}
             </div>
-            <a href="/signup" className="text-gray-700 hover:text-[#A2C765]">
+            <a href="/signup" className="text-black hover:text-custom-dark-green">
               Sign Up
             </a>
             <a
               href="/login"
-              className="bg-[#3b7f5a] text-white px-4 py-2 rounded-full hover:bg-[#2e6347] shadow-lg"
+              className="bg-custom-dark-green text-white text-2xl font-bold px-10 py-3 rounded-full hover:bg-custom-darker-green shadow-xl"
             >
               Login
             </a>
