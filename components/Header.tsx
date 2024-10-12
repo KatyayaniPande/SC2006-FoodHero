@@ -100,13 +100,13 @@ const Header: React.FC = () => {
   return (
     <header className="flex justify-between items-center mb-12 bg-white shadow-md">
       <div>
-        <a href="/"><img 
+        <img 
           src="/images/logo.png"
-          className="h-36"
+          className="h-16"
           alt="foodherologo"
-        /></a>
+        />
       </div>
-      <nav className="flex items-center space-x-16 text-xl mr-6">
+      <nav className="flex items-center space-x-10 text-lg mr-4">
         {role ? (
           <>
             {/* Conditionally render the dashboard link based on the user's role */}
@@ -167,9 +167,9 @@ const Header: React.FC = () => {
             </a>
             <button
               onClick={() => signOut({ callbackUrl: '/' })}
-              className="bg-custom-dark-green text-white text-2xl font-bold px-10 py-3 rounded-full hover:bg-custom-darker-green shadow-xl"
+              className="bg-custom-dark-green text-white text-lg font-bold px-6 py-2 rounded-full hover:bg-custom-darker-green shadow-xl"
             >
-              Log Out
+              Logout
             </button>
             {/* Notifications Icon with Dropdown */}
             <div
@@ -180,7 +180,7 @@ const Header: React.FC = () => {
               <a href="#" className="hover:text-custom-dark-green">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-7 w-7 inline-block"
+                  className="h-6 w-6 inline-block"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -293,7 +293,7 @@ const Header: React.FC = () => {
             </a>
             <a
               href="/login"
-              className="bg-custom-dark-green text-white text-2xl font-bold px-10 py-3 rounded-full hover:bg-custom-darker-green shadow-xl"
+              className="bg-custom-dark-green text-white text-lg font-bold px-6 py-2 rounded-full hover:bg-custom-darker-green shadow-xl"
             >
               Login
             </a>

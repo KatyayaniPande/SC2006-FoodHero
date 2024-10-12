@@ -9,7 +9,7 @@ const MissionPage: React.FC = () => {
       <Header />
       <main className='max-w-7xl mx-auto'>
         <section className='bg-white rounded-lg shadow-lg p-12 mb-12'>
-          <h1 className='text-4xl font-bold text-center mb-8 text-[#A2C765]'>
+          <h1 className='text-4xl font-bold text-center mb-8 text-custom-dark-green'>
             Our Mission
           </h1>
 
@@ -23,7 +23,7 @@ const MissionPage: React.FC = () => {
           </p>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
             <div className='p-6 bg-[#F0F4E4] rounded-lg'>
-              <h2 className='text-2xl font-semibold mb-4 text-[#A2C765]'>
+              <h2 className='text-2xl font-semibold mb-4 text-custom-dark-green'>
                 Empowering Communities
               </h2>
 
@@ -37,7 +37,7 @@ const MissionPage: React.FC = () => {
             </div>
 
             <div className='p-6 bg-[#F0F4E4] rounded-lg'>
-              <h2 className='text-2xl font-semibold mb-4 text-[#A2C765]'>
+              <h2 className='text-2xl font-semibold mb-4 text-custom-dark-green'>
                 Innovative Solutions
               </h2>
 
@@ -52,7 +52,7 @@ const MissionPage: React.FC = () => {
         </section>
 
         <section className='bg-[#E7EDCF] p-12 rounded-lg shadow-lg'>
-          <h2 className='text-3xl font-bold text-center text-[#A2C765] mb-8'>
+          <h2 className='text-3xl font-bold text-center text-custom-dark-green mb-8'>
             Join Our Mission
           </h2>
 
@@ -65,7 +65,7 @@ const MissionPage: React.FC = () => {
           <div className='text-center'>
             <a
               href='/get-involved'
-              className='inline-block bg-[#A2C765] text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-[#8FA556]'
+              className='inline-block bg-custom-dark-green text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-custom-darker-green'
             >
               Get Involved
             </a>

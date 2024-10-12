@@ -10,23 +10,23 @@ const HomePage: React.FC = () => {
       <Header />
       <main>
         {/* Enhanced Work with Us Section */}
-        <section className="p-8 mb-8 flex flex-col md:flex-row items-center justify-center">
+        <section className="p-8 mb-12 flex flex-col md:flex-row items-center justify-center">
           {/* Text and Buttons */}
           <div className="md:w-1/2 text-center flex flex-col items-center">
             <h1 className="text-7xl font-bold">Food</h1>
-            <h1 className="text-7xl font-bold mb-4">Donation</h1>
-            <p className="text-lg mb-4">
+            <h1 className="text-7xl font-bold mb-6">Donation</h1>
+            <p className="text-lg mb-6">
               Join our mission to eliminate food wastage and make a positive impact on the community. Whether you're a business looking to donate surplus food, or an individual looking to receive donations, there's a place for you at Food Hero.
             </p>
             <div className="text-lg flex flex-col md:flex-row justify-center">
               <button
-                className="bg-custom-dark-green text-white font-bold px-6 py-3 rounded-lg  hover:bg-custom-darker-green mb-4 md:mb-0 md:mr-4 shadow-lg"
+                className="bg-custom-dark-green text-white font-semibold px-6 py-3 rounded-lg  hover:bg-custom-darker-green mb-4 md:mb-0 md:mr-4 shadow-lg"
                 onClick={() => router.push('/signup?type=donor')}
               >
                 Get Started As A Donor
               </button>
               <button
-                className="bg-custom-dark-green text-white font-bold px-6 py-3 rounded-lg hover:bg-custom-darker-green mb-4 md:mb-0 md:mr-4 shadow-lg"
+                className="bg-custom-dark-green text-white font-semibold px-6 py-3 rounded-lg hover:bg-custom-darker-green mb-4 md:mb-0 md:mr-4 shadow-lg"
                 onClick={() => router.push('/signup?type=beneficiary')}
               >
                 Get Started As A Beneficiary
@@ -48,14 +48,14 @@ const HomePage: React.FC = () => {
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white p-6 rounded-2xl shadow-md text-center">
             <div className="mb-1">
-              <img src="/images/people.png" alt="Our Mission" className="mx-auto w-16 h-16" />
+              <img src="/images/people.png" alt="Our Mission" className="mx-auto w-14 h-14" />
             </div>
             <h3 className="text-2xl font-semibold mb-4">Our Mission</h3>
-            <p className="mx-7 text-lg mb-10">
+            <p className="mx-7 mb-6">
               We strive to eliminate food wastage by redistributing excess food to those in need.
             </p>
             <button
-              className="bg-custom-dark-green text-white text-lg font-bold px-4 py-2 rounded-full hover:bg-custom-darker-green"
+              className="bg-custom-dark-green text-white text-lg font-semibold px-4 py-2 rounded-full hover:bg-custom-darker-green"
               onClick={() => router.push('/mission')}
             >
               Learn More
@@ -63,14 +63,14 @@ const HomePage: React.FC = () => {
           </div>
           <div className="bg-white p-6 rounded-2xl shadow-md text-center">
             <div className="mb-1">
-              <img src="/images/people.png" alt="Our Values" className="mx-auto w-16 h-16" />
+              <img src="/images/people.png" alt="Our Values" className="mx-auto w-14 h-14" />
             </div>
             <h3 className="text-2xl font-semibold mb-4">Our Values</h3>
-            <p className="mx-7 text-lg mb-10">
+            <p className="mx-7 mb-6">
               We value sustainability, compassion, and community support.
             </p>
             <button
-              className="bg-custom-dark-green text-white text-lg font-bold px-4 py-2 rounded-full hover:bg-custom-darker-green"
+              className="bg-custom-dark-green text-white text-lg font-semibold px-4 py-2 rounded-full hover:bg-custom-darker-green"
               onClick={() => router.push('/values')}
             >
               Explore Values
@@ -78,14 +78,14 @@ const HomePage: React.FC = () => {
           </div>
           <div className="bg-white p-6 rounded-2xl shadow-md text-center">
             <div className="mb-1">
-              <img src="/images/people.png" alt="What We Do" className="mx-auto w-16 h-16" />
+              <img src="/images/people.png" alt="What We Do" className="mx-auto w-14 h-14" />
             </div>
             <h3 className="text-2xl font-semibold mb-4">What We Do</h3>
-            <p className="mx-7 text-lg mb-10">
+            <p className="mx-7 mb-6">
               We collect surplus food from businesses and distribute it to charities and families in need.
             </p>
             <button
-              className="bg-custom-dark-green text-white text-lg font-bold px-4 py-2 rounded-full hover:bg-custom-darker-green"
+              className="bg-custom-dark-green text-white text-lg font-semibold px-4 py-2 rounded-full hover:bg-custom-darker-green"
               onClick={() => router.push('/what-we-do')}
             >
               Discover More

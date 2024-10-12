@@ -9,7 +9,7 @@ const WhatWeDoPage: React.FC = () => {
       <Header /> {/* Imported and used the Header component */}
       <main className='max-w-7xl mx-auto'>
         <section className='bg-white rounded-lg shadow-lg p-12 mb-12'>
-          <h1 className='text-4xl font-bold text-center mb-8 text-[#A2C765]'>
+          <h1 className='text-4xl font-bold text-center mb-8 text-custom-dark-green'>
             What We Do
           </h1>
 
@@ -22,7 +22,7 @@ const WhatWeDoPage: React.FC = () => {
           </p>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
             <div className='p-6 bg-[#F0F4E4] rounded-lg'>
-              <h2 className='text-2xl font-semibold mb-4 text-[#A2C765]'>
+              <h2 className='text-2xl font-semibold mb-4 text-custom-dark-green'>
                 Food Collection
               </h2>
 
@@ -34,7 +34,7 @@ const WhatWeDoPage: React.FC = () => {
             </div>
 
             <div className='p-6 bg-[#F0F4E4] rounded-lg'>
-              <h2 className='text-2xl font-semibold mb-4 text-[#A2C765]'>
+              <h2 className='text-2xl font-semibold mb-4 text-custom-dark-green'>
                 Distribution
               </h2>
 
@@ -47,7 +47,7 @@ const WhatWeDoPage: React.FC = () => {
             </div>
 
             <div className='p-6 bg-[#F0F4E4] rounded-lg'>
-              <h2 className='text-2xl font-semibold mb-4 text-[#A2C765]'>
+              <h2 className='text-2xl font-semibold mb-4 text-custom-dark-green'>
                 Community Engagement
               </h2>
 
@@ -60,7 +60,7 @@ const WhatWeDoPage: React.FC = () => {
             </div>
 
             <div className='p-6 bg-[#F0F4E4] rounded-lg'>
-              <h2 className='text-2xl font-semibold mb-4 text-[#A2C765]'>
+              <h2 className='text-2xl font-semibold mb-4 text-custom-dark-green'>
                 Impact Measurement
               </h2>
 
@@ -74,28 +74,28 @@ const WhatWeDoPage: React.FC = () => {
         </section>
 
         <section className='bg-[#E7EDCF] p-12 rounded-lg shadow-lg'>
-          <h2 className='text-3xl font-bold text-center text-[#A2C765] mb-8'>
+          <h2 className='text-3xl font-bold text-center text-custom-dark-green mb-8'>
             Our Impact
           </h2>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-8 text-center'>
             <div className='p-6 bg-white rounded-lg shadow'>
-              <h3 className='text-4xl font-bold text-[#A2C765]'>500,000+</h3>
-              <p className='text-lg text-gray-700 mt-2'>Meals Distributed</p>
+              <h3 className='text-4xl font-bold text-black'>500,000+</h3>
+              <p className='text-lg text-black mt-2'>Meals Distributed</p>
             </div>
             <div className='p-6 bg-white rounded-lg shadow'>
-              <h3 className='text-4xl font-bold text-[#A2C765]'>1,200+</h3>
-              <p className='text-lg text-gray-700 mt-2'>Volunteers Engaged</p>
+              <h3 className='text-4xl font-bold text-black'>1,200+</h3>
+              <p className='text-lg text-black mt-2'>Volunteers Engaged</p>
             </div>
             <div className='p-6 bg-white rounded-lg shadow'>
-              <h3 className='text-4xl font-bold text-[#A2C765]'>300+</h3>
+              <h3 className='text-4xl font-bold text-black'>300+</h3>
 
-              <p className='text-lg text-gray-700 mt-2'>Partners & Donors</p>
+              <p className='text-lg text-black mt-2'>Partners & Donors</p>
             </div>
           </div>
           <div className='text-center mt-12'>
             <a
               href='/get-involved'
-              className='inline-block bg-[#A2C765] text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-[#8FA556]'
+              className='inline-block bg-custom-dark-green text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-custom-darker-green'
             >
               Join Us
             </a>
