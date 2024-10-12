@@ -212,7 +212,7 @@ const DonationCard: React.FC<DonationCardProps> = ({
             )}
 
             {/* If it's not matched but status is something else, show only Withdraw */}
-            {donation.status !== "matched" && (
+            {donation.status === "new" && (
               <Button className="text-white" onClick={handleWithdraw}>
                 Withdraw
               </Button>

@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from 'mongoose';
+import mongoose, { Schema, model } from "mongoose";
 
 export interface UserDocument {
   _id: string;
@@ -12,6 +12,7 @@ export interface UserDocument {
   halal_certification: boolean;
   hygiene_certification: string;
   role: string;
+  acceptedItems: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,15 +22,15 @@ const UserScheme = new Schema<UserDocument>(
     email: {
       type: String,
       unique: true,
-      required: [true, 'Email is required'],
+      required: [true, "Email is required"],
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        'Email is invalid',
+        "Email is invalid",
       ],
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      required: [true, "Password is required"],
     },
     agency: {
       type: String,
@@ -57,11 +58,17 @@ const UserScheme = new Schema<UserDocument>(
     role: {
       type: String,
     },
+    acceptedItems: [
+      {
+        type: Schema.Types.ObjectId,
+        // type: String,
+      },
+    ],
   },
   {
     timestamps: true,
   }
 );
 
-const User = mongoose.models?.User || model<UserDocument>('User', UserScheme);
+const User = mongoose.models?.User || model<UserDocument>("User", UserScheme);
 export default User;

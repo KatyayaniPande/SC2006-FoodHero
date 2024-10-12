@@ -168,7 +168,8 @@ export default function DonorDashboardClient() {
                       (donation) =>
                         donation.status === "new" ||
                         donation.status === "matched" ||
-                        donation.status === "inwarehouse"
+                        donation.status === "inwarehouse" ||
+                        donation.status === "awaitingdelivery"
                     ) // Filter for donations with status 'new'
                     .map((donation, index) => (
                       <DonationCard
@@ -183,7 +184,8 @@ export default function DonorDashboardClient() {
                     .filter(
                       (request) =>
                         request.status === "matched" ||
-                        request.status === "inwarehouse"
+                        request.status === "inwarehouse" ||
+                        request.status === "awaitingdelivery"
                     ) // Filter for requests with status 'matched'
                     .map((request, index) => (
                       <RequestCard

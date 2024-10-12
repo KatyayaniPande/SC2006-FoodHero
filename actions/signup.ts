@@ -1,8 +1,8 @@
-'use server';
+"use server";
 
-import { mongoDBConnection } from '@/lib/mongodb';
-import User from '@/models/User';
-import bcrypt from 'bcryptjs';
+import { mongoDBConnection } from "@/lib/mongodb";
+import User from "@/models/User";
+import bcrypt from "bcryptjs";
 
 export const registerUser = async (values: any) => {
   const {
@@ -13,6 +13,7 @@ export const registerUser = async (values: any) => {
     address,
     poc_name,
     poc_phone,
+    acceptedItems,
     halal_certification,
     hygiene_certification,
     role,
@@ -25,7 +26,7 @@ export const registerUser = async (values: any) => {
 
     if (isUserFound) {
       return {
-        error: 'Email already exists',
+        error: "Email already exists",
       };
     }
 
@@ -38,6 +39,7 @@ export const registerUser = async (values: any) => {
       address,
       poc_name,
       poc_phone,
+      acceptedItems,
       halal_certification,
       hygiene_certification,
       role,
