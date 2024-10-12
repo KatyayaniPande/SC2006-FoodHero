@@ -5,38 +5,68 @@ import Header from "@/components/Header"; // Adjust the path as needed
 import SomeCard from "./SomeCard"; // Import SomeCard
 
 const Dashboard: React.FC = () => {
-  const [donorData, setDonorData] = useState([]);
-  const [activeTab, setActiveTab] = useState<"collect" | "deliver">("collect"); // Track which tab is active
+  const [combinedData, setCombinedData] = useState([]); // Store combined donorData and requestData
+  const [acceptedDeliveries, setAcceptedDeliveries] = useState([]); // Store accepted deliveries for the logged-in admin
+  const [activeTab, setActiveTab] = useState<
+    "donationsInventory" | "pendingDelivery"
+  >("donationsInventory"); // Track which tab is active
 
   const appUrl = "http://localhost:3000";
 
   useEffect(() => {
-    const fetchDonorData = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`${appUrl}/api/donations/all`, {
+        // Fetch donor data
+        const donorResponse = await fetch(`${appUrl}/api/donations/all`, {
           cache: "no-store",
         });
-        const donorData = await response.json();
-        setDonorData(donorData);
+        const donorData = await donorResponse.json();
+
+        // Fetch request data
+        const requestResponse = await fetch(`${appUrl}/api/requests/all`, {
+          cache: "no-store",
+        });
+        const requestData = await requestResponse.json();
+
+        // Combine donorData and requestData into one array
+        const combinedData = [
+          ...donorData.map((donation) => ({ ...donation, type: "donation" })), // Mark as donation
+          ...requestData.map((request) => ({ ...request, type: "request" })), // Mark as request
+        ];
+
+        // Set the combined data
+        setCombinedData(combinedData);
+
+        // Fetch the logged-in user's accepted deliveries
+        const acceptedDeliveriesResponse = await fetch(
+          `${appUrl}/api/getAcceptedDeliveries`
+        );
+        const acceptedDeliveriesData = await acceptedDeliveriesResponse.json();
+
+        // Set the accepted deliveries
+        setAcceptedDeliveries(acceptedDeliveriesData);
       } catch (error) {
-        console.error("Error fetching donor data:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchDonorData();
+    fetchData();
   }, []);
 
-  const handleTabClick = (tab: "collect" | "deliver") => {
+  const handleTabClick = (tab: "donationsInventory" | "pendingDelivery") => {
     setActiveTab(tab);
   };
 
-  // Filter the donations based on status
-  const collectDonations = donorData.filter(
-    (donation) => donation.status === "delivered"
+  // Filter the donations and requests based on status for collection
+  const collectDonations = combinedData.filter(
+    (item) => item.status === "inwarehouse"
   );
-  const deliverDonations = donorData.filter(
-    (donation) => donation.status === "awaitingdelivery"
-  );
+
+  // Use the accepted deliveries directly to display pending deliveries
+  const deliverDonations =
+    acceptedDeliveries.length > 0
+      ? acceptedDeliveries.filter((item) => item.status === "awaitingdelivery")
+      : [];
 
   return (
     <div className="bg-gray-50 min-h-screen p-8">
@@ -57,9 +87,9 @@ const Dashboard: React.FC = () => {
             {/* Tabs for Collect and Deliver Donations */}
             <div
               className={`p-6 bg-[#F0F4E4] rounded-lg shadow-md cursor-pointer ${
-                activeTab === "collect" ? "bg-[#E0E8D8]" : ""
+                activeTab === "donationsInventory" ? "bg-[#E0E8D8]" : ""
               } transition-colors`}
-              onClick={() => handleTabClick("collect")}
+              onClick={() => handleTabClick("donationsInventory")}
             >
               <div className="flex flex-col items-center w-full text-center">
                 <h2 className="text-2xl font-semibold mb-2 text-[#A2C765]">
@@ -73,9 +103,9 @@ const Dashboard: React.FC = () => {
 
             <div
               className={`p-6 bg-[#F0F4E4] rounded-lg shadow-md cursor-pointer ${
-                activeTab === "deliver" ? "bg-[#E0E8D8]" : ""
+                activeTab === "pendingDelivery" ? "bg-[#E0E8D8]" : ""
               } transition-colors`}
-              onClick={() => handleTabClick("deliver")}
+              onClick={() => handleTabClick("pendingDelivery")}
             >
               <div className="flex flex-col items-center w-full text-center">
                 <h2 className="text-2xl font-semibold mb-2 text-[#A2C765]">
@@ -91,26 +121,26 @@ const Dashboard: React.FC = () => {
 
         <section className="bg-[#F0F4E4] p-12 rounded-lg shadow-lg">
           {/* Tab content */}
-          {activeTab === "collect" && (
+          {activeTab === "donationsInventory" && (
             <>
               <h1 className="text-4xl font-bold text-center mb-8 text-[#A2C765]">
                 Donations Inventory
               </h1>
               <div>
-                {collectDonations.map((donation, index) => (
-                  <SomeCard key={index} donation={donation} />
+                {collectDonations.map((item, index) => (
+                  <SomeCard key={index} donation={item} />
                 ))}
               </div>
             </>
           )}
-          {activeTab === "deliver" && (
+          {activeTab === "pendingDelivery" && (
             <>
               <h1 className="text-4xl font-bold text-center mb-8 text-[#A2C765]">
                 Pending Delivery
               </h1>
               <div>
-                {deliverDonations.map((donation, index) => (
-                  <SomeCard key={index} donation={donation} />
+                {deliverDonations.map((item, index) => (
+                  <SomeCard key={index} donation={item} />
                 ))}
               </div>
             </>

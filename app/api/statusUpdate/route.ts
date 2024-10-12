@@ -21,11 +21,13 @@ const client = new MongoClient(uri, {
 });
 
 // Function to ensure the MongoDB client is connected
-async function connectToDB(collectionName: string) {
+async function connectToDB(collectionName: string, useTestDb = false) {
   if (!client.topology || !client.topology.isConnected()) {
     await client.connect();
   }
-  return client.db("database").collection(collectionName);
+
+  const dbName = useTestDb ? "test" : "database"; // Switch to 'test' only when needed
+  return client.db(dbName).collection(collectionName);
 }
 
 // Define valid status transitions
@@ -38,7 +40,6 @@ const statusTransitions: Record<string, string> = {
 
 // Function to determine which collection the donationId belongs to
 async function detectCollection(donationId: string): Promise<string> {
-  // Try finding the document in the 'requests' collection first
   const requestsCollection = await connectToDB("requests");
   const requestDoc = await requestsCollection.findOne({
     _id: new ObjectId(donationId),
@@ -48,7 +49,6 @@ async function detectCollection(donationId: string): Promise<string> {
     return "requests"; // If found, return 'requests'
   }
 
-  // If not found in 'requests', check in 'donations'
   const donationsCollection = await connectToDB("donations");
   const donationDoc = await donationsCollection.findOne({
     _id: new ObjectId(donationId),
@@ -58,8 +58,9 @@ async function detectCollection(donationId: string): Promise<string> {
     return "donations"; // If found, return 'donations'
   }
 
-  // If not found in either collection, throw an error
-  throw new Error("Unable to determine the collection for the provided donationId");
+  throw new Error(
+    "Unable to determine the collection for the provided donationId"
+  );
 }
 
 // Handler function to update donation status
@@ -144,6 +145,26 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    if (currentStatus === "inwarehouse" && nextStatus === "awaitingdelivery") {
+      // Use the 'test' database for this specific case
+      const usersCollection = await connectToDB("users", true); // Use the 'test' database
+
+      const userUpdateResult = await usersCollection.updateOne(
+        { email: email }, // Match by user email
+        { $addToSet: { acceptedItems: new ObjectId(donationId) } } // Add the donationId to acceptedItems array as ObjectId
+      );
+
+      console.log(userUpdateResult);
+
+      if (userUpdateResult.modifiedCount === 0) {
+        console.warn(`Failed to update acceptedItems for user email: ${email}`);
+      } else {
+        console.log(
+          `Donation ${donationId} successfully added to user's acceptedItems in test database.`
+        );
+      }
+    }
+
     // Return success response
     return NextResponse.json(
       {
@@ -158,7 +179,5 @@ export async function PUT(request: NextRequest) {
       { error: "Internal server error occurred" },
       { status: 500 }
     );
-  } finally {
-    console.log("MongoDB connection will be reused");
   }
 }

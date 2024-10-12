@@ -151,7 +151,8 @@ export default function BeneficiaryDashboardClient() {
                       (request) =>
                         request.status === "new" ||
                         request.status === "matched" ||
-                        request.status === "inwarehouse"
+                        request.status === "inwarehouse" ||
+                        request.status === "awaitingdelivery"
                     ) // Filter for requests with status 'new'
                     .map((request, index) => (
                       <BeneficiaryCard
@@ -165,7 +166,8 @@ export default function BeneficiaryDashboardClient() {
                     .filter(
                       (donation) =>
                         donation.status === "matched" ||
-                        donation.status === "inwarehouse"
+                        donation.status === "inwarehouse" ||
+                        donation.status === "awaitingdelivery"
                     ) // Filter for donations with status 'matched'
                     .map((donation, index) => (
                       <DonorCard
