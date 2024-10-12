@@ -305,7 +305,7 @@ function Cards() {
             {/* Define the list of tabs */}
             <TabsList className="grid w-full grid-cols-3 bg-white">
               <TabsTrigger
-                className="data-[state=active]:text-white data-[state=active]:bg-[#A2C765]"
+                className="data-[state=active]:text-white data-[state=active]:bg-custom-dark-green"
                 value="donor"
                 onClick={() => {
                   updateUrlHistory("donor");
@@ -314,7 +314,7 @@ function Cards() {
                 Donor Sign Up
               </TabsTrigger>
               <TabsTrigger
-                className="data-[state=active]:text-white data-[state=active]:bg-[#A2C765]"
+                className="data-[state=active]:text-white data-[state=active]:bg-custom-dark-green"
                 value="beneficiary"
                 onClick={() => {
                   updateUrlHistory("beneficiary");
@@ -323,7 +323,7 @@ function Cards() {
                 Beneficiary Sign Up
               </TabsTrigger>
               <TabsTrigger
-                className="data-[state=active]:text-white data-[state=active]:bg-[#A2C765]"
+                className="data-[state=active]:text-white data-[state=active]:bg-custom-dark-green"
                 value="admin"
                 onClick={() => {
                   updateUrlHistory("admin");
@@ -625,7 +625,7 @@ function Cards() {
                       )}
 
                       <Button
-                        className="w-full mt-4 bg-[#A2C765] hover:bg-[#8BBE3D]"
+                        className="w-full mt-4 text-white bg-custom-dark-green hover:bg-custom-darker-green"
                         type="submit"
                       >
                         Sign Up
@@ -787,7 +787,7 @@ function Cards() {
                       )}
 
                       <Button
-                        className="w-full mt-4 bg-[#A2C765] hover:bg-[#8BBE3D]"
+                        className="w-full mt-4 text-white bg-custom-dark-green hover:bg-custom-darker-green"
                         type="submit"
                       >
                         Sign Up
@@ -891,7 +891,7 @@ function Cards() {
                       )}
 
                       <Button
-                        className="w-full mt-4 bg-[#A2C765] hover:bg-[#8BBE3D]"
+                        className="w-full mt-4 text-white bg-custom-dark-green hover:bg-custom-darker-green"
                         type="submit"
                       >
                         Sign Up
