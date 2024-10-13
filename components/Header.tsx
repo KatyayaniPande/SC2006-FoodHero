@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { getSession, signOut } from 'next-auth/react';
-import { FaRegHandPaper, FaHandHoldingHeart } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { getSession, signOut } from "next-auth/react";
+import { FaRegHandPaper, FaHandHoldingHeart } from "react-icons/fa";
 
 const Header: React.FC = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -38,18 +38,18 @@ const Header: React.FC = () => {
           const combinedNotifications = [
             ...requestsData.map((request) => ({
               id: request._id,
-              type: 'Request',
+              type: "Request",
               foodName: request.foodName,
               quantity: request.quantity || request.numberOfServings,
-              status: request.status || 'unknown',
+              status: request.status || "unknown",
               date: request.createdAt,
             })),
             ...donationsData.map((donation) => ({
               id: donation._id,
-              type: 'Donation',
+              type: "Donation",
               foodName: donation.foodName,
               quantity: donation.quantity || donation.numberOfServings,
-              status: donation.status || 'unknown',
+              status: donation.status || "unknown",
               date: donation.createdAt,
             })),
           ];
@@ -61,7 +61,7 @@ const Header: React.FC = () => {
 
           setNotifications(combinedNotifications);
         } catch (error) {
-          console.error('Error fetching requests and donations:', error);
+          console.error("Error fetching requests and donations:", error);
         }
       }
     }
@@ -69,29 +69,29 @@ const Header: React.FC = () => {
   }, []);
 
   const getStatusColor = (status) => {
-    if (!status || typeof status !== 'string') {
-      return 'bg-gray-100 text-gray-800'; // Default color for undefined status
+    if (!status || typeof status !== "string") {
+      return "bg-gray-100 text-gray-800"; // Default color for undefined status
     }
     switch (status.toLowerCase()) {
-      case 'new':
-        return 'bg-blue-100 text-blue-800';
-      case 'matched':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'awaitingpickup':
-        return 'bg-orange-100 text-orange-800';
-      case 'awaitingdelivery':
-        return 'bg-purple-100 text-purple-800';
-      case 'delivered':
-        return 'bg-green-100 text-green-800';
+      case "new":
+        return "bg-blue-100 text-blue-800";
+      case "matched":
+        return "bg-yellow-100 text-yellow-800";
+      case "awaitingpickup":
+        return "bg-orange-100 text-orange-800";
+      case "awaitingdelivery":
+        return "bg-purple-100 text-purple-800";
+      case "delivered":
+        return "bg-green-100 text-green-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getTypeIcon = (type) => {
-    if (type === 'Request') {
+    if (type === "Request") {
       return <FaRegHandPaper className="text-blue-500 mr-2" />;
-    } else if (type === 'Donation') {
+    } else if (type === "Donation") {
       return <FaHandHoldingHeart className="text-green-500 mr-2" />;
     }
     return null;
@@ -100,17 +100,13 @@ const Header: React.FC = () => {
   return (
     <header className="flex justify-between items-center mb-12 bg-white shadow-md">
       <div>
-        <img 
-          src="/images/logo.png"
-          className="h-16"
-          alt="foodherologo"
-        />
+        <img src="/images/logo.png" className="h-16" alt="foodherologo" />
       </div>
       <nav className="flex items-center space-x-10 text-lg mr-4">
         {role ? (
           <>
             {/* Conditionally render the dashboard link based on the user's role */}
-            {role === 'donor' ? (
+            {role === "donor" ? (
               <a
                 href="/donorDashboard"
                 className="text-black hover:text-custom-dark-green"
@@ -125,7 +121,10 @@ const Header: React.FC = () => {
                 Dashboard
               </a>
             )}
-            <a href="/chatbot" className="text-black hover:text-custom-dark-green">
+            <a
+              href="/chatbot"
+              className="text-black hover:text-custom-dark-green"
+            >
               Chatbot
             </a>
             <div
@@ -166,7 +165,7 @@ const Header: React.FC = () => {
               Feedback
             </a>
             <button
-              onClick={() => signOut({ callbackUrl: '/' })}
+              onClick={() => signOut({ callbackUrl: "/" })}
               className="bg-custom-dark-green text-white text-lg font-bold px-6 py-2 rounded-full hover:bg-custom-darker-green shadow-xl"
             >
               Logout
@@ -206,7 +205,7 @@ const Header: React.FC = () => {
                             className="flex items-start mb-4 pb-4 border-b last:border-none last:mb-0 last:pb-0 cursor-pointer hover:bg-gray-50"
                             onClick={() => {
                               window.location.href =
-                                item.type === 'Request'
+                                item.type === "Request"
                                   ? `/requests/${item.id}`
                                   : `/donations/${item.id}`;
                             }}
@@ -254,7 +253,10 @@ const Header: React.FC = () => {
             <a href="/" className="text-black hover:text-custom-dark-green">
               Home
             </a>
-            <a href="/chatbot" className="text-black hover:text-custom-dark-green">
+            <a
+              href="/chatbot"
+              className="text-black hover:text-custom-dark-green"
+            >
               Chatbot
             </a>
             <div
@@ -288,7 +290,10 @@ const Header: React.FC = () => {
                 </div>
               )}
             </div>
-            <a href="/signup" className="text-black hover:text-custom-dark-green">
+            <a
+              href="/signup"
+              className="text-black hover:text-custom-dark-green"
+            >
               Sign Up
             </a>
             <a

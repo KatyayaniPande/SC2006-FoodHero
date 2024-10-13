@@ -12,6 +12,7 @@ import { useState, useEffect } from "react";
 import { AiOutlineNumber } from "react-icons/ai";
 import { FaRegStar, FaPersonChalkboard } from "react-icons/fa6";
 import { IoLocation } from "react-icons/io5";
+import { getSession } from "next-auth/react";
 
 // Utility function to determine the status color
 const getStatusColor = (status: string) => {
@@ -42,6 +43,7 @@ interface RequestCardProps {
     needByTime: string;
     specialRequest?: string;
     deliveryMethod: string;
+    donoremail: string;
     deliveryTime?: string;
     deliveryLocation?: string;
     status: "new" | "matched" | "awaitingdelivery" | "delivered";
@@ -74,6 +76,9 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
       return;
     }
     try {
+      const session = await getSession();
+      const donorEmail = session?.user?.email;
+
       const response = await fetch("/api/statusUpdate", {
         method: "PUT",
         headers: {
@@ -84,6 +89,26 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
           currentStatus: request.status, // Pass the current status
         }),
       });
+
+      const donorUpdateResponse = await fetch("/api/updateDonor", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          requestId: request._id, // Use the same request._id
+          donorEmail, // Update the donorEmail field in the DB
+        }),
+      });
+
+      if (!donorUpdateResponse.ok) {
+        const errorData = await donorUpdateResponse.json();
+        alert(`Error updating donor: ${errorData.error}`);
+        return;
+      }
+
+      const donorUpdateData = await donorUpdateResponse.json();
+      alert(`Donor Update Success: ${donorUpdateData.message}`);
 
       if (response.ok) {
         const data = await response.json();

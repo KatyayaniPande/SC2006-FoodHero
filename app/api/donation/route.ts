@@ -1,9 +1,9 @@
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import { MongoClient, ServerApiVersion } from "mongodb";
 
 // Your MongoDB URI
 const uri = process.env.MONGODB_URI;
 if (!uri) {
-  throw new Error('Environment variable MONGODB_URI is not defined');
+  throw new Error("Environment variable MONGODB_URI is not defined");
 }
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -22,9 +22,9 @@ export async function POST(request: Request) {
   try {
     await client.connect();
     const body = await request.json();
-    const donations = client.db('database').collection('donations');
+    const donations = client.db("database").collection("donations");
 
-    if (body.foodType === 'Non-Cooked Food') {
+    if (body.foodType === "Non-Cooked Food") {
       const {
         user,
         foodType,
@@ -40,7 +40,6 @@ export async function POST(request: Request) {
         specialHandling,
         agencyName,
         status,
-        
       } = body;
 
       // create a new donation object
@@ -56,10 +55,11 @@ export async function POST(request: Request) {
         pickUpTime: pickUpTime || null,
         quantity,
         specialHandling,
-        agencyName: agencyName || '',
+        agencyName: agencyName || "",
         createdAt: new Date(),
         user: user,
         status,
+        donoremail: user.email,
       };
 
       // Insert the new donation into the "donations" collection
@@ -101,9 +101,10 @@ export async function POST(request: Request) {
         pickUpTime: pickUpTime || null,
         numberOfServings,
         specialHandling,
-        agencyName: agencyName || '',
+        agencyName: agencyName || "",
         createdAt: new Date(),
         status,
+        donoremail: user.email,
       };
 
       // Insert the new donation into the "donations" collection
@@ -114,8 +115,8 @@ export async function POST(request: Request) {
       );
     }
   } catch (e) {
-    console.error('Error connecting to database', e);
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+    console.error("Error connecting to database", e);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
     });
   } finally {

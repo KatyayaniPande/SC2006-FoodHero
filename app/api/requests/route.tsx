@@ -1,8 +1,8 @@
 // app/api/requests/route.ts
 
-import { MongoClient, ServerApiVersion, ObjectId } from 'mongodb';
-import { NextRequest, NextResponse } from 'next/server';
-export const dynamic = 'force-dynamic';
+import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
+import { NextRequest, NextResponse } from "next/server";
+export const dynamic = "force-dynamic";
 
 declare global {
   var _mongoClientPromise: Promise<MongoClient>;
@@ -10,7 +10,7 @@ declare global {
 
 const uri = process.env.MONGODB_URI as string;
 if (!uri) {
-  throw new Error('Please add your MongoDB URI to .env.local');
+  throw new Error("Please add your MongoDB URI to .env.local");
 }
 
 let mongoClient: MongoClient = new MongoClient(uri, {
@@ -23,21 +23,21 @@ let mongoClient: MongoClient = new MongoClient(uri, {
 
 async function getCollection() {
   const client = await mongoClient.connect();
-  const db = client.db('database');
-  return db.collection('requests');
+  const db = client.db("database");
+  return db.collection("requests");
 }
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const email = searchParams.get('email');
+    const email = searchParams.get("beneficiaryemail");
     const collection = await getCollection();
 
     let requests;
 
     if (email) {
       // If email is provided, find requests for that specific user
-      requests = await collection.find({ 'user.email': email }).toArray();
+      requests = await collection.find({ beneficiaryemail: email }).toArray();
     } else {
       // If no email is provided, return all requests
       requests = await collection.find({}).toArray();
@@ -45,9 +45,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(requests, { status: 200 });
   } catch (error) {
-    console.error('MongoDB connection error:', error);
+    console.error("MongoDB connection error:", error);
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { message: "Internal server error" },
       { status: 500 }
     );
   }
@@ -56,18 +56,18 @@ export async function GET(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id');
+    const id = searchParams.get("id");
 
     if (!id) {
       return NextResponse.json(
-        { message: 'Request ID is required' },
+        { message: "Request ID is required" },
         { status: 400 }
       );
     }
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json(
-        { message: 'Invalid Request ID' },
+        { message: "Invalid Request ID" },
         { status: 400 }
       );
     }
@@ -81,19 +81,19 @@ export async function DELETE(request: NextRequest) {
 
     if (result.deletedCount === 1) {
       return NextResponse.json(
-        { message: 'Request deleted successfully' },
+        { message: "Request deleted successfully" },
         { status: 200 }
       );
     } else {
       return NextResponse.json(
-        { message: 'Request not found' },
+        { message: "Request not found" },
         { status: 404 }
       );
     }
   } catch (error) {
-    console.error('Error deleting request:', error);
+    console.error("Error deleting request:", error);
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { message: "Internal server error" },
       { status: 500 }
     );
   }

@@ -42,6 +42,7 @@ export interface Request {
   description: string;
   quantity: number;
   deadline: string;
+  donoremail: string;
   status:
     | "new"
     | "matched"
@@ -56,26 +57,41 @@ export default function DonorDashboardClient() {
   const [donations, setDonations] = useState<Donation[]>([]);
   const [requests, setRequests] = useState<Request[]>([]);
   const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState(""); // Track the user's email
 
   useEffect(() => {
     async function fetchData() {
       try {
         const session = await getSession();
-        const email = session?.user?.email;
+        const userEmail = session?.user?.email;
+
+        if (!userEmail) {
+          console.error("User email not found");
+          return;
+        }
+
+        setEmail(userEmail);
 
         // Fetch user-specific donations
-        const donationsRes = await axios.get(`/api/donations?email=${email}`);
+        const donationsRes = await axios.get(
+          `/api/donations?donoremail=${userEmail}`
+        );
+
+        // Fetch all requests
+        const requestsRes = await axios.get(`/api/requests`);
+
+        // Set the donations with combined data
         setDonations(donationsRes.data);
 
-        // Fetch all beneficiary requests (no filtering by email)
-        const requestsRes = await axios.get(`/api/requests`);
+        // Set all requests to the state if needed elsewhere
         setRequests(requestsRes.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        setLoading(false);
+        setLoading(false); // Stop the loading spinner
       }
     }
+
     fetchData();
   }, []);
 
@@ -181,17 +197,15 @@ export default function DonorDashboardClient() {
 
                   {/* Requests with status 'matched' */}
                   {requests
+                    .filter((request) => request.donoremail === email) // First filter by email
                     .filter(
                       (request) =>
                         request.status === "matched" ||
                         request.status === "inwarehouse" ||
                         request.status === "awaitingdelivery"
-                    ) // Filter for requests with status 'matched'
+                    ) // Then filter by status
                     .map((request, index) => (
-                      <RequestCard
-                        key={`request-${index}`} // Use a unique key
-                        request={request}
-                      />
+                      <RequestCard key={`request-${index}`} request={request} />
                     ))}
                 </>
               ) : (

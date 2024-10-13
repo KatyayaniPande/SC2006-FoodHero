@@ -122,7 +122,7 @@ export async function PUT(request: NextRequest) {
 
     const result = await collection.updateOne(
       { _id: new ObjectId(donationId) }, // Match by _id
-      { $set: { status: nextStatus, donoremail: email } } // Update status and donoremail
+      { $set: { status: nextStatus } } // Update status and donoremail
     );
 
     // Log the result of the query
@@ -169,7 +169,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: `Donation status in ${collectionName} successfully updated to '${nextStatus}' and donor email updated to '${email}'`,
+        message: `Donation status in ${collectionName} successfully updated to '${nextStatus}'`,
       },
       { status: 200 }
     );

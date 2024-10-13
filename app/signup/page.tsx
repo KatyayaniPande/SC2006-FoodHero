@@ -205,7 +205,6 @@ function Cards() {
       address: values.address,
       poc_name: values.poc_name,
       poc_phone: values.poc_phone,
-      acceptedItems: [],
       halal_certification: values.halal_certified,
       hygiene_certification: values.hygiene_certification,
       role: "donor",
@@ -241,7 +240,6 @@ function Cards() {
       poc_name: values.poc_name,
       poc_phone: values.poc_phone,
       halal_certification: false,
-      acceptedItems: [],
       hygiene_certification: "D",
       role: "beneficiary",
     });
