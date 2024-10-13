@@ -13,6 +13,7 @@ import { AiOutlineNumber } from "react-icons/ai";
 import { FaRegStar, FaPersonChalkboard } from "react-icons/fa6";
 import { IoLocation } from "react-icons/io5";
 import { getSession } from "next-auth/react";
+import { MdNotificationImportant } from "react-icons/md";
 
 // Utility function to determine the status color
 const getStatusColor = (status: string) => {
@@ -221,6 +222,12 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
               Pick-up Time: {request.deliveryTime}
             </Typography>
           </>
+        )}
+        {request.status === "matched" && (
+          <Typography className="mb-2 text-red-500">
+            <MdNotificationImportant className="inline-block mr-2" />
+            Please deliver to our warehouse 2 days before!
+          </Typography>
         )}
       </CardBody>
 
