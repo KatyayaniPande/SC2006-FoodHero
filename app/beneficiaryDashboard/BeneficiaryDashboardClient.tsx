@@ -40,16 +40,23 @@ export default function BeneficiaryDashboardClient() {
   const [myRequests, setMyRequests] = useState<Request[]>([]);
   const [availableDonations, setAvailableDonations] = useState<Donation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState(""); // Track the user's email
 
   useEffect(() => {
     async function fetchData() {
       try {
         const session = await getSession();
-        const email = session?.user?.email;
+        const userEmail = session?.user?.email;
 
+        if (!userEmail) {
+          console.error("User email not found");
+          return;
+        }
+
+        setEmail(userEmail);
         // Fetching 'My Requests'
         const myRequestsResponse = await axios.get(
-          `/api/requests?email=${email}`
+          `/api/requests?beneficiaryemail=${userEmail}`
         );
         setMyRequests(myRequestsResponse.data);
 
@@ -147,6 +154,7 @@ export default function BeneficiaryDashboardClient() {
                 <>
                   {/* My Requests with status 'new' */}
                   {myRequests
+
                     .filter(
                       (request) =>
                         request.status === "new" ||
@@ -163,6 +171,8 @@ export default function BeneficiaryDashboardClient() {
 
                   {/* Available Donations with status 'matched' */}
                   {availableDonations
+                    .filter((donation) => donation.beneficiaryemail === email) // First filter by email
+
                     .filter(
                       (donation) =>
                         donation.status === "matched" ||

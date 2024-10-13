@@ -28,14 +28,14 @@ async function getCollection() {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const email = searchParams.get("email");
+    const email = searchParams.get("donoremail");
     const collection = await getCollection();
 
     let donations;
 
     if (email) {
       // If email is provided, find donations for that specific user
-      donations = await collection.find({ "user.email": email }).toArray();
+      donations = await collection.find({ donoremail: email }).toArray();
     } else {
       // If no email is provided, return all donations
       donations = await collection.find({}).toArray();

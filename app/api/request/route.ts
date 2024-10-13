@@ -1,9 +1,9 @@
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import { MongoClient, ServerApiVersion } from "mongodb";
 
 // Your MongoDB URI
 const uri = process.env.MONGODB_URI;
 if (!uri) {
-  throw new Error('Environment variable MONGODB_URI is not defined');
+  throw new Error("Environment variable MONGODB_URI is not defined");
 }
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -22,9 +22,9 @@ export async function POST(request: Request) {
   try {
     await client.connect();
     const body = await request.json();
-    const donations = client.db('database').collection('requests');
+    const donations = client.db("database").collection("requests");
 
-    if (body.foodType === 'Non-Cooked Food') {
+    if (body.foodType === "Non-Cooked Food") {
       const {
         donoremail,
         status,
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
         quantity,
         specialRequest,
         user,
-        
+        beneficiaryemail: user.email,
       };
 
       // Insert the new donation into the "donations" collection
@@ -78,7 +78,6 @@ export async function POST(request: Request) {
         numberOfServings,
         specialRequest,
         user,
-       
       } = body;
 
       // create new donation object
@@ -96,7 +95,7 @@ export async function POST(request: Request) {
         specialRequest,
         createdAt: new Date(),
         user,
-       
+        beneficiaryemail: user.email,
       };
 
       // Insert the new donation into the "donations" collection
@@ -107,8 +106,8 @@ export async function POST(request: Request) {
       );
     }
   } catch (e) {
-    console.error('Error connecting to database', e);
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+    console.error("Error connecting to database", e);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
     });
   } finally {

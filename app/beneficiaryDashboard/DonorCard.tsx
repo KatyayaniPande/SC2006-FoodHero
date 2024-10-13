@@ -21,6 +21,7 @@ import { FaRegStar } from "react-icons/fa6";
 import { FaTruck } from "react-icons/fa";
 import { FaPersonChalkboard } from "react-icons/fa6";
 import { IoLocation } from "react-icons/io5";
+import { getSession } from "next-auth/react";
 
 interface DonorCardProps {
   donation: Donation;
@@ -69,6 +70,9 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
       return;
     }
     try {
+      const session = await getSession();
+      const beneficiaryEmail = session?.user?.email;
+
       const response = await fetch("/api/statusUpdate", {
         method: "PUT",
         headers: {
@@ -80,6 +84,26 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
           action: "accept", // Include an 'accept' action if necessary for logic differentiation
         }),
       });
+
+      const beneificaryUpdateResponse = await fetch("/api/updateBeneficiary", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          donationId: donation._id, // Use the same request._id
+          beneficiaryEmail, // Update the donorEmail field in the DB
+        }),
+      });
+
+      if (!beneificaryUpdateResponse.ok) {
+        const errorData = await beneificaryUpdateResponse.json();
+        alert(`Error updating beneficiary: ${errorData.error}`);
+        return;
+      }
+
+      const beneificaryUpdateData = await beneificaryUpdateResponse.json();
+      alert(`Beneficary Update Success: ${beneificaryUpdateData.message}`);
 
       if (response.ok) {
         const data = await response.json();
