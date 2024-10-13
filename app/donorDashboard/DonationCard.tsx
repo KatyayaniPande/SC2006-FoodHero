@@ -13,6 +13,7 @@ import {
   FaTruck,
   FaPersonChalkboard,
 } from "react-icons/fa";
+import { MdNotificationImportant } from "react-icons/md";
 import { FaBowlFood } from "react-icons/fa6";
 import { DonationCardProps } from "./page";
 import { AiOutlineNumber } from "react-icons/ai";
@@ -196,6 +197,12 @@ const DonationCard: React.FC<DonationCardProps> = ({
               Pick-Up Location: {donation.pickUpLocation}
             </Typography>
           </>
+        )}
+        {donation.status === "matched" && (
+          <Typography className="mb-2 text-red-500">
+            <MdNotificationImportant className="inline-block mr-2" />
+            Please deliver to our warehouse 2 days before!
+          </Typography>
         )}
       </CardBody>
       <CardFooter className="pt-0">
