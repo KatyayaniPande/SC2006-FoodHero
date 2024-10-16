@@ -54,7 +54,7 @@ const donorSignupScheme = z.object({
   uen: z.string(),
   address: z.string(),
   poc_name: z.string().min(1, "Point of Contact Name should not be empty"),
-  poc_phone: z.string().min(1, "Phone number is required"),
+  poc_phone: z.string().min(8, "Phone number(8 digits) is required"),
   halal_certified: z.boolean(),
   hygiene_certification: HYGIENE_RATING,
 });
@@ -511,19 +511,23 @@ function Cards() {
                           return (
                             <FormItem>
                               <FormLabel>
-                                Select your organisation&apos;s hygiene rating
+                                Organisation's hygiene rating
                               </FormLabel>
                               <Select
                                 onValueChange={field.onChange}
                                 defaultValue={field.value}
                               >
                                 <FormControl>
-                                  <SelectTrigger>
+                                  <SelectTrigger 
+                                    style={{ backgroundColor: "white" }}
+                                    >
                                     <SelectValue placeholder="Select a hygiene rating" />
                                   </SelectTrigger>
                                 </FormControl>
 
-                                <SelectContent>
+                                <SelectContent
+                                    style={{ backgroundColor: "white" }}
+                                    >
                                   <SelectItem value="A">A</SelectItem>
                                   <SelectItem value="B">B</SelectItem>
                                   <SelectItem value="C">C</SelectItem>
