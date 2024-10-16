@@ -142,43 +142,21 @@ const SomeCard = ({ donation }) => {
 
         <Typography className="mb-2">
           <FaClock className="inline-block mr-2" />
-          Consume By: {donation.consumeByTiming}
+          Consume By: {donation.consumeByTiming || donation.bestBeforeDate}
         </Typography>
 
         <Typography className="mb-2">
           <FaRegStar className="inline-block mr-2" />
           Special Request: {donation.specialHandling}
         </Typography>
-
-        {isDelivery && (
-          <>
-            <Typography className="mb-2">
-              <FaTruck className="inline-block mr-2" />
-              Delivery Method: {donation.deliveryMethod}
-            </Typography>
-            <Typography className="mb-2">
-              <FaClock className="inline-block mr-2" />
-              Drop-Off Time: {donation.dropOffTime}
-            </Typography>
-            <Typography className="mb-2">
-              <IoLocation className="inline-block mr-2" />
-              Pick-Up Location: {donation.pickUpLocation}
-            </Typography>
-          </>
-        )}
-
-        {isSelfPickUp && (
-          <>
-            <Typography className="mb-2">
-              <FaPersonChalkboard className="inline-block mr-2" />
-              Delivery Method: {donation.deliveryMethod}
-            </Typography>
-            <Typography className="mb-2">
-              <FaClock className="inline-block mr-2" />
-              Pick-up Time: {donation.pickUpTime}
-            </Typography>
-          </>
-        )}
+        <Typography className="mb-2">
+          <FaClock className="inline-block mr-2" />
+          Drop-Off Time: {donation.needByTime}
+        </Typography>
+        <Typography className="mb-2">
+          <IoLocation className="inline-block mr-2" />
+          Drop-Off Location: {donation.deliveryLocation}
+        </Typography>
       </CardBody>
 
       <CardFooter className="pt-0">

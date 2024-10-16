@@ -122,7 +122,12 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
           Special Request: {request.specialRequest}
         </Typography>
 
-        {isDelivery && (
+        <Typography className="mb-2">
+          <IoLocation className="inline-block mr-2" />
+          Delivery Location: {request.deliveryLocation}
+        </Typography>
+
+        {/* {isDelivery && (
           <>
             <Typography className="mb-2">
               <FaTruck className="inline-block mr-2" />
@@ -137,9 +142,9 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
               Delivery Location: {request.deliveryLocation}
             </Typography>
           </>
-        )}
+        )} */}
 
-        {isSelfCollection && (
+        {/* {isSelfCollection && (
           <>
             <Typography className="mb-2">
               <FaPersonChalkboard className="inline-block mr-2" />
@@ -150,7 +155,7 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
               Pick-up Time: {request.deliveryTime}
             </Typography>
           </>
-        )}
+        )} */}
       </CardBody>
       <CardFooter className="pt-0">
         {request.status === "new" && (

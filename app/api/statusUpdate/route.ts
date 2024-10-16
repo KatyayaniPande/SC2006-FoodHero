@@ -67,7 +67,13 @@ async function detectCollection(donationId: string): Promise<string> {
 export async function PUT(request: NextRequest) {
   try {
     const requestBody = await request.json();
-    const { donationId, currentStatus = "new" } = requestBody;
+    const {
+      donationId,
+      currentStatus = "new",
+      deliveryLocation,
+      needByTime,
+      method,
+    } = requestBody;
 
     // Log the incoming request
     console.log("Request body:", { donationId, currentStatus });
@@ -124,6 +130,18 @@ export async function PUT(request: NextRequest) {
       { _id: new ObjectId(donationId) }, // Match by _id
       { $set: { status: nextStatus } } // Update status and donoremail
     );
+
+    if (method === "donate") {
+      const result = await collection.updateOne(
+        { _id: new ObjectId(donationId) }, // Match by _id
+        { $set: { consumeByTiming: needByTime } } // Update status and donoremail
+      );
+    } else if (method === "accept") {
+      const result = await collection.updateOne(
+        { _id: new ObjectId(donationId) }, // Match by _id
+        { $set: { deliveryLocation: deliveryLocation, needByTime: needByTime } } // Update status and donoremail
+      );
+    }
 
     // Log the result of the query
     console.log("Update result:", result);

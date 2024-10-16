@@ -69,7 +69,7 @@ const Donate = () => {
       message: "Consume By Timing is required.",
     }),
     foodImages: z.array(z.instanceof(File)),
-    deliveryMethod: z.string(),
+    // deliveryMethod: z.string(),
     pickUpTime: z.string().optional(),
     pickUpLocation: z.string().optional(),
     dropOffTime: z.string().optional(),
@@ -91,7 +91,7 @@ const Donate = () => {
       message: "Quantity of food must be at least 1.",
     }),
     foodImages: z.array(z.instanceof(File)),
-    deliveryMethod: z.string(),
+    // deliveryMethod: z.string(),
     pickUpTime: z.string().optional(),
     pickUpLocation: z.string().optional(),
     dropOffTime: z.string().optional(),
@@ -106,7 +106,7 @@ const Donate = () => {
       specialHandling: "",
       numberOfServings: 0,
       foodImages: [],
-      deliveryMethod: "",
+      // deliveryMethod: "",
       pickUpTime: "",
       pickUpLocation: "",
       dropOffTime: "",
@@ -466,7 +466,12 @@ const Donate = () => {
                 />
 
                 <div className=" flex justify-end">
-                  <Button className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green "type="submit">Submit</Button>
+                  <Button
+                    className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green "
+                    type="submit"
+                  >
+                    Submit
+                  </Button>
                 </div>
               </form>
             </Form>
@@ -555,23 +560,25 @@ const Donate = () => {
                     <FormItem>
                       <FormLabel>Best Before Date</FormLabel>
                       <FormControl>
-                        <Input 
-                         className="shadow-sm"
-                         type="date"
-                         {...field}
-                         ref={(input) => {
-                           if (input) {
-                             // Get the current date and calculate 2 days from now
-                             const currentDate = new Date();
-                             const minDate = new Date(currentDate.setDate(currentDate.getDate() + 2))
-                               .toISOString()
-                               .split('T')[0]; // Format as YYYY-MM-DD
-                             
-                             // Set the min attribute for the date input
-                             input.min = minDate;
-                           }
-                         }}
-                       />
+                        <Input
+                          className="shadow-sm"
+                          type="date"
+                          {...field}
+                          ref={(input) => {
+                            if (input) {
+                              // Get the current date and calculate 2 days from now
+                              const currentDate = new Date();
+                              const minDate = new Date(
+                                currentDate.setDate(currentDate.getDate() + 2)
+                              )
+                                .toISOString()
+                                .split("T")[0]; // Format as YYYY-MM-DD
+
+                              // Set the min attribute for the date input
+                              input.min = minDate;
+                            }
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -644,7 +651,7 @@ const Donate = () => {
                   )}
                 />
 
-                <FormField
+                {/* <FormField
                   control={nonCookedForm.control}
                   name="deliveryMethod"
                   render={({ field }) => (
@@ -676,9 +683,9 @@ const Donate = () => {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                /> */}
 
-                {nonCookedForm.watch("deliveryMethod") === "pickup" && (
+                {/* {nonCookedForm.watch("deliveryMethod") === "pickup" && (
                   <>
                     <FormField
                       control={nonCookedForm.control}
@@ -704,12 +711,18 @@ const Donate = () => {
                               className="shadow-sm"
                               type="datetime-local"
                               {...field}
-                              ref={input => {
+                              ref={(input) => {
                                 if (input) {
                                   // Set min date dynamically to 2 days from today
                                   const currentDate = new Date();
-                                  const minDate = new Date(currentDate.setDate(currentDate.getDate() + 2)).toISOString().slice(0, 16);
-                                                                
+                                  const minDate = new Date(
+                                    currentDate.setDate(
+                                      currentDate.getDate() + 2
+                                    )
+                                  )
+                                    .toISOString()
+                                    .slice(0, 16);
+
                                   // Set the min attribute
                                   input.min = minDate;
                                 }
@@ -736,12 +749,18 @@ const Donate = () => {
                               className="shadow-sm"
                               type="datetime-local"
                               {...field}
-                              ref={input => {
+                              ref={(input) => {
                                 if (input) {
                                   // Set min date dynamically to 2 days from today
                                   const currentDate = new Date();
-                                  const minDate = new Date(currentDate.setDate(currentDate.getDate() + 2)).toISOString().slice(0, 16);
-                                                                
+                                  const minDate = new Date(
+                                    currentDate.setDate(
+                                      currentDate.getDate() + 2
+                                    )
+                                  )
+                                    .toISOString()
+                                    .slice(0, 16);
+
                                   // Set the min attribute
                                   input.min = minDate;
                                 }
@@ -758,10 +777,15 @@ const Donate = () => {
                       )}
                     />
                   </>
-                )}
+                )} */}
 
                 <div className="flex justify-end">
-                  <Button className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green" type="submit">Submit</Button>
+                  <Button
+                    className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green"
+                    type="submit"
+                  >
+                    Submit
+                  </Button>
                 </div>
               </form>
             </Form>
