@@ -555,7 +555,23 @@ const Donate = () => {
                     <FormItem>
                       <FormLabel>Best Before Date</FormLabel>
                       <FormControl>
-                        <Input className="shadow-sm" type="date" {...field} />
+                        <Input 
+                         className="shadow-sm"
+                         type="date"
+                         {...field}
+                         ref={(input) => {
+                           if (input) {
+                             // Get the current date and calculate 2 days from now
+                             const currentDate = new Date();
+                             const minDate = new Date(currentDate.setDate(currentDate.getDate() + 2))
+                               .toISOString()
+                               .split('T')[0]; // Format as YYYY-MM-DD
+                             
+                             // Set the min attribute for the date input
+                             input.min = minDate;
+                           }
+                         }}
+                       />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
