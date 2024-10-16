@@ -160,44 +160,22 @@ const DonationCard: React.FC<DonationCardProps> = ({
         )}
         <Typography className="mb-2">
           <FaClock className="inline-block mr-2" />
-          Consume By: {donation.consumeByTiming}
+          Best Before By: {donation.bestBeforeDate || donation.consumeByTiming}
         </Typography>
         <Typography className="mb-2">
           <FaRegStar className="inline-block mr-2" />
           Special Request: {donation.specialHandling}
         </Typography>
-        {isDelivery && (
-          <Typography className="mb-2">
-            <FaTruck className="inline-block mr-2" />
-            Delivery Method: {donation.deliveryMethod}
-          </Typography>
-        )}
-        {isSelfPickUp && (
-          <Typography className="mb-2">
-            <FaPersonChalkboard className="inline-block mr-2" />
-            Delivery Method: {donation.deliveryMethod}
-          </Typography>
-        )}
-        {isSelfPickUp && (
+
+        {/* {isSelfPickUp && (
           <>
             <Typography className="mb-2">
               <FaClock className="inline-block mr-2" />
               Pick-up Time: {donation.pickUpTime}
             </Typography>
           </>
-        )}
-        {isDelivery && (
-          <>
-            <Typography className="mb-2">
-              <FaClock className="inline-block mr-2" />
-              Drop-Off Time: {donation.dropOffTime}
-            </Typography>
-            <Typography className="mb-2">
-              <IoLocation className="inline-block mr-2" />
-              Pick-Up Location: {donation.pickUpLocation}
-            </Typography>
-          </>
-        )}
+        )} */}
+
         {donation.status === "matched" && (
           <Typography className="mb-2 text-red-500">
             <MdNotificationImportant className="inline-block mr-2" />

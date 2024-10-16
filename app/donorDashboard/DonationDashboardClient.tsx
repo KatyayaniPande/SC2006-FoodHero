@@ -31,6 +31,7 @@ export interface Donation {
   specialHandling: string;
   deliveryMethod: string;
   numberOfServings: number;
+  bestBeforeDate: string;
   consumeByTiming: string;
   pickUpTime: string;
   dropOffTime: string;

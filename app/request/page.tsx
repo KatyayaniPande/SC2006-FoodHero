@@ -1,11 +1,11 @@
-'use client';
+"use client";
 import { ChevronLeft } from "lucide-react";
-import React from 'react';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { zodResolver } from '@hookform/resolvers/zod';
+import React from "react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -14,20 +14,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import Header from '@/components/Header';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useToast } from '@/components/ui/use-toast';
+} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import Header from "@/components/Header";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 const Request = () => {
   const session = useSession();
@@ -42,44 +42,48 @@ const Request = () => {
 
   const cookedFormSchema = z.object({
     foodName: z.string().min(2, {
-      message: 'Food name must be at least 2 characters.',
+      message: "Food name must be at least 2 characters.",
     }),
     needByTime: z.string().nonempty({
-      message: 'Date/Time the food is needed by is required.',
+      message: "Date/Time the food is needed by is required.",
     }),
     specialRequest: z.string(),
     numberOfServings: z.number().min(1, {
-      message: 'Number of servings must be at least 1.',
+      message: "Number of servings must be at least 1.",
     }),
-    deliveryMethod: z.string(),
-    deliveryTime: z.string().optional(),
-    deliveryLocation: z.string().optional(),
+    // deliveryMethod: z.string(),
+    // deliveryTime: z.string().optional(),
+    deliveryLocation: z.string().nonempty({
+      message: "Location is required.",
+    }),
   });
 
   const nonCookedFormSchema = z.object({
     foodName: z.string().min(2, {
-      message: 'Food name must be at least 2 characters.',
+      message: "Food name must be at least 2 characters.",
     }),
     needByTime: z.string().nonempty({
-      message: 'Date/Time the food is needed by is required.',
+      message: "Date/Time the food is needed by is required.",
     }),
     foodCategory: z.string().nonempty({
-      message: 'Food Category is required.',
+      message: "Food Category is required.",
     }),
     specialRequest: z.string(),
     quantity: z.number().min(1, {
-      message: 'Quantity of food must be at least 1.',
+      message: "Quantity of food must be at least 1.",
     }),
-    deliveryMethod: z.string(),
-    deliveryTime: z.string().optional(),
-    deliveryLocation: z.string().optional(),
+    // deliveryMethod: z.string(),
+    // deliveryTime: z.string().optional(),
+    deliveryLocation: z.string().nonempty({
+      message: "Location is required.",
+    }),
   });
 
   const cookedForm = useForm<z.infer<typeof cookedFormSchema>>({
     resolver: zodResolver(cookedFormSchema),
     defaultValues: {
-      foodName: '',
-      specialRequest: '',
+      foodName: "",
+      specialRequest: "",
       numberOfServings: 0,
     },
   });
@@ -87,9 +91,9 @@ const Request = () => {
   const nonCookedForm = useForm<z.infer<typeof nonCookedFormSchema>>({
     resolver: zodResolver(nonCookedFormSchema),
     defaultValues: {
-      foodName: '',
-      foodCategory: '',
-      specialRequest: '',
+      foodName: "",
+      foodCategory: "",
+      specialRequest: "",
       quantity: 0,
     },
   });
@@ -122,10 +126,10 @@ const Request = () => {
 
     try {
       // make api call to save request details in mongodb
-      const response = await fetch('/api/request', {
-        method: 'POST',
+      const response = await fetch("/api/request", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
@@ -136,105 +140,106 @@ const Request = () => {
 
       const result = await response.json();
 
-      if (foodType === 'Cooked Food') {
+      if (foodType === "Cooked Food") {
         cookedForm.reset({
-          foodName: '',
-          specialRequest: '',
+          foodName: "",
+          specialRequest: "",
           numberOfServings: 0,
-          deliveryMethod: '',
+          // deliveryMethod: "",
         });
       } else {
         nonCookedForm.reset({
-          foodName: '',
-          foodCategory: '',
-          specialRequest: '',
+          foodName: "",
+          foodCategory: "",
+          specialRequest: "",
           quantity: 0,
-          deliveryMethod: '',
+          // deliveryMethod: "",
         });
-        setSelectedCategory('');
+        setSelectedCategory("");
         router.push("/beneficiaryDashboard");
         toast({
-          title: 'Success!',
-          description: 'Your request has been submitted successfully.',
+          title: "Success!",
+          description: "Your request has been submitted successfully.",
         });
       }
     } catch (error) {
       toast({
-        title: 'Error!',
+        title: "Error!",
         description:
-          'Your request has failed. Please try again later. Error: ' + error,
+          "Your request has failed. Please try again later. Error: " + error,
       });
     }
   }
 
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [foodType, setFoodType] = useState('Non-Cooked Food');
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [foodType, setFoodType] = useState("Non-Cooked Food");
 
   return (
-    <div className='bg-gray-100 min-h-screen p-8'>
+    <div className="bg-gray-100 min-h-screen p-8">
       {/* Navigation Bar */}
       <Header />
 
       {/* Form Content */}
-      <section className='bg-white rounded-lg shadow-lg p-12 mb-12 flex justify-center'>
-      <div className="relative w-full">
-  <h1 className="text-2xl font-bold mb-2 text-center">Request for Food</h1>
-  <p className="text-sm text-gray-700 mb-7 text-center pt-4">
-  Require food for your organisation? Fill in the form below to
-      request for food donations from our donors. We will do our best to
-      match you with a donor as soon as possible!
-    </p>
-  {/* Back button aligned to the left */}
-  <div className="absolute top-0 left-0">
-    <Button
-      onClick={() => router.push("/beneficiaryDashboard")}
-      variant="outline"
-      size="sm"
-      className="flex items-center border-none"
-    >
-      <ChevronLeft className="h-4 w-4 mr-2" />
-      Back
-    </Button>
-  </div>
+      <section className="bg-white rounded-lg shadow-lg p-12 mb-12 flex justify-center">
+        <div className="relative w-full">
+          <h1 className="text-2xl font-bold mb-2 text-center">
+            Request for Food
+          </h1>
+          <p className="text-sm text-gray-700 mb-7 text-center pt-4">
+            Require food for your organisation? Fill in the form below to
+            request for food donations from our donors. We will do our best to
+            match you with a donor as soon as possible!
+          </p>
+          {/* Back button aligned to the left */}
+          <div className="absolute top-0 left-0">
+            <Button
+              onClick={() => router.push("/beneficiaryDashboard")}
+              variant="outline"
+              size="sm"
+              className="flex items-center border-none"
+            >
+              <ChevronLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+          </div>
 
-
-          <div className='flex justify-center space-x-4 mb-6'>
+          <div className="flex justify-center space-x-4 mb-6">
             <button
               className={`px-4 py-2 rounded-md font-semibold ${
-                foodType === 'Non-Cooked Food'
-                  ? 'bg-custom-dark-green text-white'
-                  : 'bg-gray-100 text-gray-700'
+                foodType === "Non-Cooked Food"
+                  ? "bg-custom-dark-green text-white"
+                  : "bg-gray-100 text-gray-700"
               }`}
-              onClick={() => setFoodType('Non-Cooked Food')}
+              onClick={() => setFoodType("Non-Cooked Food")}
             >
               Non-Cooked Food
             </button>
             <button
               className={`px-4 py-2 rounded-md font-semibold ${
-                foodType === 'Cooked Food'
-                  ? 'bg-custom-dark-green text-white'
-                  : 'bg-gray-100 text-gray-700'
+                foodType === "Cooked Food"
+                  ? "bg-custom-dark-green text-white"
+                  : "bg-gray-100 text-gray-700"
               }`}
-              onClick={() => setFoodType('Cooked Food')}
+              onClick={() => setFoodType("Cooked Food")}
             >
               Cooked Food
             </button>
           </div>
 
-          {foodType === 'Cooked Food' ? (
-            <Form key='cookedForm' {...cookedForm}>
+          {foodType === "Cooked Food" ? (
+            <Form key="cookedForm" {...cookedForm}>
               <form
                 onSubmit={cookedForm.handleSubmit(onSubmit)}
-                className='space-y-4 w-full max-w-s mx-auto'
+                className="space-y-4 w-full max-w-s mx-auto"
               >
                 <FormField
                   control={cookedForm.control}
-                  name='foodName'
+                  name="foodName"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Food Name</FormLabel>
                       <FormControl>
-                        <Input className='shadow-sm' {...field} />
+                        <Input className="shadow-sm" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -243,19 +248,19 @@ const Request = () => {
 
                 <FormField
                   control={cookedForm.control}
-                  name='numberOfServings'
+                  name="numberOfServings"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Number of Servings</FormLabel>
                       <FormControl>
                         <Input
-                          type='number'
-                          min='1'
+                          type="number"
+                          min="1"
                           {...field}
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber)
                           }
-                          className='w-full shadow-sm'
+                          className="w-full shadow-sm"
                         />
                       </FormControl>
                       <FormDescription>
@@ -268,14 +273,14 @@ const Request = () => {
 
                 <FormField
                   control={cookedForm.control}
-                  name='specialRequest'
+                  name="specialRequest"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
                         Special Requests (e.g. dietary restrictions)
                       </FormLabel>
                       <FormControl>
-                        <Input className='shadow-sm' {...field} />
+                        <Input className="shadow-sm" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -284,21 +289,25 @@ const Request = () => {
 
                 <FormField
                   control={cookedForm.control}
-                  name='needByTime'
+                  name="needByTime"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Request Food By</FormLabel>
                       <FormControl>
                         <Input
-                          className='shadow-sm'
-                          type='datetime-local'
+                          className="shadow-sm"
+                          type="datetime-local"
                           {...field}
-                          ref={input => {
+                          ref={(input) => {
                             if (input) {
                               // Set min date dynamically to 2 days from today
                               const currentDate = new Date();
-                              const minDate = new Date(currentDate.setDate(currentDate.getDate() + 2)).toISOString().slice(0, 16);
-                                                            
+                              const minDate = new Date(
+                                currentDate.setDate(currentDate.getDate() + 2)
+                              )
+                                .toISOString()
+                                .slice(0, 16);
+
                               // Set the min attribute
                               input.min = minDate;
                             }
@@ -312,103 +321,42 @@ const Request = () => {
 
                 <FormField
                   control={cookedForm.control}
-                  name='deliveryMethod'
+                  name="deliveryLocation"
                   render={({ field }) => (
-                    <FormItem className='space-y-3'>
-                      <FormLabel>Delivery Method</FormLabel>
+                    <FormItem>
+                      <FormLabel>Delivery Location</FormLabel>
                       <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          className='flex flex-col space-y-1'
-                        >
-                          <FormItem className='flex items-center space-x-3'>
-                            <FormControl>
-                              <RadioGroupItem value='Self-Collection' />
-                            </FormControl>
-                            <FormLabel className='font-normal'>
-                              Self-Collection
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className='flex items-center space-x-3'>
-                            <FormControl>
-                              <RadioGroupItem value='Scheduled Delivery' />
-                            </FormControl>
-                            <FormLabel className='font-normal'>
-                              Scheduled Delivery
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
+                        <Input className="shadow-sm" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {cookedForm.watch('deliveryMethod') ===
-                  'Scheduled Delivery' && (
-                  <>
-                    <FormField
-                      control={cookedForm.control}
-                      name='deliveryLocation'
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Delivery Location</FormLabel>
-                          <FormControl>
-                            <Input className='shadow-sm' {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={cookedForm.control}
-                      name='deliveryTime'
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Preferred Delivery Time</FormLabel>
-                          <FormControl>
-                            <Input
-                              className='shadow-sm'
-                              type='datetime-local'
-                              {...field}
-                              ref={input => {
-                                if (input) {
-                                  // Set min date dynamically to 2 days from today
-                                  const currentDate = new Date();
-                                  const minDate = new Date(currentDate.setDate(currentDate.getDate() + 2)).toISOString().slice(0, 16);
-                                                                
-                                  // Set the min attribute
-                                  input.min = minDate;
-                                }
-                              }}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                )}
-
-                <div className='flex justify-end'>
-                  <Button className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green" type='submit'>Submit</Button>
+                <div className="flex justify-end">
+                  <Button
+                    className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green"
+                    type="submit"
+                  >
+                    Submit
+                  </Button>
                 </div>
               </form>
             </Form>
           ) : (
-            <Form key='nonCookedForm' {...nonCookedForm}>
+            <Form key="nonCookedForm" {...nonCookedForm}>
               <form
                 onSubmit={nonCookedForm.handleSubmit(onSubmit)}
-                className='space-y-4 w-full max-w-s mx-auto'
+                className="space-y-4 w-full max-w-s mx-auto"
               >
                 <FormField
                   control={nonCookedForm.control}
-                  name='foodName'
+                  name="foodName"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Food Name</FormLabel>
                       <FormControl>
-                        <Input className='w-full shadow-sm' {...field} />
+                        <Input className="w-full shadow-sm" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -416,30 +364,30 @@ const Request = () => {
                 />
                 <FormField
                   control={nonCookedForm.control}
-                  name='foodCategory'
+                  name="foodCategory"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Food Category</FormLabel>
                       <FormControl>
                         <Select
-                          value={field.value || ''}
+                          value={field.value || ""}
                           onValueChange={(value) => {
                             setSelectedCategory(value);
                             field.onChange(value); // Updates the form state
                           }}
                         >
-                          <SelectTrigger className='w-full shadow-sm bg-white'>
-                            <SelectValue placeholder='Select Food Category' />
+                          <SelectTrigger className="w-full shadow-sm bg-white">
+                            <SelectValue placeholder="Select Food Category" />
                           </SelectTrigger>
-                          <SelectContent className='w-full bg-white'>
-                            <SelectItem value='Vegetables'>
+                          <SelectContent className="w-full bg-white">
+                            <SelectItem value="Vegetables">
                               Vegetables
                             </SelectItem>
-                            <SelectItem value='Canned Food'>
+                            <SelectItem value="Canned Food">
                               Canned Food
                             </SelectItem>
-                            <SelectItem value='Fruits'>Fruits</SelectItem>
-                            <SelectItem value='Dry Goods'>Dry Goods</SelectItem>
+                            <SelectItem value="Fruits">Fruits</SelectItem>
+                            <SelectItem value="Dry Goods">Dry Goods</SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -450,18 +398,18 @@ const Request = () => {
 
                 <FormField
                   control={nonCookedForm.control}
-                  name='quantity'
+                  name="quantity"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Quantity of Items</FormLabel>
                       <FormControl>
                         <Input
-                          type='number'
+                          type="number"
                           {...field}
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber)
                           }
-                          className='w-full shadow-sm'
+                          className="w-full shadow-sm"
                         />
                       </FormControl>
                       <FormMessage />
@@ -471,14 +419,14 @@ const Request = () => {
 
                 <FormField
                   control={nonCookedForm.control}
-                  name='specialRequest'
+                  name="specialRequest"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
                         Special Requests (e.g. dietary restrictions)
                       </FormLabel>
                       <FormControl>
-                        <Input className='shadow-sm' {...field} />
+                        <Input className="shadow-sm" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -487,21 +435,25 @@ const Request = () => {
 
                 <FormField
                   control={nonCookedForm.control}
-                  name='needByTime'
+                  name="needByTime"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Request Food By</FormLabel>
                       <FormControl>
                         <Input
-                          className='shadow-sm'
-                          type='datetime-local'
+                          className="shadow-sm"
+                          type="datetime-local"
                           {...field}
-                          ref={input => {
+                          ref={(input) => {
                             if (input) {
                               // Set min date dynamically to 2 days from today
                               const currentDate = new Date();
-                              const minDate = new Date(currentDate.setDate(currentDate.getDate() + 2)).toISOString().slice(0, 16);
-                                                            
+                              const minDate = new Date(
+                                currentDate.setDate(currentDate.getDate() + 2)
+                              )
+                                .toISOString()
+                                .slice(0, 16);
+
                               // Set the min attribute
                               input.min = minDate;
                             }
@@ -515,85 +467,25 @@ const Request = () => {
 
                 <FormField
                   control={nonCookedForm.control}
-                  name='deliveryMethod'
+                  name="deliveryLocation"
                   render={({ field }) => (
-                    <FormItem className='space-y-3'>
-                      <FormLabel>Delivery Method</FormLabel>
+                    <FormItem>
+                      <FormLabel>Delivery Location</FormLabel>
                       <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          className='flex flex-col space-y-1'
-                        >
-                          <FormItem className='flex items-center space-x-3'>
-                            <FormControl>
-                              <RadioGroupItem value='Self-Collection' />
-                            </FormControl>
-                            <FormLabel className='font-normal'>
-                              Self-Collection
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className='flex items-center space-x-3'>
-                            <FormControl>
-                              <RadioGroupItem value='Scheduled Delivery' />
-                            </FormControl>
-                            <FormLabel className='font-normal'>
-                              Scheduled Delivery
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
+                        <Input className="shadow-sm" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {nonCookedForm.watch('deliveryMethod') ===
-                  'Scheduled Delivery' && (
-                  <>
-                    <FormField
-                      control={nonCookedForm.control}
-                      name='deliveryLocation'
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Delivery Location</FormLabel>
-                          <FormControl>
-                            <Input className='shadow-sm' {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={nonCookedForm.control}
-                      name='deliveryTime'
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Preferred Delivery Time</FormLabel>
-                          <FormControl>
-                            <Input
-                              className='shadow-sm'
-                              type='datetime-local'
-                              {...field}
-                              ref={input => {
-                                if (input) {
-                                  // Set min date dynamically to 2 days from today
-                                  const currentDate = new Date();
-                                  const minDate = new Date(currentDate.setDate(currentDate.getDate() + 2)).toISOString().slice(0, 16);
-                                                                
-                                  // Set the min attribute
-                                  input.min = minDate;
-                                }
-                              }}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                )}
-                <div className='flex justify-end'>
-                  <Button className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green" type='submit'>Submit</Button>
+                <div className="flex justify-end">
+                  <Button
+                    className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green"
+                    type="submit"
+                  >
+                    Submit
+                  </Button>
                 </div>
               </form>
             </Form>
