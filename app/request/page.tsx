@@ -202,7 +202,7 @@ const Request = () => {
             <button
               className={`px-4 py-2 rounded-md font-semibold ${
                 foodType === 'Non-Cooked Food'
-                  ? 'bg-[#A2C765] text-white'
+                  ? 'bg-custom-dark-green text-white'
                   : 'bg-gray-100 text-gray-700'
               }`}
               onClick={() => setFoodType('Non-Cooked Food')}
@@ -212,7 +212,7 @@ const Request = () => {
             <button
               className={`px-4 py-2 rounded-md font-semibold ${
                 foodType === 'Cooked Food'
-                  ? 'bg-[#A2C765] text-white'
+                  ? 'bg-custom-dark-green text-white'
                   : 'bg-gray-100 text-gray-700'
               }`}
               onClick={() => setFoodType('Cooked Food')}
@@ -293,6 +293,16 @@ const Request = () => {
                           className='shadow-sm'
                           type='datetime-local'
                           {...field}
+                          ref={input => {
+                            if (input) {
+                              // Set min date dynamically to 2 days from today
+                              const currentDate = new Date();
+                              const minDate = new Date(currentDate.setDate(currentDate.getDate() + 2)).toISOString().slice(0, 16);
+                                                            
+                              // Set the min attribute
+                              input.min = minDate;
+                            }
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -361,6 +371,16 @@ const Request = () => {
                               className='shadow-sm'
                               type='datetime-local'
                               {...field}
+                              ref={input => {
+                                if (input) {
+                                  // Set min date dynamically to 2 days from today
+                                  const currentDate = new Date();
+                                  const minDate = new Date(currentDate.setDate(currentDate.getDate() + 2)).toISOString().slice(0, 16);
+                                                                
+                                  // Set the min attribute
+                                  input.min = minDate;
+                                }
+                              }}
                             />
                           </FormControl>
                           <FormMessage />
@@ -371,7 +391,7 @@ const Request = () => {
                 )}
 
                 <div className='flex justify-end'>
-                  <Button type='submit'>Submit</Button>
+                  <Button className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green" type='submit'>Submit</Button>
                 </div>
               </form>
             </Form>
@@ -476,6 +496,16 @@ const Request = () => {
                           className='shadow-sm'
                           type='datetime-local'
                           {...field}
+                          ref={input => {
+                            if (input) {
+                              // Set min date dynamically to 2 days from today
+                              const currentDate = new Date();
+                              const minDate = new Date(currentDate.setDate(currentDate.getDate() + 2)).toISOString().slice(0, 16);
+                                                            
+                              // Set the min attribute
+                              input.min = minDate;
+                            }
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -544,6 +574,16 @@ const Request = () => {
                               className='shadow-sm'
                               type='datetime-local'
                               {...field}
+                              ref={input => {
+                                if (input) {
+                                  // Set min date dynamically to 2 days from today
+                                  const currentDate = new Date();
+                                  const minDate = new Date(currentDate.setDate(currentDate.getDate() + 2)).toISOString().slice(0, 16);
+                                                                
+                                  // Set the min attribute
+                                  input.min = minDate;
+                                }
+                              }}
                             />
                           </FormControl>
                           <FormMessage />
@@ -553,7 +593,7 @@ const Request = () => {
                   </>
                 )}
                 <div className='flex justify-end'>
-                  <Button type='submit'>Submit</Button>
+                  <Button className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green" type='submit'>Submit</Button>
                 </div>
               </form>
             </Form>
