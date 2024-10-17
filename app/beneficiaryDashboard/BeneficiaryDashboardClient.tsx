@@ -84,18 +84,18 @@ export default function BeneficiaryDashboardClient() {
           Beneficiary Dashboard
         </div>
         <Link href="/request" className="w-[10%]">
-          <button className="bg-green-500 text-white font-semibold py-1 px-3 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75">
-            New request
+          <button className="bg-custom-dark-green text-white font-semibold py-2 px-4 rounded-md hover:bg-custom-darker-green">
+            New Request
           </button>
         </Link>
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex mb-6">
+      <div className="flex ml-1 mb-6">
         <button
           className={`px-4 py-2 ${
             activeTab === "myRequests"
-              ? "bg-green-500 text-white"
+              ? "bg-custom-dark-green text-white"
               : "bg-white text-black"
           } rounded-l-lg`}
           onClick={() => setActiveTab("myRequests")}
@@ -105,7 +105,7 @@ export default function BeneficiaryDashboardClient() {
         <button
           className={`px-4 py-2 ${
             activeTab === "availableDonations"
-              ? "bg-green-500 text-white"
+              ? "bg-custom-dark-green text-white"
               : "bg-white text-black"
           } rounded-r-lg`}
           onClick={() => setActiveTab("availableDonations")}

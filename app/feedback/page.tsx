@@ -100,7 +100,7 @@ function FeedbackForm() {
         <div className="container mx-auto px-4 max-w-4xl">
           <Card className="w-full mt-4 shadow-lg">
             <CardHeader className="text-center">
-              <CardTitle className="pt-4 text-3xl text-[#3b7f5a] font-bold">Feedback Form</CardTitle>
+              <CardTitle className="pt-4 text-3xl text-custom-dark-green font-bold">Feedback Form</CardTitle>
             </CardHeader>
             <CardContent>
               <Form {...feedbackForm}>
@@ -175,7 +175,7 @@ function FeedbackForm() {
 
                   {/* Submit Button */}
                   <Button
-                    className="w-full mt-4 bg-[#A2C765] hover:bg-[#8BBE3D] transition-colors duration-200 text-white py-3 rounded-lg font-semibold"
+                    className="w-full mt-4 bg-custom-dark-green hover:bg-custom-darker-green text-white py-3 rounded-lg"
                     type="submit"
                   >
                     Submit

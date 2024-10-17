@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { getSession, signOut } from "next-auth/react";
 import { FaRegHandPaper, FaHandHoldingHeart } from "react-icons/fa";
+import { User } from 'lucide-react';
 
 const Header: React.FC = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -102,25 +103,24 @@ const Header: React.FC = () => {
       <div>
         <img src="/images/logo.png" className="h-16" alt="foodherologo" />
       </div>
-      <nav className="flex items-center space-x-10 text-lg mr-4">
+      <nav className="flex items-center space-x-10 text-md mr-4">
         {role ? (
           <>
             {/* Conditionally render the dashboard link based on the user's role */}
-            {role === "donor" ? (
-              <a
-                href="/donorDashboard"
-                className="text-black hover:text-custom-dark-green"
-              >
-                Dashboard
-              </a>
-            ) : (
-              <a
-                href="/beneficiaryDashboard"
-                className="text-black hover:text-custom-dark-green"
-              >
-                Dashboard
-              </a>
-            )}
+            <a
+              href={
+                role === "donor"
+                  ? "/donorDashboard"
+                  : role === "beneficiary"
+                    ? "/beneficiaryDashboard"
+                    : role === "admin"
+                      ? "/adminDashboard"
+                      : "/" // Fallback URL
+              }
+              className="text-black hover:text-custom-dark-green"
+            >
+              Dashboard
+            </a>
             <a
               href="/chatbot"
               className="text-black hover:text-custom-dark-green"
@@ -164,12 +164,34 @@ const Header: React.FC = () => {
             >
               Feedback
             </a>
+
+            {/* Profile button */}
+            {/* Conditionally render the profile link based on the user's role */}
+            <a
+              href={
+                role === "donor"
+                  ? "/donorProfile"
+                  : role === "beneficiary"
+                    ? "/beneficiaryProfile"
+                    : role === "admin"
+                      ? "/adminProfile"
+                      : "/" // Fallback URL
+              }
+              className="flex items-center space-x-2 rounded-full group">
+              <div className="bg-gray-200 p-2 rounded-full">
+                <img src="/images/people.png" className="w-5 h-5" alt="profilelogo" />
+                {/* <User size={24} className="text-custom-dark-green" /> */}
+              </div>
+              <span className="text-black group-hover:text-custom-dark-green">someguy</span>
+            </a>
+
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="bg-custom-dark-green text-white text-lg font-bold px-6 py-2 rounded-full hover:bg-custom-darker-green shadow-xl"
+              className="bg-custom-dark-green text-white text-lg font-bold px-5 py-2 rounded-full hover:bg-custom-darker-green shadow-xl"
             >
               Logout
             </button>
+
             {/* Notifications Icon with Dropdown */}
             <div
               className="relative inline-block text-black"

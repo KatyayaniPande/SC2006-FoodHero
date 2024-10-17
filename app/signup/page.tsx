@@ -65,7 +65,7 @@ const beneficiarySignupScheme = z.object({
   confirm_password: z.string().min(1, "Password cannot be empty"),
   agency: z.string().min(1, "Donor Name cannot be empty"),
   poc_name: z.string().min(1, "Point of Contact Name should not be empty"),
-  poc_phone: z.string().min(1, "Phone number is required"),
+  poc_phone: z.string().min(8, "Phone number(8 digits) is required"),
 });
 
 const adminSignupScheme = z.object({
@@ -495,7 +495,7 @@ function Cards() {
                                 that your organisation is Halal certified.
                               </FormDescription>
                               <FormControl>
-                                <Checkbox
+                                <Checkbox 
                                   checked={field.value}
                                   onCheckedChange={field.onChange}
                                 />
@@ -928,10 +928,10 @@ export default function Home() {
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">
-      <Header />
-      <Suspense>
-        <Cards />
-      </Suspense>
-    </div>
+    <Header />
+    <Suspense>
+      <Cards />
+    </Suspense>
+  </div>
   );
 }
