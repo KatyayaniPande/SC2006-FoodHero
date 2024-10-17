@@ -44,12 +44,12 @@ export interface Request {
   deadline: string;
   donoremail: string;
   status:
-    | "new"
-    | "matched"
-    | "inwarehouse"
-    | "awaitingpickup"
-    | "awaitingdelivery"
-    | "delivered"; // Add status field
+  | "new"
+  | "matched"
+  | "inwarehouse"
+  | "awaitingpickup"
+  | "awaitingdelivery"
+  | "delivered"; // Add status field
 }
 
 export default function DonorDashboardClient() {
@@ -112,29 +112,27 @@ export default function DonorDashboardClient() {
           Donor Dashboard
         </div>
         <Link href="/donate" className="w-[10%]">
-          <button className="bg-green-500 text-white font-semibold py-1 px-3 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75">
+          <button className="bg-custom-dark-green text-white font-semibold py-2 px-4 rounded-md hover:bg-custom-darker-green">
             New Donation
           </button>
         </Link>
       </div>
       {/* Tab Navigation */}
-      <div className="flex mb-6">
+      <div className="flex ml-1 mb-6">
         <button
-          className={`px-4 py-2 ${
-            activeTab === "donations"
-              ? "bg-green-500 text-white"
-              : "bg-white text-black"
-          } rounded-l-lg`}
+          className={`px-4 py-2 ${activeTab === "donations"
+            ? "bg-custom-dark-green text-white"
+            : "bg-white text-black"
+            } rounded-l-lg`}
           onClick={() => setActiveTab("donations")}
         >
           My Donations
         </button>
         <button
-          className={`px-4 py-2 ${
-            activeTab === "requests"
-              ? "bg-green-500 text-white"
-              : "bg-white text-black"
-          } rounded-r-lg`}
+          className={`px-4 py-2 ${activeTab === "requests"
+            ? "bg-custom-dark-green text-white"
+            : "bg-white text-black"
+            } rounded-r-lg`}
           onClick={() => setActiveTab("requests")}
         >
           Requests to Fulfill
