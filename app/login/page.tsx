@@ -299,7 +299,7 @@ function Cards() {
                 <CardHeader>
                   <CardTitle className='pt-4'>Beneficiary Login</CardTitle>
                   <CardDescription className='pt-2 pb-2'>
-                    Enter in your email and password to your Donor account to
+                    Enter in your email and password to your Beneficiary account to
                     get started!
                   </CardDescription>
                 </CardHeader>

@@ -1,0 +1,109 @@
+import { MongoClient, ServerApiVersion } from "mongodb";
+
+// Your MongoDB URI
+const uri = process.env.MONGODB_URI;
+if (!uri) {
+  throw new Error("Environment variable MONGODB_URI is not defined");
+}
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverSelectionTimeoutMS: 30000, // 30 seconds timeout
+  connectTimeoutMS: 30000,
+  socketTimeoutMS: 30000,
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
+
+// Function to connect to the database and collection
+async function connectToDB(collectionName) {
+  if (!client.topology || !client.topology.isConnected()) {
+    await client.connect();
+  }
+  return client.db("test").collection(collectionName);
+}
+
+// GET handler to fetch donor details
+export async function GET(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const email = searchParams.get('email');
+
+    if (!email) {
+      return new Response(
+        JSON.stringify({ error: "Missing query parameter: email is required" }),
+        { status: 400 }
+      );
+    }
+
+    const collection = await connectToDB("users");
+
+    // Find the user by email and ensure their role is 'donor'
+    const donor = await collection.findOne({ email: email, role: 'donor' });
+
+    if (!donor) {
+      return new Response(JSON.stringify({ error: "Donor not found or role mismatch" }), {
+        status: 404,
+      });
+    }
+
+    return new Response(JSON.stringify(donor), { status: 200 });
+  } catch (error) {
+    console.error("Error fetching donor details:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+    });
+  }
+}
+
+// POST handler to update donor details
+export async function POST(request) {
+  try {
+    const body = await request.json();
+    const { email, poc_name, poc_phone, agency, halal_certification, hygiene_certification, uen, address } = body;
+
+    // Check for missing required fields
+    if (!email || !poc_name || !poc_phone || !agency || !uen || !address) {
+      return new Response(JSON.stringify({ error: "Missing required fields" }), {
+        status: 400,
+      });
+    }
+
+    const collection = await connectToDB("users");
+
+    // Update the donor details in the database
+    const result = await collection.updateOne(
+      { email: email, role: 'donor' },
+      {
+        $set: {
+          poc_name: poc_name,
+          poc_phone: poc_phone,
+          agency: agency,
+          halal_certification: halal_certification,
+          hygiene_certification: hygiene_certification,
+          uen: uen,
+          address: address, // Include the address in the update
+        },
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return new Response(
+        JSON.stringify({ error: "Donor not found or role mismatch" }),
+        { status: 404 }
+      );
+    }
+
+    return new Response(JSON.stringify({ message: "Donor updated successfully" }), {
+      status: 200,
+    });
+  } catch (error) {
+    console.error("Error updating donor details:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+    });
+  }
+}

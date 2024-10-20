@@ -182,7 +182,7 @@ const Header: React.FC = () => {
                 <img src="/images/people.png" className="w-5 h-5" alt="profilelogo" />
                 {/* <User size={24} className="text-custom-dark-green" /> */}
               </div>
-              <span className="text-black group-hover:text-custom-dark-green">someguy</span>
+              <span className="text-black group-hover:text-custom-dark-green">Profile</span>
             </a>
 
             <button
