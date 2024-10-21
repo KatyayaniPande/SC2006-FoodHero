@@ -31,12 +31,15 @@
     "framer-motion": "^11.3.31",
     "google": "^2.1.0",
     "install": "^0.13.0",
+    "leaflet": "^1.9.4",
+    "leaflet-routing-machine": "^3.2.12",
     "lucide-react": "^0.436.0",
     "moment": "^2.30.1",
     "mongoose": "^8.6.0",
     "next": "14.2.7",
     "next-auth": "^4.24.7",
     "npm": "^10.9.0",
+    "opencage-api-client": "^1.0.7",
     "radix-ui": "^1.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -49,6 +52,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.13",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

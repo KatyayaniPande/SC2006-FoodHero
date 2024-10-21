@@ -1,205 +1,91 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Polyline,
-  Popup,
-} from 'react-leaflet';
-import L from 'leaflet';
+import React, { useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
-// import polyline from "@mapbox/polyline";
-const polyline = require('@mapbox/polyline') as any;
-// Import customIcon if you have it, otherwise remove the icon prop in Marker
-// import customIcon from './path-to-your-icon';
+import L from 'leaflet';
 
 const customIcon = new L.Icon({
   iconUrl: 'https://cdn-icons-png.flaticon.com/512/252/252025.png',
   iconSize: [32, 32],
 });
 
-interface RouteLayerProps {
-  routeData: any; // Replace 'any' with the correct type if you know it
-  decodedPolyline: any; // Replace 'any' with the correct type if you know it
-  color: string;
-  isVisible: boolean;
+const fixedLocation = [1.3073, 103.7639]; // Fixed starting point: Pandan Loop, Singapore
+
+interface MapProps {
+  deliveryLocation: [number, number]; // Delivery location as [latitude, longitude]
 }
 
-const RouteLayer: React.FC<RouteLayerProps> = ({
-  routeData,
-  decodedPolyline,
-  color,
-  isVisible,
-}) => {
-  if (!isVisible) return null;
+const MapComponent: React.FC<MapProps> = ({ deliveryLocation }) => {
+  const mapRef = useRef<L.Map | null>(null); // Ref for the map instance
+  const routeLayerRef = useRef<L.GeoJSON | null>(null); // Ref for the route layer
 
-  return (
-    <>
-      {routeData.map(
-        (
-          route: {
-            location: any[];
-            arrivalTime:
-              | string
-              | number
-              | bigint
-              | boolean
-              | React.ReactElement<
-                  any,
-                  string | React.JSXElementConstructor<any>
-                >
-              | Iterable<React.ReactNode>
-              | React.ReactPortal
-              | Promise<React.AwaitedReactNode>
-              | null
-              | undefined;
-            jobId:
-              | string
-              | number
-              | bigint
-              | boolean
-              | React.ReactElement<
-                  any,
-                  string | React.JSXElementConstructor<any>
-                >
-              | Iterable<React.ReactNode>
-              | React.ReactPortal
-              | Promise<React.AwaitedReactNode>
-              | null
-              | undefined;
-          },
-          index: React.Key | null | undefined
-        ) => (
-          <Marker
-            key={index}
-            position={[route.location[1], route.location[0]]}
-            icon={customIcon}
-          >
-            <Popup>
-              Arrival Time: {route.arrivalTime} <br /> Job ID: {route.jobId}
-            </Popup>
-          </Marker>
-        )
-      )}
-      <Polyline positions={decodedPolyline} pathOptions={{ color: color }} />
-    </>
-  );
-};
-
-const MapComponent: React.FC = () => {
-  const [routesData1, setRoutesData1] = useState<any[]>([]);
-  const [routesData2, setRoutesData2] = useState<any[]>([]);
-  const [routesData3, setRoutesData3] = useState<any[]>([]);
-  const [decodedPolyline1, setDecodedPolyline1] = useState<any[][]>([]);
-  const [decodedPolyline2, setDecodedPolyline2] = useState<any[][]>([]);
-  const [decodedPolyline3, setDecodedPolyline3] = useState<any[][]>([]);
-  const [isRouteVisible, setIsRouteVisible] = useState<boolean[]>([
-    true,
-    true,
-    true,
-  ]);
+  const API_KEY = '5b3ce3597851110001cf62488301258b241149b6a0149e42fc074d3e'; // Add your OpenRouteService API key here
 
   useEffect(() => {
-    const fetchRoutesData = async () => {
+    console.log('Map initialization...');
+
+    if (!mapRef.current) {
+      // Initialize the map if it hasn't been initialized yet
+      mapRef.current = L.map('map').setView(fixedLocation, 13);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(mapRef.current);
+
+      console.log('Map initialized with starting location:', fixedLocation);
+    }
+
+    // Add fixed location marker
+    const startMarker = L.marker(fixedLocation, { icon: customIcon }).bindPopup('Starting Point: Pandan Loop');
+    startMarker.addTo(mapRef.current);
+
+    // Add delivery location marker
+    const deliveryMarker = L.marker(deliveryLocation, { icon: customIcon }).bindPopup('Delivery Location');
+    deliveryMarker.addTo(mapRef.current);
+
+    console.log('Markers added at:', fixedLocation, 'and', deliveryLocation);
+
+    // Fetch route from OpenRouteService API
+    const fetchRoute = async () => {
+      const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${API_KEY}&start=${fixedLocation[1]},${fixedLocation[0]}&end=${deliveryLocation[1]},${deliveryLocation[0]}`;
+
       try {
-        const response = await fetch('/api/optimizeRoutes');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+        const response = await fetch(url);
         const data = await response.json();
 
-        setRoutesData1(data[0].coordinates || []);
-        setDecodedPolyline1(
-          polyline.decode(data[0].geometry).map(([lat, lng]: [number, number]) => [lat, lng])
-        );
+        console.log('Route data from OpenRouteService:', data);
 
-        setRoutesData2(data[1].coordinates || []);
-        setDecodedPolyline2(
-          polyline.decode(data[1].geometry).map(([lat, lng]: [number, number]) => [lat, lng])
-        );
+        const routeGeoJSON = data.features[0]; // Extract GeoJSON route
+        if (routeLayerRef.current) {
+          mapRef.current?.removeLayer(routeLayerRef.current); // Remove existing route layer
+        }
 
-        setRoutesData3(data[2].coordinates || []);
-        setDecodedPolyline3(
-          polyline.decode(data[2].geometry).map(([lat, lng]: [number, number]) => [lat, lng])
-        );
+        // Add new route layer
+        routeLayerRef.current = L.geoJSON(routeGeoJSON, {
+          style: {
+            color: 'blue',
+            weight: 4,
+          },
+        }).addTo(mapRef.current);
+
+        console.log('Route added to the map.');
       } catch (error) {
-        console.error('Error fetching routes data:', error);
+        console.error('Error fetching route:', error);
       }
     };
 
-    fetchRoutesData();
-  }, []);
+    fetchRoute();
 
-  const toggleRouteVisibility = (index: number) => {
-    setIsRouteVisible((prev) =>
-      prev.map((isVisible, i) => (i === index ? !isVisible : isVisible))
-    );
-  };
+    return () => {
+      // Cleanup the markers and route layer if the component re-renders
+      mapRef.current?.removeLayer(startMarker);
+      mapRef.current?.removeLayer(deliveryMarker);
+      if (routeLayerRef.current) {
+        mapRef.current?.removeLayer(routeLayerRef.current);
+      }
+    };
+  }, [deliveryLocation]); // Re-run the effect when the deliveryLocation changes
 
-  return (
-    <>
-      <section>
-        <h1 className='text-4xl font-bold text-center mb-8 text-[#A2C765]'>
-          Routes Generated
-        </h1>
-
-        <p className='text-lg text-gray-700 mb-8 text-center'>
-          Approved match transfers will undergo an algorithmic evaluation to
-          determine the most efficient delivery method. Factors such as
-          location, food availability, timing, and other logistical
-          considerations will be taken into account.{' '}
-        </p>
-
-        {routesData1.length > 0 && (
-          <MapContainer
-            center={[1.3521, 103.8198]}
-            zoom={12}
-            style={{ height: '48vh' }}
-          >
-            <TileLayer
-              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-
-            <RouteLayer
-              routeData={routesData1}
-              decodedPolyline={decodedPolyline1}
-              color='blue'
-              isVisible={isRouteVisible[0]}
-            />
-            <RouteLayer
-              routeData={routesData2}
-              decodedPolyline={decodedPolyline2}
-              color='green'
-              isVisible={isRouteVisible[1]}
-            />
-            <RouteLayer
-              routeData={routesData3}
-              decodedPolyline={decodedPolyline3}
-              color='orange'
-              isVisible={isRouteVisible[2]}
-            />
-          </MapContainer>
-        )}
-        <div className='flex justify-center mb-8 pt-6'>
-          {[routesData1, routesData2, routesData3].map((_, index) => (
-            <button
-              key={index}
-              className={`px-4 py-2 mx-2 font-semibold rounded ${
-                isRouteVisible[index] ? 'bg-green-500' : 'bg-gray-500'
-              }`}
-              onClick={() => toggleRouteVisibility(index)}
-            >
-              {isRouteVisible[index]
-                ? `Hide Bus ${index + 1}`
-                : `Show Bus ${index + 1}`}
-            </button>
-          ))}
-        </div>
-      </section>
-    </>
-  );
+  return <div id="map" style={{ height: '400px', width: '100%' }}></div>;
 };
 
 export default MapComponent;
