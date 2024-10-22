@@ -254,12 +254,29 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
             </Typography>
           </>
         )} */}
-          {request.status === "matched" && (
-            <Typography className="mb-2 text-red-500">
-              <MdNotificationImportant className="inline-block mr-2" />
-              Please deliver to our warehouse 2 days before!
-            </Typography>
-          )}
+          {request.status === "matched" &&
+            request.needByTime &&
+            (() => {
+              const currentDate = new Date();
+              const needByDate = new Date(request.needByTime);
+
+              // Calculate the difference in time
+              const diffTime = needByDate.getTime() - currentDate.getTime();
+
+              // Convert time difference to days
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+              // Show the message only if it is 2 days or less before needByTime
+              if (diffDays <= 2 && diffDays >= 0) {
+                return (
+                  <Typography className="mb-2 text-red-500">
+                    <MdNotificationImportant className="inline-block mr-2" />
+                    Please deliver to our warehouse 2 days before!
+                  </Typography>
+                );
+              }
+              return null; // Don't show the message if it's more than 2 days away
+            })()}
         </CardBody>
 
         <CardFooter className="pt-0">

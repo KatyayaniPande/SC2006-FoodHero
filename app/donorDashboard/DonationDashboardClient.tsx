@@ -33,6 +33,7 @@ export interface Donation {
   numberOfServings: number;
   bestBeforeDate: string;
   consumeByTiming: string;
+  needByTime: string;
   pickUpTime: string;
   dropOffTime: string;
   status: "new" | "matched" | "inwarehouse" | "awaitingdelivery" | "delivered"; // Add status field

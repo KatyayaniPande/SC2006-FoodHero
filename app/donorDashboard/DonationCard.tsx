@@ -172,6 +172,12 @@ const DonationCard: React.FC<DonationCardProps> = ({
           <FaClock className="inline-block mr-2" />
           Best Before By: {donation.bestBeforeDate || donation.consumeByTiming}
         </Typography>
+        {donation.needByTime !== null && (
+          <Typography className="mb-2">
+            <FaClock className="inline-block mr-2" />
+            Need By: {donation.needByTime}
+          </Typography>
+        )}
         <Typography className="mb-2">
           <FaRegStar className="inline-block mr-2" />
           Special Request: {donation.specialHandling}
@@ -186,12 +192,29 @@ const DonationCard: React.FC<DonationCardProps> = ({
           </>
         )} */}
 
-        {donation.status === "matched" && (
-          <Typography className="mb-2 text-red-500">
-            <MdNotificationImportant className="inline-block mr-2" />
-            Please deliver to our warehouse 2 days before!
-          </Typography>
-        )}
+        {donation.status === "matched" &&
+          donation.needByTime &&
+          (() => {
+            const currentDate = new Date();
+            const needByDate = new Date(donation.needByTime);
+
+            // Calculate the difference in time
+            const diffTime = needByDate.getTime() - currentDate.getTime();
+
+            // Convert time difference to days
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            // Show the message only if it is 2 days or less before needByTime
+            if (diffDays <= 2 && diffDays >= 0) {
+              return (
+                <Typography className="mb-2 text-red-500">
+                  <MdNotificationImportant className="inline-block mr-2" />
+                  Please deliver to our warehouse 2 days before!
+                </Typography>
+              );
+            }
+            return null; // Don't show the message if it's more than 2 days away
+          })()}
       </CardBody>
       <CardFooter className="pt-0">
         {/* Only render buttons if the status is not 'inwarehouse' */}
