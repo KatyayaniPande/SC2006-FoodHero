@@ -20,7 +20,7 @@ export interface Donation {
   foodName: string;
   foodType: string;
   foodCategory: string;
-  timeOfPreparation: string;
+  timePrepared: string;
   timeOfConsumption: string;
   ingredient: string;
   quantity: number;
@@ -45,12 +45,12 @@ export interface Request {
   deadline: string;
   donoremail: string;
   status:
-  | "new"
-  | "matched"
-  | "inwarehouse"
-  | "awaitingpickup"
-  | "awaitingdelivery"
-  | "delivered"; // Add status field
+    | "new"
+    | "matched"
+    | "inwarehouse"
+    | "awaitingpickup"
+    | "awaitingdelivery"
+    | "delivered"; // Add status field
 }
 
 export default function DonorDashboardClient() {
@@ -121,19 +121,21 @@ export default function DonorDashboardClient() {
       {/* Tab Navigation */}
       <div className="flex ml-1 mb-6">
         <button
-          className={`px-4 py-2 ${activeTab === "donations"
-            ? "bg-custom-dark-green text-white"
-            : "bg-white text-black"
-            } rounded-l-lg`}
+          className={`px-4 py-2 ${
+            activeTab === "donations"
+              ? "bg-custom-dark-green text-white"
+              : "bg-white text-black"
+          } rounded-l-lg`}
           onClick={() => setActiveTab("donations")}
         >
           My Donations
         </button>
         <button
-          className={`px-4 py-2 ${activeTab === "requests"
-            ? "bg-custom-dark-green text-white"
-            : "bg-white text-black"
-            } rounded-r-lg`}
+          className={`px-4 py-2 ${
+            activeTab === "requests"
+              ? "bg-custom-dark-green text-white"
+              : "bg-white text-black"
+          } rounded-r-lg`}
           onClick={() => setActiveTab("requests")}
         >
           Requests to Fulfill

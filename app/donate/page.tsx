@@ -41,6 +41,9 @@ import { useRouter, useSearchParams } from "next/navigation"; // Import useSearc
 const Donate = () => {
   const router = useRouter();
   const searchParams = useSearchParams(); // useSearchParams to handle query params
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [status, setStatus] = useState("");
+  const [donationId, setDonationId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const options = [
     { label: "Milk", value: "Milk" },
@@ -134,6 +137,59 @@ const Donate = () => {
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
 
+  useEffect(() => {
+    const id = searchParams.get("id");
+    if (id) {
+      setDonationId(id);
+      setIsEditMode(true);
+      fetchDonationData(id); // Fetch the existing donation data for editing
+    }
+  }, [searchParams]);
+
+  const fetchDonationData = async (id: string) => {
+    try {
+      const response = await fetch(`/api/donation?id=${id}`); // Pass the donation ID as a query param
+      if (response.ok) {
+        const data = await response.json(); // Get the donation data
+        // console.log("Fetched donation data:", data); // Log the data for debugging
+
+        setStatus(data.status);
+
+        // Check if it's Cooked Food or Non-Cooked Food and populate the correct form
+        if (data.foodType === "Cooked Food") {
+          cookedForm.reset({
+            foodName: data.foodName,
+            timePrepared: data.timePrepared,
+            specialHandling: data.specialHandling,
+            numberOfServings: data.numberOfServings,
+            consumeByTiming: data.consumeByTiming,
+            allergens: data.allergens || [],
+            foodImages: [], // Handle images separately if needed
+          });
+          setFoodType("Cooked Food");
+        } else {
+          nonCookedForm.reset({
+            foodName: data.foodName,
+            bestBeforeDate: data.bestBeforeDate,
+            foodCategory: data.foodCategory,
+            quantity: data.quantity,
+            specialHandling: data.specialHandling,
+            foodImages: [], // Handle images separately if needed
+          });
+          setFoodType("Non-Cooked Food");
+        }
+
+        // Optionally, handle existing images by saving them in a separate state
+        if (data.foodImages && data.foodImages.length > 0) {
+          setPreviewImages(data.foodImages); // Assuming `foodImages` contains URLs
+        }
+      } else {
+        console.error("Failed to fetch donation data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching donation data:", error);
+    }
+  };
   /*
   // If query params are available, pre-fill the form
   useEffect(() => {
@@ -187,90 +243,89 @@ const Donate = () => {
   };
 
   async function onSubmit(values: any) {
-    console.log(values);
-
-    // Convert image files to Base64
-    const base64Images = await Promise.all(
-      values.foodImages.map(async (file: File) => {
-        const base64String = await convertToBase64(file);
-        console.log(base64String);
-        return base64String;
-      })
-    );
-    values.foodImages = base64Images;
-
-    const session = await getSession();
-
-    if (!session?.user) {
-      console.error("User not found in session storage");
-      return;
-    }
-
-    const data = {
-      ...values,
-      status: "new",
-      user: {
-        email: session.user.email,
-        agency: session.user.agency,
-        address: session.user.address,
-        poc_name: session.user.poc_name,
-        poc_phone: session.user.poc_phone,
-        halal_certification: session.user.halal_certification,
-        hygiene_certification: session.user.hygiene_certification,
-        role: session.user.role,
-      },
-      foodType: foodType,
-    };
-
-    console.log(data);
-
     try {
-      const response = await fetch("/api/donation", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      // Convert image files to Base64, similar to your current logic
+      const base64Images = await Promise.all(
+        values.foodImages.map(async (file: File) => {
+          const base64String = await convertToBase64(file);
+          return base64String;
+        })
+      );
+      values.foodImages = base64Images;
+
+      const session = await getSession();
+      if (!session?.user) {
+        console.error("User not found in session storage");
+        return;
+      }
+
+      const data = {
+        ...values,
+        foodType: foodType,
+        user: {
+          email: session.user.email,
+          agency: session.user.agency,
+          // other user details...
         },
-        body: JSON.stringify(data),
-      });
+      };
+
+      let response;
+      if (isEditMode && donationId) {
+        const updatedData = {
+          ...data,
+          status,
+          id: donationId, // Add the donationId to the data
+        };
+        // Update existing donation (PUT request)
+        response = await fetch(`/api/donation`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedData),
+        });
+      } else {
+        // Create new donation (POST request)
+        response = await fetch("/api/donation", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+      }
 
       if (!response.ok) {
-        throw new Error(`Failed to submit donation: ${response.statusText}`);
+        throw new Error(
+          `Failed to ${isEditMode ? "update" : "submit"} donation`
+        );
       }
 
       const result = await response.json();
-      console.log("Donation submitted successfully: ", result);
+      console.log(
+        `Donation ${isEditMode ? "updated" : "submitted"} successfully:`,
+        result
+      );
 
+      // Reset form after successful submission/update
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
-
+      setPreviewImages([]);
       if (foodType === "Cooked Food") {
         cookedForm.reset({
-          foodName: "",
-          timePrepared: "",
-          specialHandling: "",
-          numberOfServings: 0,
-          deliveryMethod: "",
-          foodImages: [],
+          // reset cooked form fields
         });
-        setPreviewImages([]);
       } else {
         nonCookedForm.reset({
-          foodName: "",
-          bestBeforeDate: "",
-          foodCategory: "",
-          specialHandling: "",
-          quantity: 0,
-          deliveryMethod: "",
-          foodImages: [],
+          // reset non-cooked form fields
         });
-        setPreviewImages([]);
-        setSelectedCategory("");
       }
-      // Redirect to donor dashboard
+
+      // Redirect to donor dashboard after saving
       router.push("/donorDashboard");
     } catch (error) {
-      console.error("Error submitting donation: ", error);
+      console.error("Error submitting donation:", error);
     }
   }
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -465,12 +520,12 @@ const Donate = () => {
                   )}
                 />
 
-                <div className=" flex justify-end">
+                <div className="flex justify-end">
                   <Button
-                    className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green "
+                    className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green"
                     type="submit"
                   >
-                    Submit
+                    {isEditMode ? "Save Changes" : "Submit"}
                   </Button>
                 </div>
               </form>
@@ -784,7 +839,7 @@ const Donate = () => {
                     className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green"
                     type="submit"
                   >
-                    Submit
+                    {isEditMode ? "Save Changes" : "Submit"}
                   </Button>
                 </div>
               </form>
