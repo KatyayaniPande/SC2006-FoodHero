@@ -19,6 +19,7 @@ import { DonationCardProps } from "./page";
 import { AiOutlineNumber } from "react-icons/ai";
 import { useState, useEffect } from "react";
 import { IoLocation } from "react-icons/io5";
+import { useRouter, useSearchParams } from "next/navigation"; // Import useSearchParams
 
 // Utility function to determine the status color
 const getStatusColor = (status: string) => {
@@ -44,6 +45,7 @@ const DonationCard: React.FC<DonationCardProps> = ({
   donation,
   onWithdraw,
 }) => {
+  const router = useRouter();
   const [isCooked, setIsCooked] = useState(false);
   const [isSelfPickUp, setIsSelfPickUp] = useState(false);
   const [isDelivery, setIsDelivery] = useState(false);
@@ -158,6 +160,14 @@ const DonationCard: React.FC<DonationCardProps> = ({
             Number of servings: {donation.numberOfServings}
           </Typography>
         )}
+
+        {isCooked && (
+          <Typography className="mb-2">
+            <FaClock className="inline-block mr-2" />
+            Prepared On: {donation.timePrepared}
+          </Typography>
+        )}
+
         <Typography className="mb-2">
           <FaClock className="inline-block mr-2" />
           Best Before By: {donation.bestBeforeDate || donation.consumeByTiming}
@@ -198,9 +208,17 @@ const DonationCard: React.FC<DonationCardProps> = ({
 
             {/* If it's not matched but status is something else, show only Withdraw */}
             {donation.status === "new" && (
-              <Button className="text-white" onClick={handleWithdraw}>
-                Withdraw
-              </Button>
+              <div className="flex space-x-2">
+                <Button
+                  className="text-white"
+                  onClick={() => router.push(`/donate?id=${donation._id}`)}
+                >
+                  Edit Details
+                </Button>
+                <Button className="text-white" onClick={handleWithdraw}>
+                  Withdraw
+                </Button>
+              </div>
             )}
           </>
         )}

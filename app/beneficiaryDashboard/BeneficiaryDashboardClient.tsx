@@ -16,6 +16,7 @@ import Link from "next/link";
 import { getSession } from "next-auth/react";
 
 export interface Request {
+  _id: string;
   foodName: string;
   foodType: string;
   foodCategory: string;

@@ -19,6 +19,7 @@ import { AiOutlineNumber } from "react-icons/ai";
 import { IoLocation } from "react-icons/io5";
 import { Request } from "./BeneficiaryDashboardClient";
 import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation"; // Import useSearchParams
 
 interface RequestCardProps {
   request: Request;
@@ -49,6 +50,7 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
   const [isSelfCollection, setIsSelfCollection] = useState(false);
   const [isDelivery, setIsDelivery] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
+  const router = useRouter();
 
   // Effects
   useEffect(() => {
@@ -159,9 +161,17 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
       </CardBody>
       <CardFooter className="pt-0">
         {request.status === "new" && (
-          <Button className="text-white bg-black" onClick={handleDelete}>
-            Withdraw
-          </Button>
+          <div className="flex space-x-2">
+            <Button
+              className="text-white"
+              onClick={() => router.push(`/request?id=${request._id}`)}
+            >
+              Edit Details
+            </Button>
+            <Button className="text-white bg-black" onClick={handleDelete}>
+              Withdraw
+            </Button>
+          </div>
         )}
       </CardFooter>
     </Card>

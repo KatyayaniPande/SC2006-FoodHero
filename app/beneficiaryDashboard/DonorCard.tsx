@@ -175,6 +175,12 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
               : `Quantity: ${donation.quantity}`}
           </Typography>
 
+          {isCooked && (
+            <Typography className="mb-2">
+              <FaClock className="inline-block mr-2" />
+              Prepared On: {donation.timePrepared}
+            </Typography>
+          )}
           <Typography className="mb-2">
             <FaClock className="inline-block mr-2" />
             Best Before: {donation.consumeByTiming || donation.bestBeforeDate}

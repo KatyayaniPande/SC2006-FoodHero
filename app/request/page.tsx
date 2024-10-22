@@ -1,7 +1,7 @@
 "use client";
 import { ChevronLeft } from "lucide-react";
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -26,19 +26,72 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Header from "@/components/Header";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation"; // Import useSearchParams
 import { useToast } from "@/components/ui/use-toast";
 
 const Request = () => {
+  const searchParams = useSearchParams(); // useSearchParams to handle query params
+
   const session = useSession();
   const router = useRouter();
   const { toast } = useToast();
+
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [status, setStatus] = useState("");
+  const [requestId, setRequestId] = useState<string | null>(null);
 
   // if (!session?.user) {
   //   router.replace('/');
   // } else if (session?.user.role !== 'donor') {
   //   router.replace('/dashboard');
   // }
+
+  useEffect(() => {
+    const id = searchParams.get("id");
+    if (id) {
+      setRequestId(id);
+      setIsEditMode(true);
+      fetchRequestData(id); // Fetch the existing donation data for editing
+    }
+  }, [searchParams]);
+
+  const fetchRequestData = async (id: string) => {
+    try {
+      const response = await fetch(`/api/request?id=${id}`); // Pass the donation ID as a query param
+      if (response.ok) {
+        const data = await response.json(); // Get the donation data
+        // console.log("Fetched donation data:", data); // Log the data for debugging
+
+        setStatus(data.status);
+
+        // Check if it's Cooked Food or Non-Cooked Food and populate the correct form
+        if (data.foodType === "Cooked Food") {
+          cookedForm.reset({
+            foodName: data.foodName,
+            specialRequest: data.specialRequest,
+            numberOfServings: data.numberOfServings,
+            needByTime: data.needByTime,
+            deliveryLocation: data.deliveryLocation,
+          });
+          setFoodType("Cooked Food");
+        } else {
+          nonCookedForm.reset({
+            foodName: data.foodName,
+            foodCategory: data.foodCategory,
+            quantity: data.quantity,
+            specialRequest: data.specialRequest,
+            needByTime: data.needByTime,
+            deliveryLocation: data.deliveryLocation,
+          });
+          setFoodType("Non-Cooked Food");
+        }
+      } else {
+        console.error("Failed to fetch request data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching request data:", error);
+    }
+  };
 
   const cookedFormSchema = z.object({
     foodName: z.string().min(2, {
@@ -124,15 +177,31 @@ const Request = () => {
       user: user,
     };
 
+    let response;
+
     try {
       // make api call to save request details in mongodb
-      const response = await fetch("/api/request", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      if (isEditMode && requestId) {
+        const updatedData = {
+          ...data,
+          id: requestId, // Add the donationId to the data
+        };
+        response = await fetch(`/api/request`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedData),
+        });
+      } else {
+        response = await fetch("/api/request", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+      }
 
       if (!response.ok) {
         throw new Error(`Failed to submit request: ${response.statusText}`);
@@ -140,28 +209,35 @@ const Request = () => {
 
       const result = await response.json();
 
-      if (foodType === "Cooked Food") {
-        cookedForm.reset({
-          foodName: "",
-          specialRequest: "",
-          numberOfServings: 0,
-          // deliveryMethod: "",
-        });
-      } else {
-        nonCookedForm.reset({
-          foodName: "",
-          foodCategory: "",
-          specialRequest: "",
-          quantity: 0,
-          // deliveryMethod: "",
-        });
-        setSelectedCategory("");
-        router.push("/beneficiaryDashboard");
-        toast({
-          title: "Success!",
-          description: "Your request has been submitted successfully.",
-        });
-      }
+      // if (foodType === "Cooked Food") {
+      //   cookedForm.reset({
+      //     foodName: "",
+      //     specialRequest: "",
+      //     numberOfServings: 0,
+      //     // deliveryMethod: "",
+      //   });
+      //   setSelectedCategory("");
+      //   router.push("/beneficiaryDashboard");
+      //   toast({
+      //     title: "Success!",
+      //     description: "Your request has been submitted successfully.",
+      //   });
+      // } else {
+      //   nonCookedForm.reset({
+      //     foodName: "",
+      //     foodCategory: "",
+      //     specialRequest: "",
+      //     quantity: 0,
+      //     // deliveryMethod: "",
+      //   });
+      //   setSelectedCategory("");
+      //   router.push("/beneficiaryDashboard");
+      //   toast({
+      //     title: "Success!",
+      //     description: "Your request has been submitted successfully.",
+      //   });
+      // }
+      router.push("/beneficiaryDashboard");
     } catch (error) {
       toast({
         title: "Error!",
@@ -338,7 +414,7 @@ const Request = () => {
                     className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green"
                     type="submit"
                   >
-                    Submit
+                    {isEditMode ? "Save Changes" : "Submit"}
                   </Button>
                 </div>
               </form>
@@ -484,7 +560,7 @@ const Request = () => {
                     className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green"
                     type="submit"
                   >
-                    Submit
+                    {isEditMode ? "Save Changes" : "Submit"}
                   </Button>
                 </div>
               </form>
