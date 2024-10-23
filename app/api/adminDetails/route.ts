@@ -63,17 +63,16 @@ export async function GET(request) {
 export async function POST(request) {
     try {
       const body = await request.json();
-      const { email } = body;
-  
-      // Check for missing required fields
-      if (!email) {
-        return new Response(JSON.stringify({ error: "Missing required field: email" }), {
+      const { email, currentEmail } = body;
+      if (!email || !currentEmail) {
+        return new Response(JSON.stringify({ error: "Missing required fields: email or currentEmail" }), {
           status: 400,
         });
       }
-  
+      
       const collection = await connectToDB("users");
   
+
       // Check if the new email already exists
       const existingUser = await collection.findOne({ email: email });
   
