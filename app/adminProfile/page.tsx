@@ -10,9 +10,10 @@ export default function AdminProfile() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(''); // Store the initial fetched email separately
   const [isEditing, setIsEditing] = useState(false); // Track edit mode
   const [saving, setSaving] = useState(false); // Track saving state
+  const [message, setMessage] = useState(''); // Message to show no changes
 
   // Fetch admin details from API based on the session
   useEffect(() => {
@@ -56,25 +57,35 @@ export default function AdminProfile() {
   };
 
   const saveProfile = async () => {
+    if (admin.email === email) {
+      // No changes made, show a message and skip the API request
+      setMessage('No changes were made');
+      setIsEditing(false); // Exit edit mode
+      return;
+    }
+
     setSaving(true); // Start the saving process
+    setMessage(''); // Reset message
+
     try {
-      const response = await fetch(`/api/adminDetails`, { // Updated API path
+      const response = await fetch(`/api/adminDetails`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(admin), // Send the updated admin data (email)
       });
-  
+
       const result = await response.json(); // Parse the JSON response
-  
+
       if (!response.ok) {
         throw new Error(result.error || 'Failed to save admin data');
       }
-  
+
       // Successfully saved profile
       setIsEditing(false); // Exit edit mode
       setError('');
+      setMessage('Profile updated successfully');
     } catch (err) {
       setError(err.message);
       console.error("Error in saveProfile:", err); // Log the error
@@ -82,7 +93,7 @@ export default function AdminProfile() {
       setSaving(false); // Stop the saving process
     }
   };
-  
+
   // Handle loading state
   if (loading) {
     return <div>Loading profile...</div>;
@@ -132,13 +143,17 @@ export default function AdminProfile() {
         ) : (
           <button
             className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
-            onClick={() => setIsEditing(true)}
+            onClick={() => {
+              setIsEditing(true);
+              setMessage(''); // Reset the message when entering edit mode
+            }}
           >
             Edit Profile
           </button>
         )}
       </div>
 
+      {message && <p className="text-green-500 mt-4 text-center">{message}</p>}
       {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
     </div>
   );

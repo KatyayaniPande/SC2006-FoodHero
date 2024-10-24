@@ -36,7 +36,7 @@ export interface Request {
     | "inwarehouse"
     | "awaitingpickup"
     | "awaitingdelivery"
-    | "delivered"; // Add status field
+    | "delivered";
 }
 
 export default function BeneficiaryDashboardClient() {
@@ -46,6 +46,7 @@ export default function BeneficiaryDashboardClient() {
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState(""); // Track the user's email
   const [statusFilter, setStatusFilter] = useState("all"); // State for filtering donations by status
+  const [searchTerm, setSearchTerm] = useState(""); // Track the search term
 
   useEffect(() => {
     async function fetchData() {
@@ -78,24 +79,37 @@ export default function BeneficiaryDashboardClient() {
   }, []);
 
   const handleWithdraw = (id) => {
-    // Remove the withdrawn donation from the state
+    // Remove the withdrawn request from the state
     setMyRequests(myRequests.filter((request) => request._id !== id));
   };
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setStatusFilter(event.target.value); // Update the filter based on selection
   };
-  const filteredRequests = myRequests.filter((donation) => {
+
+  // Filter by status first for requests
+  const filteredRequests = myRequests.filter((request) => {
     if (statusFilter === "all") return true; // Show all if 'all' is selected
-    return donation.status === statusFilter;
+    return request.status === statusFilter;
   });
 
+  // Filter by status first for donations
   const filteredDonations = availableDonations
     .filter((donation) => donation.beneficiaryemail === email) // First filter by email
     .filter((donation) => {
       if (statusFilter === "all") return true; // Show all if 'all' is selected
       return donation.status === statusFilter; // Filter by status
     });
+
+  // Apply search term filtering after status filtering for requests
+  const searchedRequests = filteredRequests.filter((request) =>
+    request.foodName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Apply search term filtering after status filtering for donations
+  const searchedDonations = filteredDonations.filter((donation) =>
+    donation.foodName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if (loading) {
     return <div>Loading...</div>;
@@ -113,6 +127,17 @@ export default function BeneficiaryDashboardClient() {
             New Request
           </button>
         </Link>
+      </div>
+
+      {/* Search Bar */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Search by food name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
       </div>
 
       {/* Tab Navigation */}
@@ -197,26 +222,15 @@ export default function BeneficiaryDashboardClient() {
                 My Requests
               </h1>
 
-              {filteredDonations.length > 0 ? (
-                filteredDonations.map((donation, index) => (
-                  <DonorCard
-                    key={`donation-${index}`} // Use a unique key
-                    donation={donation}
-                    onWithdraw={handleWithdraw}
-                  />
-                ))
-              ) : (
-                <></>
-              )}
-              {filteredRequests.length > 0 ? (
-                filteredRequests.map((request, index) => (
+              {searchedRequests.length > 0 ? (
+                searchedRequests.map((request, index) => (
                   <BeneficiaryCard
-                    key={index} // Add a unique key prop here
+                    key={`request-${index}`} // Use a unique key
                     request={request}
                   />
                 ))
               ) : (
-                <></>
+                <p>No requests available.</p>
               )}
             </div>
           )}
@@ -226,8 +240,8 @@ export default function BeneficiaryDashboardClient() {
               <h1 className="text-2xl font-bold mb-4 text-black">
                 Available Donations
               </h1>
-              {availableDonations.length > 0 ? (
-                availableDonations
+              {searchedDonations.length > 0 ? (
+                searchedDonations
                   .filter((donation) => donation.status === "new") // Filter for donations with status 'new'
                   .map((donation, index) => (
                     <DonorCard
