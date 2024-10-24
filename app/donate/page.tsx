@@ -61,9 +61,7 @@ const Donate = () => {
     foodName: z.string().min(2, {
       message: "Food name must be at least 2 characters.",
     }),
-    timePrepared: z.string().nonempty({
-      message: "Date and Time of Preparation is required.",
-    }),
+
     specialHandling: z.string(),
     numberOfServings: z.number().min(1, {
       message: "Number of servings must be at least 1.",
@@ -83,11 +81,12 @@ const Donate = () => {
     foodName: z.string().min(2, {
       message: "Food name must be at least 2 characters.",
     }),
-    bestBeforeDate: z.string().nonempty({
-      message: "Best Before Date is required.",
-    }),
+
     foodCategory: z.string().nonempty({
       message: "Food Category is required.",
+    }),
+    consumeByTiming: z.string().nonempty({
+      message: "Consume By Timing is required.",
     }),
     specialHandling: z.string(),
     quantity: z.number().min(1, {
@@ -104,12 +103,10 @@ const Donate = () => {
     resolver: zodResolver(cookedFormSchema),
     defaultValues: {
       foodName: "",
-      timePrepared: "",
       consumeByTiming: "",
       specialHandling: "",
       numberOfServings: 0,
       foodImages: [],
-      // deliveryMethod: "",
       pickUpTime: "",
       pickUpLocation: "",
       dropOffTime: "",
@@ -121,7 +118,6 @@ const Donate = () => {
     resolver: zodResolver(nonCookedFormSchema),
     defaultValues: {
       foodName: "",
-      bestBeforeDate: "",
       foodCategory: "",
       specialHandling: "",
       quantity: 0,
@@ -159,7 +155,6 @@ const Donate = () => {
         if (data.foodType === "Cooked Food") {
           cookedForm.reset({
             foodName: data.foodName,
-            timePrepared: data.timePrepared,
             specialHandling: data.specialHandling,
             numberOfServings: data.numberOfServings,
             consumeByTiming: data.consumeByTiming,
@@ -170,7 +165,7 @@ const Donate = () => {
         } else {
           nonCookedForm.reset({
             foodName: data.foodName,
-            bestBeforeDate: data.bestBeforeDate,
+            consumeByTiming: data.consumeByTiming,
             foodCategory: data.foodCategory,
             quantity: data.quantity,
             specialHandling: data.specialHandling,
@@ -190,39 +185,6 @@ const Donate = () => {
       console.error("Error fetching donation data:", error);
     }
   };
-  /*
-  // If query params are available, pre-fill the form
-  useEffect(() => {
-    const foodName = searchParams.get("foodName");
-    const foodTypeQuery = searchParams.get("foodType");
-
-    // Only pre-fill if query parameters exist
-    if (foodName && foodTypeQuery) {
-      setFoodType(foodTypeQuery);
-
-      if (foodTypeQuery === "Cooked Food") {
-        cookedForm.setValue("foodName", foodName);
-        cookedForm.setValue("numberOfServings", Number(searchParams.get("numberOfServings") || 0));
-        cookedForm.setValue("consumeByTiming", searchParams.get("needByTime") || "");
-        cookedForm.setValue("specialHandling", searchParams.get("specialRequest") || "");
-        cookedForm.setValue("deliveryMethod", searchParams.get("deliveryMethod") || "");
-        cookedForm.setValue("pickUpTime", searchParams.get("deliveryTime") || "");
-        cookedForm.setValue("pickUpLocation", searchParams.get("deliveryLocation") || "");
-        cookedForm.setValue("pickUpLocation", searchParams.get("deliveryLocation") || "");
-        
-      } else {
-        nonCookedForm.setValue("foodName", foodName);
-        nonCookedForm.setValue("quantity", Number(searchParams.get("quantity") || 0));
-        nonCookedForm.setValue("bestBeforeDate", searchParams.get("needByTime") || "");
-        nonCookedForm.setValue("foodCategory", searchParams.get("foodCategory") || "");
-        nonCookedForm.setValue("specialHandling", searchParams.get("specialRequest") || "");
-        nonCookedForm.setValue("deliveryMethod", searchParams.get("deliveryMethod") || "");
-        nonCookedForm.setValue("pickUpTime", searchParams.get("deliveryTime") || "");
-        nonCookedForm.setValue("pickUpLocation", searchParams.get("deliveryLocation") || "");
-      }
-    }
-  }, [searchParams, cookedForm, nonCookedForm]);
-*/
 
   // Helper function to convert file to Base64
   const convertToBase64 = (file: File): Promise<string> => {
@@ -411,24 +373,6 @@ const Donate = () => {
 
                 <FormField
                   control={cookedForm.control}
-                  name="timePrepared"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Date and Time of Preparation</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="shadow-sm"
-                          type="datetime-local"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={cookedForm.control}
                   name="consumeByTiming"
                   render={({ field }) => (
                     <FormItem>
@@ -438,6 +382,9 @@ const Donate = () => {
                           className="shadow-sm"
                           type="datetime-local"
                           {...field}
+                          min={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // Adds 2 days
+                            .toISOString()
+                            .slice(0, 16)}
                         />
                       </FormControl>
                       <FormMessage />
@@ -610,29 +557,19 @@ const Donate = () => {
 
                 <FormField
                   control={nonCookedForm.control}
-                  name="bestBeforeDate"
+                  name="consumeByTiming"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Best Before Date</FormLabel>
+                      <FormLabel>Consume By</FormLabel>
+
                       <FormControl>
                         <Input
                           className="shadow-sm"
-                          type="date"
+                          type="datetime-local"
                           {...field}
-                          ref={(input) => {
-                            if (input) {
-                              // Get the current date and calculate 2 days from now
-                              const currentDate = new Date();
-                              const minDate = new Date(
-                                currentDate.setDate(currentDate.getDate() + 2)
-                              )
-                                .toISOString()
-                                .split("T")[0]; // Format as YYYY-MM-DD
-
-                              // Set the min attribute for the date input
-                              input.min = minDate;
-                            }
-                          }}
+                          min={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // Adds 2 days
+                            .toISOString()
+                            .slice(0, 16)}
                         />
                       </FormControl>
                       <FormMessage />

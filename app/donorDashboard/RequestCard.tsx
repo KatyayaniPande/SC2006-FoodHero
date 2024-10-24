@@ -49,6 +49,8 @@ interface RequestCardProps {
     donoremail: string;
     deliveryTime?: string;
     deliveryLocation?: string;
+    floorNumber: string;
+    consumeByTiming: string;
     status: "new" | "matched" | "awaitingdelivery" | "delivered";
   };
 }
@@ -213,6 +215,13 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
             Need by: {request.needByTime}
           </Typography>
 
+          {request.consumeByTiming && (
+            <Typography className="mb-2">
+              <FaClock className="inline-block mr-2" />
+              Consume by: {request.consumeByTiming}
+            </Typography>
+          )}
+
           {request.specialRequest && (
             <Typography className="mb-2">
               <FaRegStar className="inline-block mr-2" />
@@ -220,40 +229,6 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
             </Typography>
           )}
 
-          <Typography className="mb-2">
-            <IoLocation className="inline-block mr-2" />
-            Delivery Location: {request.deliveryLocation}
-          </Typography>
-          {/* 
-        {isDelivery && (
-          <>
-            <Typography className="mb-2">
-              <FaTruck className="inline-block mr-2" />
-              Delivery Method: {request.deliveryMethod}
-            </Typography>
-            <Typography className="mb-2">
-              <FaClock className="inline-block mr-2" />
-              Delivery Time: {request.deliveryTime}
-            </Typography>
-            <Typography className="mb-2">
-              <IoLocation className="inline-block mr-2" />
-              Delivery Location: {request.deliveryLocation}
-            </Typography>
-          </>
-        )}
-
-        {isSelfCollection && (
-          <>
-            <Typography className="mb-2">
-              <FaPersonChalkboard className="inline-block mr-2" />
-              Delivery Method: {request.deliveryMethod}
-            </Typography>
-            <Typography className="mb-2">
-              <FaClock className="inline-block mr-2" />
-              Pick-up Time: {request.deliveryTime}
-            </Typography>
-          </>
-        )} */}
           {request.status === "matched" &&
             request.needByTime &&
             (() => {
@@ -319,7 +294,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
                 as="h3"
                 className="text-lg font-medium leading-6 text-gray-900"
               >
-                Enter Cosume By Details
+                Enter Consume By Details
               </Dialog.Title>
               <div className="mt-2">
                 {/* Delivery Date */}
@@ -331,7 +306,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
                   type="datetime-local"
                   value={consumeBy}
                   onChange={(e) => setConsumeBy(e.target.value)}
-                  min={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // Adds 2 days
+                  min={new Date(Date.now()) // Adds 2 days
                     .toISOString()
                     .slice(0, 16)} // Convert to 'YYYY-MM-DDTHH:MM' format
                 />

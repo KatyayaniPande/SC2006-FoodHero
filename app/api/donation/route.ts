@@ -28,15 +28,10 @@ export async function POST(request: Request) {
       const {
         user,
         foodType,
-        // deliveryMethod,
-        // dropOffTime,
-        bestBeforeDate,
         consumeByTiming,
         foodCategory,
         foodImages,
         foodName,
-        // pickUpLocation,
-        // pickUpTime,
         quantity,
         specialHandling,
         agencyName,
@@ -45,16 +40,11 @@ export async function POST(request: Request) {
 
       // create a new donation object
       const newDonation = {
-        // deliveryMethod,
-        // dropOffTime: dropOffTime || null,
-        bestBeforeDate,
         foodCategory,
         foodImages,
         foodName,
         foodType,
         consumeByTiming,
-        // pickUpLocation: pickUpLocation || null,
-        // pickUpTime: pickUpTime || null,
         quantity,
         specialHandling,
         agencyName: agencyName || "",
@@ -77,14 +67,9 @@ export async function POST(request: Request) {
       const {
         user,
         foodType,
-        // deliveryMethod,
-        // dropOffTime,
         consumeByTiming,
-        timePrepared,
         foodImages,
         foodName,
-        // pickUpLocation,
-        // pickUpTime,
         numberOfServings,
         specialHandling,
         agencyName,
@@ -95,14 +80,9 @@ export async function POST(request: Request) {
       const newDonation = {
         user,
         foodType,
-        // deliveryMethod,
-        // dropOffTime: dropOffTime || null,
         consumeByTiming,
-        timePrepared,
         foodImages,
         foodName,
-        // pickUpLocation: pickUpLocation || null,
-        // pickUpTime: pickUpTime || null,
         numberOfServings,
         specialHandling,
         agencyName: agencyName || "",
@@ -136,7 +116,6 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const id = url.searchParams.get("id"); // Get the donation ID from the query string
     const donations = client.db("database").collection("donations");
-    // console.log(id);
 
     if (id) {
       // Fetch a specific donation by its ID
@@ -184,7 +163,6 @@ export async function PUT(request: Request) {
     if (body.foodType === "Non-Cooked Food") {
       const {
         foodType,
-        bestBeforeDate,
         consumeByTiming,
         foodCategory,
         foodImages,
@@ -198,7 +176,6 @@ export async function PUT(request: Request) {
       // Update object for Non-Cooked Food
       updateObject = {
         $set: {
-          bestBeforeDate,
           foodCategory,
           foodImages,
           foodName,
@@ -215,7 +192,6 @@ export async function PUT(request: Request) {
       const {
         foodType,
         consumeByTiming,
-        timePrepared,
         foodImages,
         foodName,
         numberOfServings,
@@ -228,7 +204,6 @@ export async function PUT(request: Request) {
       updateObject = {
         $set: {
           consumeByTiming,
-          timePrepared,
           foodImages,
           foodName,
           foodType,
@@ -240,8 +215,6 @@ export async function PUT(request: Request) {
         },
       };
     }
-
-    console.log(updateObject);
 
     // Update the donation with the new data
     const result = await donations.updateOne(
