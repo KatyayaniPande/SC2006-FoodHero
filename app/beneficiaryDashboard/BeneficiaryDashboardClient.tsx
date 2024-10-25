@@ -232,6 +232,26 @@ export default function BeneficiaryDashboardClient() {
               ) : (
                 <p>No requests available.</p>
               )}
+              {/* {filteredRequests.length > 0 ? (
+                searchedRequests.map((request, index) => (
+                  <BeneficiaryCard
+                    key={`request-${index}`} // Use a unique key
+                    request={request}
+                  />
+                ))
+              ) : (
+                <p>No requests available.</p>
+              )}{" "}
+              {searchedDonations.length > 0 ? (
+                searchedDonations.map((donation, index) => (
+                  <DonorCard
+                    key={index} // Add a unique key prop here
+                    donation={donation}
+                  />
+                ))
+              ) : (
+                <></>
+              )} */}
             </div>
           )}
 
@@ -240,8 +260,8 @@ export default function BeneficiaryDashboardClient() {
               <h1 className="text-2xl font-bold mb-4 text-black">
                 Available Donations
               </h1>
-              {searchedDonations.length > 0 ? (
-                searchedDonations
+              {availableDonations.length > 0 ? (
+                availableDonations
                   .filter((donation) => donation.status === "new") // Filter for donations with status 'new'
                   .map((donation, index) => (
                     <DonorCard

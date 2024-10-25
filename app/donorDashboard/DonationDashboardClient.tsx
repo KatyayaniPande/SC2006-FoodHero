@@ -36,7 +36,7 @@ export interface Donation {
   needByTime: string;
   pickUpTime: string;
   dropOffTime: string;
-  status: "new" | "matched" | "inwarehouse" | "awaitingdelivery" | "delivered"; 
+  status: "new" | "matched" | "inwarehouse" | "awaitingdelivery" | "delivered";
 }
 
 export interface Request {
@@ -52,7 +52,7 @@ export interface Request {
     | "inwarehouse"
     | "awaitingpickup"
     | "awaitingdelivery"
-    | "delivered"; 
+    | "delivered";
 }
 
 export default function DonorDashboardClient() {
@@ -123,7 +123,7 @@ export default function DonorDashboardClient() {
     });
 
   // Apply search term filtering after status filtering
-  const searchedDonations = filteredDonations.filter((donation) => 
+  const searchedDonations = filteredDonations.filter((donation) =>
     donation.foodName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -148,7 +148,6 @@ export default function DonorDashboardClient() {
           </button>
         </Link>
       </div>
-
       {/* Search Bar */}
       <div className="mb-6">
         <input
@@ -159,7 +158,6 @@ export default function DonorDashboardClient() {
           className="w-full p-2 border border-gray-300 rounded-md"
         />
       </div>
-
       {/* Tab Navigation */}
       <div className="flex ml-1 mb-6">
         <button
@@ -183,7 +181,6 @@ export default function DonorDashboardClient() {
           Requests to Fulfill
         </button>
       </div>
-
       {/* Filter Dropdown for Donations */}
       {activeTab === "donations" && (
         <div className="mb-4">
@@ -205,7 +202,6 @@ export default function DonorDashboardClient() {
           </select>
         </div>
       )}
-
       <div className="flex gap-8">
         {/* Left Column for Welcome Card */}
         <div className="flex-1 min-w-[30%]">
@@ -266,29 +262,28 @@ export default function DonorDashboardClient() {
             </div>
           )}
 
-{activeTab === "requests" && (
-  <div>
-    <h1 className="text-2xl font-bold mb-4 text-black">
-      Requests to Fulfill
-    </h1>
-    {requests
-      .filter((request) => request.status === "new") // Keep the "new" status filter for Requests to Fulfill
-      .filter((request) =>
-        request.foodName.toLowerCase().includes(searchTerm.toLowerCase())
-      ) // Apply search filter on raw requests data
-      .map((request, index) => (
-        <RequestCard
-          key={index} // Add a unique key prop here
-          request={request}
-        />
-      ))}
-    {requests.filter((request) => request.status === "new").length === 0 && (
-      <p>No requests to fulfill at this time.</p>
-    )}
-  </div>
-)}
-
-          
+          {activeTab === "requests" && (
+            <div>
+              <h1 className="text-2xl font-bold mb-4 text-black">
+                Requests to Fulfill
+              </h1>
+              {requests
+                .filter((request) => request.status === "new") // Keep the "new" status filter for Requests to Fulfill
+                .filter((request) =>
+                  request.foodName
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ) // Apply search filter on raw requests data
+                .map((request, index) => (
+                  <RequestCard
+                    key={index} // Add a unique key prop here
+                    request={request}
+                  />
+                ))}
+              {requests.filter((request) => request.status === "new").length ===
+                0 && <p>No requests to fulfill at this time.</p>}
+            </div>
+          )}
         </div>
       </div>
     </div>
