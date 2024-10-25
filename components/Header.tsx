@@ -73,19 +73,21 @@ const Header: React.FC = () => {
     if (!status || typeof status !== "string") {
       return "bg-gray-100 text-gray-800"; // Default color for undefined status
     }
-    switch (status.toLowerCase()) {
+    switch (status) {
       case "new":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-300"; // New = Blue
       case "matched":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-500"; // Matched = Yellow
+      case "inwarehouse":
+        return "bg-green-500"; // In Warehouse = Green
       case "awaitingpickup":
-        return "bg-orange-100 text-orange-800";
+        return "bg-orange-500"; // Awaiting Pickup = Orange
       case "awaitingdelivery":
-        return "bg-purple-100 text-purple-800";
+        return "bg-purple-500"; // Awaiting Delivery = Purple
       case "delivered":
-        return "bg-green-100 text-green-800";
+        return "bg-green-500"; // Delivered = Green
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-500"; // Default = Gray
     }
   };
 

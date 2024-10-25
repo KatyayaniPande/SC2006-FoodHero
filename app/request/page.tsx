@@ -276,10 +276,7 @@ const Request = () => {
             Request for Food
           </h1>
           <p className="text-sm text-gray-700 mb-7 text-center pt-4">
-            Require food for your organisation? Fill in the form below to
-            request for food donations from our donors. We will do our best to
-            match you with a donor as soon as possible!
-          </p>
+          Complete the form below to request food donations from our generous donors.</p>
           {/* Back button aligned to the left */}
           <div className="absolute top-0 left-0">
             <Button

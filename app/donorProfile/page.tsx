@@ -20,7 +20,7 @@ export default function DonorProfile() {
   const [isEditing, setIsEditing] = useState(false); // Track edit mode
   const [saving, setSaving] = useState(false); // Track saving state
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Show delete confirmation pop-up
-
+  const [message, setMessage] = useState(''); // Success or info message state
 
   // Fetch donor details from API based on the session
   useEffect(() => {
@@ -80,9 +80,13 @@ export default function DonorProfile() {
 
       // Successfully saved profile
       setIsEditing(false); // Exit edit mode
+      setMessage('Profile saved successfully!'); // Set success message
+
       setError('');
     } catch (err) {
       setError(err.message);
+      setMessage(''); // Clear any previous success message on error
+
     } finally {
       setSaving(false); // Stop the saving process
     }
@@ -233,6 +237,8 @@ export default function DonorProfile() {
           </div>
         </div>
       )}
+      {message && <p className="text-green-500 mt-4 text-center">{message}</p>} {/* Success message */}
+
       {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
     </div >
   );

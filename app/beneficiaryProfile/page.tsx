@@ -21,6 +21,7 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false); // Track edit mode
   const [saving, setSaving] = useState(false); // Track saving state
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Show delete confirmation pop-up
+  const [message, setMessage] = useState(''); // To display success or info messages
 
   // Fetch beneficiary details from API based on the session
   useEffect(() => {
@@ -65,6 +66,7 @@ export default function Profile() {
 
   // Simulate saving changes to a backend
   const saveProfile = async () => {
+    
     setSaving(true); // Start the saving process
     try {
       const response = await fetch(`/api/beneficiaryDetails`, { // Update API call
@@ -81,9 +83,12 @@ export default function Profile() {
 
       // Successfully saved profile
       setIsEditing(false); // Exit edit mode
+      setMessage('Profile updated successfully!'); // Set success message
       setError('');
     } catch (err) {
       setError(err.message);
+       setMessage(''); // Clear any previous success message on error
+ 
     } finally {
       setSaving(false); // Stop the saving process
     }
@@ -184,9 +189,8 @@ export default function Profile() {
             type="text"
             name="role"
             value={beneficiary.role}
-            readOnly={!isEditing}
-            onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            readOnly
+            className="border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
           />
         </div>
         <div className="flex flex-col">
@@ -215,7 +219,10 @@ export default function Profile() {
           <>
             <button
               className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
-              onClick={() => setIsEditing(true)}
+              onClick={() => {
+                setIsEditing(true);
+                setMessage(''); // Clear message on edit
+              }}
             >
               Edit Profile
             </button>
@@ -254,7 +261,7 @@ export default function Profile() {
           </div>
         </div>
       )}
-
+      {message && <p className="text-green-500 mt-4 text-center">{message}</p>}
       {error && <p className="text-red-500 mt-4 text-center">{error}</p>} {/* Display error if any */}
     </div>
   );

@@ -22,9 +22,11 @@ import { IoMdContact } from "react-icons/io";
 const getStatusColor = (status: string) => {
   switch (status) {
     case "new":
-      return "bg-blue-300"; // New = Light Blue
+      return "bg-blue-300"; // New = Blue
     case "matched":
       return "bg-yellow-500"; // Matched = Yellow
+    case "inwarehouse":
+      return "bg-green-500"; // In Warehouse = Green
     case "awaitingpickup":
       return "bg-orange-500"; // Awaiting Pickup = Orange
     case "awaitingdelivery":

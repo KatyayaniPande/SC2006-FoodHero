@@ -31,7 +31,7 @@ const getStatusColor = (status: string) => {
     case "matched":
       return "bg-yellow-500"; // Matched = Yellow
     case "inwarehouse":
-      return "bg-green-500"; // Matched = Yellow
+      return "bg-green-500"; // In Warehouse = Green
     case "awaitingpickup":
       return "bg-orange-500"; // Awaiting Pickup = Orange
     case "awaitingdelivery":
