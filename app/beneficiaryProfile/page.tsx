@@ -212,21 +212,23 @@ export default function Profile() {
             {saving ? 'Saving...' : 'Save Profile'}
           </button>
         ) : (
-          <button
-            className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
-            onClick={() => setIsEditing(true)}
-          >
-            Edit Profile
-          </button>
+          <>
+            <button
+              className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit Profile
+            </button>
+            
+            {/* Delete Profile Button */}
+            <button
+              className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
+              onClick={() => setShowDeleteModal(true)}  // Trigger modal visibility   
+            >
+              Delete Profile
+            </button>
+          </>
         )}
-
-        {/* Delete Profile Button */}
-        <button
-          className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
-          onClick={() => setShowDeleteModal(true)}  // Trigger modal visibility   
-        >
-          Delete Profile
-        </button>
       </div>
 
       {/* Delete Confirmation Modal */}

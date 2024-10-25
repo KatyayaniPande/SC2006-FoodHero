@@ -48,12 +48,12 @@ export interface Request {
   deadline: string;
   donoremail: string;
   status:
-    | "new"
-    | "matched"
-    | "inwarehouse"
-    | "awaitingpickup"
-    | "awaitingdelivery"
-    | "delivered";
+  | "new"
+  | "matched"
+  | "inwarehouse"
+  | "awaitingpickup"
+  | "awaitingdelivery"
+  | "delivered";
 }
 
 export default function DonorDashboardClient() {
@@ -139,8 +139,8 @@ export default function DonorDashboardClient() {
   return (
     <div className="bg-gray-50 min-h-screen p-8">
       <Header /> {/* Consistent header */}
-      <div className="flex flex-row items-center justify-between">
-        <div className="mr-3 mb-3 text-3xl font-extrabold w-[90%]">
+      <div className="flex flex-row items-center justify-between px-4">
+        <div className="text-3xl font-extrabold w-[90%]">
           Donor Dashboard
         </div>
         <Link href="/donate" className="w-[10%]">
@@ -149,60 +149,78 @@ export default function DonorDashboardClient() {
           </button>
         </Link>
       </div>
-      {/* Search Bar */}
-      <div className="mb-6">
-        <input
-          type="text"
-          placeholder="Search by food name..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded-md"
-        />
-      </div>
-      {/* Tab Navigation */}
-      <div className="flex ml-1 mb-6">
-        <button
-          className={`px-4 py-2 ${
-            activeTab === "donations"
-              ? "bg-custom-dark-green text-white"
-              : "bg-white text-black"
-          } rounded-l-lg`}
-          onClick={() => setActiveTab("donations")}
-        >
-          My Donations
-        </button>
-        <button
-          className={`px-4 py-2 ${
-            activeTab === "requests"
-              ? "bg-custom-dark-green text-white"
-              : "bg-white text-black"
-          } rounded-r-lg`}
-          onClick={() => setActiveTab("requests")}
-        >
-          Requests to Fulfill
-        </button>
-      </div>
-      {/* Filter Dropdown for Donations */}
-      {activeTab === "donations" && (
-        <div className="mb-4">
-          <label htmlFor="statusFilter" className="mr-2">
-            Filter by status:
-          </label>
-          <select
-            id="statusFilter"
-            value={statusFilter}
-            onChange={handleFilterChange}
-            className="p-2 border border-gray-300 rounded-md"
+
+      <div className="grid grid-cols-[400px_1fr_auto] gap-x-8 p-6">
+        {/* Tab Navigation */}
+        <div className="flex ml-1">
+          <button
+            className={`px-8 py-2 border border-gray-300 shadow-sm ${activeTab === "donations"
+                ? "bg-custom-dark-green text-white"
+                : "bg-white text-black"
+              } rounded-l-lg`}
+            onClick={() => setActiveTab("donations")}
           >
-            <option value="all">All</option>
-            <option value="new">New</option>
-            <option value="matched">Matched</option>
-            <option value="inwarehouse">In Warehouse</option>
-            <option value="awaitingdelivery">Awaiting Delivery</option>
-            <option value="delivered">Delivered</option>
-          </select>
+            My Donations
+          </button>
+          <button
+            className={`px-8 py-2 border border-gray-300 shadow-sm ${activeTab === "requests"
+                ? "bg-custom-dark-green text-white"
+                : "bg-white text-black"
+              } rounded-r-lg`}
+            onClick={() => setActiveTab("requests")}
+          >
+            Requests to Fulfill
+          </button>
         </div>
-      )}
+        {/* Search Bar */}
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search by food name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full p-2 pl-10 border border-gray-300 rounded-md"
+          />
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+            <svg
+              className="w-5 h-5 text-gray-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M21 21l-4.35-4.35M11 5a6 6 0 100 12 6 6 0 000-12z"
+              />
+            </svg>
+          </div>
+        </div>
+        
+        {/* Filter Dropdown for Donations */}
+        {activeTab === "donations" && (
+          <div className="flex items-center justify-end">
+            <label htmlFor="statusFilter" className="mr-2">
+              Filter by status:
+            </label>
+            <select
+              id="statusFilter"
+              value={statusFilter}
+              onChange={handleFilterChange}
+              className="p-2 border border-gray-300 rounded-md"
+            >
+              <option value="all">All</option>
+              <option value="new">New</option>
+              <option value="matched">Matched</option>
+              <option value="inwarehouse">In Warehouse</option>
+              <option value="awaitingdelivery">Awaiting Delivery</option>
+              <option value="delivered">Delivered</option>
+            </select>
+          </div>
+        )}
+      </div>
       <div className="flex gap-8">
         {/* Left Column for Welcome Card */}
         <div className="flex-1 min-w-[30%]">
