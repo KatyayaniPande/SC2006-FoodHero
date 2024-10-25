@@ -31,12 +31,12 @@ export interface Request {
   floorNumber: string;
   consumeByTiming: string;
   status:
-    | "new"
-    | "matched"
-    | "inwarehouse"
-    | "awaitingpickup"
-    | "awaitingdelivery"
-    | "delivered"; // Add status field
+  | "new"
+  | "matched"
+  | "inwarehouse"
+  | "awaitingpickup"
+  | "awaitingdelivery"
+  | "delivered"; // Add status field
 }
 
 export default function BeneficiaryDashboardClient() {
@@ -115,8 +115,8 @@ export default function BeneficiaryDashboardClient() {
   return (
     <div className="bg-gray-50 min-h-screen p-8">
       <Header />
-      <div className="flex flex-row items-center justify-between">
-        <div className="mr-3 mb-3 text-3xl font-extrabold w-[90%]">
+      <div className="flex flex-row items-center justify-between px-4">
+        <div className="text-3xl font-extrabold w-[90%]">
           Beneficiary Dashboard
         </div>
         <Link href="/request" className="w-[10%]">
@@ -126,154 +126,171 @@ export default function BeneficiaryDashboardClient() {
         </Link>
       </div>
 
-      {/* Search Bar */}
-      <div className="mb-6">
-        <input
-          type="text"
-          placeholder="Search by food name..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm state
-          className="w-full p-2 border border-gray-300 rounded-md"
-        />
-      </div>
-
-      {/* Tab Navigation */}
-      <div className="flex ml-1 mb-6">
-        <button
-          className={`px-4 py-2 ${
-            activeTab === "myRequests"
+      <div className="grid grid-cols-[400px_1fr_auto] gap-x-8 p-6">
+        {/* Tab Navigation */}
+        <div className="flex ml-1">
+          <button
+            className={`px-8 py-2 border border-gray-300 shadow-sm ${activeTab === "myRequests"
               ? "bg-custom-dark-green text-white"
               : "bg-white text-black"
-          } rounded-l-lg`}
-          onClick={() => setActiveTab("myRequests")}
-        >
-          My Requests
-        </button>
-        <button
-          className={`px-4 py-2 ${
-            activeTab === "availableDonations"
-              ? "bg-custom-dark-green text-white"
-              : "bg-white text-black"
-          } rounded-r-lg`}
-          onClick={() => setActiveTab("availableDonations")}
-        >
-          Available Donations
-        </button>
-      </div>
-
-      {activeTab === "myRequests" && (
-        <div className="mb-4">
-          <label htmlFor="statusFilter" className="mr-2">
-            Filter by status:
-          </label>
-          <select
-            id="statusFilter"
-            value={statusFilter}
-            onChange={handleFilterChange}
-            className="p-2 border border-gray-300 rounded-md"
+              } rounded-l-lg`}
+            onClick={() => setActiveTab("myRequests")}
           >
-            <option value="all">All</option>
-            <option value="new">New</option>
-            <option value="matched">Matched</option>
-            <option value="inwarehouse">In Warehouse</option>
-            <option value="awaitingdelivery">Awaiting Delivery</option>
-            <option value="delivered">Delivered</option>
-          </select>
+            My Requests
+          </button>
+          <button
+            className={`px-8 py-2 border border-gray-300 shadow-sm ${activeTab === "availableDonations"
+              ? "bg-custom-dark-green text-white"
+              : "bg-white text-black"
+              } rounded-r-lg`}
+            onClick={() => setActiveTab("availableDonations")}
+          >
+            Available Donations
+          </button>
         </div>
-      )}
 
-      <div className="flex gap-8">
-        {/* Left Column for Welcome Card */}
-        <div className="flex-1 min-w-[30%]">
-          <Card
-            shadow={false}
-            className="relative h-full w-full items-end justify-center overflow-hidden text-center"
-          >
-            <CardHeader
-              floated={false}
-              shadow={false}
-              color="transparent"
-              className="absolute inset-0 m-0 h-full w-full rounded-none bg-[url('https://images.unsplash.com/photo-1552960562-daf630e9278b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80')] bg-cover bg-center"
+        {/* Search Bar */}
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search by food name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm state
+            className="w-full p-2 pl-10 border border-gray-300 rounded-md"
+          />
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+            <svg
+              className="w-5 h-5 text-gray-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <div className="to-bg-black-10 absolute inset-0 h-full w-full bg-gradient-to-t from-black/80 via-black/50" />
-            </CardHeader>
-            <CardBody className="relative py-14 px-6 md:px-12">
-              <Typography
-                variant="h2"
-                color="white"
-                className="mb-6 font-medium leading-[1.5]"
-              >
-                Welcome Back!
-              </Typography>
-              <Typography variant="h5" className="mb-4 text-gray-400">
-                Manage your requests or view available donations.
-              </Typography>
-            </CardBody>
-          </Card>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M21 21l-4.35-4.35M11 5a6 6 0 100 12 6 6 0 000-12z"
+              />
+            </svg>
+          </div>
         </div>
 
-        <div className="flex-1 min-w-[70%] max-h-[calc(100vh-100px)] overflow-y-auto">
-          {activeTab === "myRequests" && (
-            <div>
-              <h1 className="text-2xl font-bold mb-4 text-black">
-                My Requests
-              </h1>
+        {/* Filter Dropdown for Requests */}
+        {activeTab === "myRequests" && (
+          <div className="flex items-center justify-end">
+            <label htmlFor="statusFilter" className="mr-2">
+              Filter by status:
+            </label>
+            <select
+              id="statusFilter"
+              value={statusFilter}
+              onChange={handleFilterChange}
+              className="p-2 border border-gray-300 rounded-md"
+            >
+              <option value="all">All</option>
+              <option value="new">New</option>
+              <option value="matched">Matched</option>
+              <option value="inwarehouse">In Warehouse</option>
+              <option value="awaitingdelivery">Awaiting Delivery</option>
+              <option value="delivered">Delivered</option>
+            </select>
+          </div>
+        )}
+        </div>
 
-              {filteredRequests.length > 0 ? (
-                searchedRequests.map((request, index) => (
-                  <BeneficiaryCard
-                    key={index} // Add a unique key prop here
-                    request={request}
-                  />
-                ))
-              ) : (
-                <></>
-              )}
-              {filteredDonations.length > 0 ? (
-                searchedDonations.map((donation, index) => (
-                  <DonorCard
-                    key={`donation-${index}`} // Use a unique key
-                    donation={donation}
-                    onWithdraw={handleWithdraw}
-                  />
-                ))
-              ) : (
-                <></>
-              )}
-            </div>
-          )}
-          {activeTab === "availableDonations" && (
-            <div>
-              <h1 className="text-2xl font-bold mb-4 text-black">
-                Available Donations
-              </h1>
-              {availableDonations
-                .filter((donation) => donation.status === "new") // Filter for donations with status 'new'
-                .filter((donation) =>
-                  donation.foodName
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                ).length > 0 ? (
-                availableDonations
+        <div className="flex gap-8">
+          {/* Left Column for Welcome Card */}
+          <div className="flex-1 min-w-[30%]">
+            <Card
+              shadow={false}
+              className="relative h-full w-full items-end justify-center overflow-hidden text-center"
+            >
+              <CardHeader
+                floated={false}
+                shadow={false}
+                color="transparent"
+                className="absolute inset-0 m-0 h-full w-full rounded-none bg-[url('https://images.unsplash.com/photo-1552960562-daf630e9278b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80')] bg-cover bg-center"
+              >
+                <div className="to-bg-black-10 absolute inset-0 h-full w-full bg-gradient-to-t from-black/80 via-black/50" />
+              </CardHeader>
+              <CardBody className="relative py-14 px-6 md:px-12">
+                <Typography
+                  variant="h2"
+                  color="white"
+                  className="mb-6 font-medium leading-[1.5]"
+                >
+                  Welcome Back!
+                </Typography>
+                <Typography variant="h5" className="mb-4 text-gray-400">
+                  Manage your requests or view available donations.
+                </Typography>
+              </CardBody>
+            </Card>
+          </div>
+
+          <div className="flex-1 min-w-[70%] max-h-[calc(100vh-100px)] overflow-y-auto">
+            {activeTab === "myRequests" && (
+              <div>
+                <h1 className="text-2xl font-bold mb-4 text-black">
+                  My Requests
+                </h1>
+
+                {filteredRequests.length > 0 ? (
+                  searchedRequests.map((request, index) => (
+                    <BeneficiaryCard
+                      key={index} // Add a unique key prop here
+                      request={request}
+                    />
+                  ))
+                ) : (
+                  <p>No requests available.</p>
+                )}
+                {filteredDonations.length > 0 ? (
+                  searchedDonations.map((donation, index) => (
+                    <DonorCard
+                      key={`donation-${index}`} // Use a unique key
+                      donation={donation}
+                      onWithdraw={handleWithdraw}
+                    />
+                  ))
+                ) : (
+                  <></>
+                )}
+              </div>
+            )}
+            {activeTab === "availableDonations" && (
+              <div>
+                <h1 className="text-2xl font-bold mb-4 text-black">
+                  Available Donations
+                </h1>
+                {availableDonations
                   .filter((donation) => donation.status === "new") // Filter for donations with status 'new'
                   .filter((donation) =>
                     donation.foodName
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase())
-                  )
-                  .map((donation, index) => (
-                    <DonorCard
-                      key={`donation-${index}`} // Use a unique key
-                      donation={donation}
-                    />
-                  ))
-              ) : (
-                <p>No available donations at this time.</p>
-              )}
-            </div>
-          )}
+                  ).length > 0 ? (
+                  availableDonations
+                    .filter((donation) => donation.status === "new") // Filter for donations with status 'new'
+                    .filter((donation) =>
+                      donation.foodName
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
+                    )
+                    .map((donation, index) => (
+                      <DonorCard
+                        key={`donation-${index}`} // Use a unique key
+                        donation={donation}
+                      />
+                    ))
+                ) : (
+                  <p>No available donations at this time.</p>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
+      );
 }

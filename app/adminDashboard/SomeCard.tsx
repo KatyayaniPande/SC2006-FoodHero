@@ -19,17 +19,19 @@ import { FaClock, FaBowlFood, FaRegStar } from "react-icons/fa6";
 const getStatusColor = (status: string) => {
   switch (status) {
     case "new":
-      return "bg-blue-300";
+      return "bg-blue-300"; // New = Blue
     case "matched":
-      return "bg-yellow-500";
+      return "bg-yellow-500"; // Matched = Yellow
+    case "inwarehouse":
+      return "bg-green-500"; // In Warehouse = Green
     case "awaitingpickup":
-      return "bg-orange-500";
+      return "bg-orange-500"; // Awaiting Pickup = Orange
     case "awaitingdelivery":
-      return "bg-purple-500";
+      return "bg-purple-500"; // Awaiting Delivery = Purple
     case "delivered":
-      return "bg-green-500";
+      return "bg-green-500"; // Delivered = Green
     default:
-      return "bg-gray-500";
+      return "bg-gray-500"; // Default = Gray
   }
 };
 

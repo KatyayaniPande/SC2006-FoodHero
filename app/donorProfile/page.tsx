@@ -20,6 +20,7 @@ export default function DonorProfile() {
   const [isEditing, setIsEditing] = useState(false); // Track edit mode
   const [saving, setSaving] = useState(false); // Track saving state
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Show delete confirmation pop-up
+  const [message, setMessage] = useState(""); // Success or info message state
 
   // Fetch donor details from API based on the session
   useEffect(() => {
@@ -102,9 +103,12 @@ export default function DonorProfile() {
 
       // Successfully saved profile
       setIsEditing(false); // Exit edit mode
+      setMessage("Profile saved successfully!"); // Set success message
+
       setError("");
     } catch (err) {
       setError(err.message);
+      setMessage(""); // Clear any previous success message on error
     } finally {
       setSaving(false); // Stop the saving process
     }
@@ -135,7 +139,6 @@ export default function DonorProfile() {
         <h1 className="text-2xl font-semibold">{donor.agency}</h1>
         <p className="text-gray-500">Donor</p>
       </div>
-
       <div className="container mx-auto p-4 max-w-4xl grid grid-cols-2 gap-6 mt-4">
         <div className="flex flex-col">
           <label className="text-sm font-medium text-gray-500 mb-1">
@@ -228,7 +231,6 @@ export default function DonorProfile() {
           />
         </div>
       </div>
-
       <div className="ml-4 mt-8 flex justify-center space-x-2">
         {/* Button to toggle between edit and save modes */}
         {isEditing ? (
@@ -240,23 +242,24 @@ export default function DonorProfile() {
             {saving ? "Saving..." : "Save Profile"}
           </button>
         ) : (
-          <button
-            className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
-            onClick={() => setIsEditing(true)}
-          >
-            Edit Profile
-          </button>
+          <>
+            <button
+              className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit Profile
+            </button>
+
+            {/* Delete Profile Button */}
+            <button
+              className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
+              onClick={() => setShowDeleteModal(true)} // Trigger modal visibility
+            >
+              Delete Profile
+            </button>
+          </>
         )}
-
-        {/* Delete Profile Button */}
-        <button
-          className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
-          onClick={() => setShowDeleteModal(true)} // Trigger modal visibility
-        >
-          Delete Profile
-        </button>
       </div>
-
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -280,6 +283,8 @@ export default function DonorProfile() {
           </div>
         </div>
       )}
+      {message && <p className="text-green-500 mt-4 text-center">{message}</p>}{" "}
+      {/* Success message */}
       {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
     </div>
   );
