@@ -36,6 +36,7 @@ export interface Donation {
   needByTime: string;
   pickUpTime: string;
   dropOffTime: string;
+  beneficiaryemail: string;
   status: "new" | "matched" | "inwarehouse" | "awaitingdelivery" | "delivered";
 }
 

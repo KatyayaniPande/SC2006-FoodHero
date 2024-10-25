@@ -16,6 +16,7 @@ import { getSession } from "next-auth/react";
 import { MdNotificationImportant } from "react-icons/md";
 import { Dialog } from "@headlessui/react"; // Import Dialog for the modal
 import { Input } from "@/components/ui/input";
+import { IoMdContact } from "react-icons/io";
 
 // Utility function to determine the status color
 const getStatusColor = (status: string) => {
@@ -51,6 +52,7 @@ interface RequestCardProps {
     deliveryLocation?: string;
     floorNumber: string;
     consumeByTiming: string;
+    beneficiaryemail: string;
     status: "new" | "matched" | "awaitingdelivery" | "delivered";
   };
 }
@@ -63,8 +65,31 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Track modal state
   const [consumeBy, setConsumeBy] = useState("");
   const [errors, setErrors] = useState({ consumeByDate: "" }); // Track errors
+  const [beneficiaryData, setBeneficiaryData] = useState(null);
 
   const router = useRouter();
+
+  useEffect(() => {
+    async function fetchBeneficiaryData() {
+      try {
+        const response = await fetch(
+          `/api/beneficiaryDetails?email=${request.beneficiaryemail}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setBeneficiaryData(data);
+        } else {
+          console.error("Error fetching donor data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching donor data:", error);
+      }
+    }
+
+    if (request.beneficiaryemail) {
+      fetchBeneficiaryData();
+    }
+  }, [request.beneficiaryemail]);
 
   useEffect(() => {
     if (request.foodType === "Cooked Food") {
@@ -252,6 +277,13 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
               }
               return null; // Don't show the message if it's more than 2 days away
             })()}
+          {request.status !== "new" && beneficiaryData && (
+            <Typography className="mb-2">
+              <IoMdContact className="inline-block mr-2" />
+              Point of Contact: {beneficiaryData.poc_name}, Phone Number:{" "}
+              {beneficiaryData.poc_phone}
+            </Typography>
+          )}
         </CardBody>
 
         <CardFooter className="pt-0">

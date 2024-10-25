@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { AiOutlineNumber } from "react-icons/ai";
 import { IoLocation } from "react-icons/io5";
 import MapComponent from "../adminDashboard/map"; // Import the map component
+import { IoMdContact } from "react-icons/io";
 
 import { FaClock, FaBowlFood, FaRegStar } from "react-icons/fa6";
 
@@ -59,6 +60,8 @@ interface Donation {
   deliveryLocation: string;
   status: string;
   deliveryMethod: string;
+  beneficiaryemail: string;
+  floorNumber: string;
 }
 
 interface SomeCardProps {
@@ -67,13 +70,18 @@ interface SomeCardProps {
 
 const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
   const [showMap, setShowMap] = useState(false);
-  const [deliveryCoords, setDeliveryCoords] = useState<[number, number] | null>(null);
+  const [deliveryCoords, setDeliveryCoords] = useState<[number, number] | null>(
+    null
+  );
   const [googleMapsLoaded, setGoogleMapsLoaded] = useState(false); // Track if Google Maps is loaded
-  const [travelMode, setTravelMode] = useState<google.maps.TravelMode | null>(null); // Initialize travel mode as null
+  const [travelMode, setTravelMode] = useState<google.maps.TravelMode | null>(
+    null
+  ); // Initialize travel mode as null
 
   const [isCooked, setIsCooked] = useState(false);
   const [isSelfPickUp, setIsSelfPickUp] = useState(false);
   const [isDelivery, setIsDelivery] = useState(false);
+  const [beneficiaryData, setBeneficiaryData] = useState(null);
 
   // Load Google Maps script on component mount
   useEffect(() => {
@@ -85,6 +93,27 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
     });
   }, []);
 
+  useEffect(() => {
+    async function fetchBeneficiaryData() {
+      try {
+        const response = await fetch(
+          `/api/beneficiaryDetails?email=${donation.beneficiaryemail}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setBeneficiaryData(data);
+        } else {
+          console.error("Error fetching donor data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching donor data:", error);
+      }
+    }
+
+    if (donation.beneficiaryemail) {
+      fetchBeneficiaryData();
+    }
+  }, [donation.beneficiaryemail]);
   // Determine food type and delivery method
   useEffect(() => {
     if (donation.foodType === "Cooked Food") {
@@ -169,22 +198,25 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
 
     const geocoder = new google.maps.Geocoder(); // Google Maps Geocoder
 
-    geocoder.geocode({ address: donation.deliveryLocation }, (results, status) => {
-      if (status === "OK" && results[0]) {
-        const latLng = results[0].geometry.location;
-        setDeliveryCoords([latLng.lat(), latLng.lng()]);
-        setShowMap(true);
-      } else {
-        console.error("Geocoding failed with status: " + status);
-        if (status === "ZERO_RESULTS") {
-          alert("No results found for the provided address.");
-        } else if (status === "OVER_QUERY_LIMIT") {
-          alert("You have exceeded your request quota for this API.");
+    geocoder.geocode(
+      { address: donation.deliveryLocation },
+      (results, status) => {
+        if (status === "OK" && results[0]) {
+          const latLng = results[0].geometry.location;
+          setDeliveryCoords([latLng.lat(), latLng.lng()]);
+          setShowMap(true);
         } else {
-          alert("Geocoding failed due to: " + status);
+          console.error("Geocoding failed with status: " + status);
+          if (status === "ZERO_RESULTS") {
+            alert("No results found for the provided address.");
+          } else if (status === "OVER_QUERY_LIMIT") {
+            alert("You have exceeded your request quota for this API.");
+          } else {
+            alert("Geocoding failed due to: " + status);
+          }
         }
       }
-    });
+    );
   };
 
   // Handler for travel mode change
@@ -193,7 +225,10 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
   };
 
   return (
-    <Card shadow={false} className="relative mb-4 border border-black rounded-lg p-4">
+    <Card
+      shadow={false}
+      className="relative mb-4 border border-black rounded-lg p-4"
+    >
       {/* Status badge */}
       <div
         className={`absolute top-2 right-2 text-black text-sm font-semibold px-2 py-1 rounded-md ${getStatusColor(
@@ -217,10 +252,13 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
           <FaClock className="inline-block mr-2" />
           Consume By: {donation.consumeByTiming || donation.bestBeforeDate}
         </Typography>
-        <Typography className="mb-2">
-          <FaRegStar className="inline-block mr-2" />
-          Special Request: {donation.specialHandling}
-        </Typography>
+
+        {donation.specialHandling && (
+          <Typography className="mb-2">
+            <FaRegStar className="inline-block mr-2" />
+            Special Request: {donation.specialHandling}
+          </Typography>
+        )}
         <Typography className="mb-2">
           <FaClock className="inline-block mr-2" />
           Drop-Off Time: {donation.needByTime}
@@ -228,6 +266,19 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
         <Typography className="mb-2">
           <IoLocation className="inline-block mr-2" />
           Drop-Off Location: {donation.deliveryLocation}
+        </Typography>
+
+        {donation.floorNumber && (
+          <Typography className="mb-2">
+            <IoLocation className="inline-block mr-2" />
+            Floor number: {donation.floorNumber}
+          </Typography>
+        )}
+
+        <Typography className="mb-2">
+          <IoMdContact className="inline-block mr-2" />
+          Point of Contact: {beneficiaryData.poc_name}, Phone Number:{" "}
+          {beneficiaryData.poc_phone}
         </Typography>
       </CardBody>
       <CardFooter className="pt-0">
@@ -265,7 +316,10 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
             <Typography variant="h6" className="mb-2">
               Map Route with ETA
             </Typography>
-            <MapComponent deliveryLocation={deliveryCoords} travelMode={travelMode!} />
+            <MapComponent
+              deliveryLocation={deliveryCoords}
+              travelMode={travelMode!}
+            />
           </div>
 
           {/* Mode Selector - shown only when the map is displayed */}
@@ -274,29 +328,40 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
               <>
                 <Button
                   className={`text-white px-4 py-2 rounded ${
-                    travelMode === google.maps.TravelMode.DRIVING ? "bg-blue-500" : "bg-gray-500"
+                    travelMode === google.maps.TravelMode.DRIVING
+                      ? "bg-blue-500"
+                      : "bg-gray-500"
                   } hover:bg-blue-600`}
-                  onClick={() => handleTravelModeChange(google.maps.TravelMode.DRIVING)}
+                  onClick={() =>
+                    handleTravelModeChange(google.maps.TravelMode.DRIVING)
+                  }
                 >
                   Driving
                 </Button>
                 <Button
                   className={`text-white px-4 py-2 rounded ${
-                    travelMode === google.maps.TravelMode.WALKING ? "bg-blue-500" : "bg-gray-500"
+                    travelMode === google.maps.TravelMode.WALKING
+                      ? "bg-blue-500"
+                      : "bg-gray-500"
                   } hover:bg-blue-600`}
-                  onClick={() => handleTravelModeChange(google.maps.TravelMode.WALKING)}
+                  onClick={() =>
+                    handleTravelModeChange(google.maps.TravelMode.WALKING)
+                  }
                 >
                   Walking
                 </Button>
                 <Button
                   className={`text-white px-4 py-2 rounded ${
-                    travelMode === google.maps.TravelMode.BICYCLING ? "bg-blue-500" : "bg-gray-500"
+                    travelMode === google.maps.TravelMode.BICYCLING
+                      ? "bg-blue-500"
+                      : "bg-gray-500"
                   } hover:bg-blue-600`}
-                  onClick={() => handleTravelModeChange(google.maps.TravelMode.BICYCLING)}
+                  onClick={() =>
+                    handleTravelModeChange(google.maps.TravelMode.BICYCLING)
+                  }
                 >
                   Bicycling
                 </Button>
-                
               </>
             )}
           </div>

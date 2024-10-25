@@ -21,6 +21,7 @@ import { useState, useEffect } from "react";
 import { IoLocation } from "react-icons/io5";
 import { useRouter, useSearchParams } from "next/navigation"; // Import useSearchParams
 import { DonutIcon } from "lucide-react";
+import { IoMdContact } from "react-icons/io";
 
 // Utility function to determine the status color
 const getStatusColor = (status: string) => {
@@ -51,7 +52,29 @@ const DonationCard: React.FC<DonationCardProps> = ({
   const [isSelfPickUp, setIsSelfPickUp] = useState(false);
   const [isDelivery, setIsDelivery] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false); // New state to track deletion
+  const [beneficiaryData, setBeneficiaryData] = useState(null);
 
+  useEffect(() => {
+    async function fetchBeneficiaryData() {
+      try {
+        const response = await fetch(
+          `/api/beneficiaryDetails?email=${donation.beneficiaryemail}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setBeneficiaryData(data);
+        } else {
+          console.error("Error fetching donor data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching donor data:", error);
+      }
+    }
+
+    if (donation.beneficiaryemail) {
+      fetchBeneficiaryData();
+    }
+  }, [donation.beneficiaryemail]);
   useEffect(() => {
     if (donation.foodType === "Cooked Food") {
       setIsCooked(true);
@@ -178,6 +201,13 @@ const DonationCard: React.FC<DonationCardProps> = ({
           <Typography className="mb-2">
             <FaRegStar className="inline-block mr-2" />
             Special Request: {donation.specialHandling}
+          </Typography>
+        )}
+        {donation.status !== "new" && beneficiaryData && (
+          <Typography className="mb-2">
+            <IoMdContact className="inline-block mr-2" />
+            Point of Contact: {beneficiaryData.poc_name}, Phone Number:{" "}
+            {beneficiaryData.poc_phone}
           </Typography>
         )}
 
