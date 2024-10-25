@@ -227,7 +227,7 @@ export default function BeneficiaryDashboardClient() {
                   />
                 ))
               ) : (
-                <p>No requests available.</p>
+                <></>
               )}
               {filteredDonations.length > 0 ? (
                 searchedDonations.map((donation, index) => (
@@ -238,7 +238,7 @@ export default function BeneficiaryDashboardClient() {
                   />
                 ))
               ) : (
-                <p>No donations available.</p>
+                <></>
               )}
             </div>
           )}
