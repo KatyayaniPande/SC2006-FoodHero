@@ -213,11 +213,11 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
     <>
       <Card
         shadow={false}
-        className="relative mb-4 border border-gray-300 rounded-lg p-4 bg-white"
+        className="relative mb-4 border border-black rounded-lg p-4 bg-white"
       >
         {/* Status badge */}
         <div
-          className={`absolute top-2 right-2 text-white text-sm font-semibold px-2 py-1 rounded-md ${getStatusColor(
+          className={`absolute top-2 right-2 text-black text-sm font-semibold px-2 py-1 rounded-md ${getStatusColor(
             request.status
           )}`}
         >
@@ -290,7 +290,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
 
         <CardFooter className="pt-0">
           {request.status === "new" && (
-            <Button onClick={handleDonateClick} className="text-white bg-black">
+            <Button onClick={handleDonateClick} className="text-white bg-custom-dark-green hover:bg-custom-darker-green">
               Donate
             </Button>
           )}
@@ -299,7 +299,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
             <>
               <Button
                 onClick={handleMarkAsDelivered}
-                className="text-white bg-black"
+                className="text-white bg-custom-dark-green hover:bg-custom-darker-green"
               >
                 Mark as Delivered
               </Button>
@@ -356,13 +356,13 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
 
               <div className="mt-4 flex justify-end">
                 <Button
-                  className="text-white bg-black"
+                  className="text-white bg-custom-dark-green hover:bg-custom-darker-green"
                   onClick={handleConfirmSubmit}
                 >
                   Confirm
                 </Button>
                 <Button
-                  className="ml-2 text-white bg-black"
+                  className="ml-2 text-black bg-white hover:bg-gray-100 border border-black"
                   onClick={() => setIsModalOpen(false)}
                 >
                   Cancel

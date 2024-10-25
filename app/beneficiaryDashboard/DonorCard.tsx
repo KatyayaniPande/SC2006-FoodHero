@@ -238,7 +238,7 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
 
         <CardFooter className="pt-0">
           {donation.status === "new" && (
-            <Button className="text-white bg-black" onClick={handleAcceptClick}>
+            <Button className="text-white bg-custom-dark-green hover:bg-custom-darker-green" onClick={handleAcceptClick}>
               Accept
             </Button>
           )}
@@ -342,13 +342,13 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
 
               <div className="mt-4 flex justify-end">
                 <Button
-                  className="text-white bg-black"
+                  className="text-white bg-custom-dark-green hover:bg-custom-darker-green"
                   onClick={handleConfirmSubmit}
                 >
                   Confirm
                 </Button>
                 <Button
-                  className="ml-2 text-white bg-black"
+                  className="ml-2 text-black bg-white hover:bg-gray-100 border border-black"
                   onClick={() => setIsModalOpen(false)}
                 >
                   Cancel
