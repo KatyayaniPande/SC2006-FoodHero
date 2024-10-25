@@ -36,7 +36,7 @@ export interface Request {
     | "inwarehouse"
     | "awaitingpickup"
     | "awaitingdelivery"
-    | "delivered";
+    | "delivered"; // Add status field
 }
 
 export default function BeneficiaryDashboardClient() {
@@ -79,21 +79,18 @@ export default function BeneficiaryDashboardClient() {
   }, []);
 
   const handleWithdraw = (id) => {
-    // Remove the withdrawn request from the state
+    // Remove the withdrawn donation from the state
     setMyRequests(myRequests.filter((request) => request._id !== id));
   };
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setStatusFilter(event.target.value); // Update the filter based on selection
   };
-
-  // Filter by status first for requests
-  const filteredRequests = myRequests.filter((request) => {
+  const filteredRequests = myRequests.filter((donation) => {
     if (statusFilter === "all") return true; // Show all if 'all' is selected
-    return request.status === statusFilter;
+    return donation.status === statusFilter;
   });
 
-  // Filter by status first for donations
   const filteredDonations = availableDonations
     .filter((donation) => donation.beneficiaryemail === email) // First filter by email
     .filter((donation) => {
@@ -101,14 +98,14 @@ export default function BeneficiaryDashboardClient() {
       return donation.status === statusFilter; // Filter by status
     });
 
-  // Apply search term filtering after status filtering for requests
-  const searchedRequests = filteredRequests.filter((request) =>
-    request.foodName.toLowerCase().includes(searchTerm.toLowerCase())
+  const searchedRequests = filteredRequests.filter(
+    (request) =>
+      request.foodName.toLowerCase().includes(searchTerm.toLowerCase()) // Search filter
   );
 
-  // Apply search term filtering after status filtering for donations
-  const searchedDonations = filteredDonations.filter((donation) =>
-    donation.foodName.toLowerCase().includes(searchTerm.toLowerCase())
+  const searchedDonations = filteredDonations.filter(
+    (donation) =>
+      donation.foodName.toLowerCase().includes(searchTerm.toLowerCase()) // Search filter
   );
 
   if (loading) {
@@ -135,7 +132,7 @@ export default function BeneficiaryDashboardClient() {
           type="text"
           placeholder="Search by food name..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm state
           className="w-full p-2 border border-gray-300 rounded-md"
         />
       </div>
@@ -222,47 +219,48 @@ export default function BeneficiaryDashboardClient() {
                 My Requests
               </h1>
 
-              {searchedRequests.length > 0 ? (
+              {filteredRequests.length > 0 ? (
                 searchedRequests.map((request, index) => (
                   <BeneficiaryCard
-                    key={`request-${index}`} // Use a unique key
+                    key={index} // Add a unique key prop here
                     request={request}
                   />
                 ))
               ) : (
                 <p>No requests available.</p>
               )}
-              {/* {filteredRequests.length > 0 ? (
-                searchedRequests.map((request, index) => (
-                  <BeneficiaryCard
-                    key={`request-${index}`} // Use a unique key
-                    request={request}
-                  />
-                ))
-              ) : (
-                <p>No requests available.</p>
-              )}{" "}
-              {searchedDonations.length > 0 ? (
+              {filteredDonations.length > 0 ? (
                 searchedDonations.map((donation, index) => (
                   <DonorCard
-                    key={index} // Add a unique key prop here
+                    key={`donation-${index}`} // Use a unique key
                     donation={donation}
+                    onWithdraw={handleWithdraw}
                   />
                 ))
               ) : (
-                <></>
-              )} */}
+                <p>No donations available.</p>
+              )}
             </div>
           )}
-
           {activeTab === "availableDonations" && (
             <div>
               <h1 className="text-2xl font-bold mb-4 text-black">
                 Available Donations
               </h1>
-              {availableDonations.length > 0 ? (
+              {availableDonations
+                .filter((donation) => donation.status === "new") // Filter for donations with status 'new'
+                .filter((donation) =>
+                  donation.foodName
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ).length > 0 ? (
                 availableDonations
                   .filter((donation) => donation.status === "new") // Filter for donations with status 'new'
+                  .filter((donation) =>
+                    donation.foodName
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase())
+                  )
                   .map((donation, index) => (
                     <DonorCard
                       key={`donation-${index}`} // Use a unique key
