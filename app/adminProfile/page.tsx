@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { getSession } from 'next-auth/react';
-import Header from '@/components/Header'; // Adjust the path to your Header component
+import { useEffect, useState } from "react";
+import { getSession } from "next-auth/react";
+import Header from "@/components/Header"; // Adjust the path to your Header component
 
 export default function AdminProfile() {
   const [admin, setAdmin] = useState({
-    email: '',
+    email: "",
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [email, setEmail] = useState(''); // Store the initial fetched email separately
+  const [error, setError] = useState("");
+  const [email, setEmail] = useState(""); // Store the initial fetched email separately
   const [isEditing, setIsEditing] = useState(false); // Track edit mode
   const [saving, setSaving] = useState(false); // Track saving state
-  const [message, setMessage] = useState(''); // Message to show no changes
+  const [message, setMessage] = useState(""); // Message to show no changes
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Show delete confirmation pop-up
 
   // Fetch admin details from API based on the session
@@ -24,7 +24,7 @@ export default function AdminProfile() {
         const userEmail = session?.user?.email;
 
         if (!userEmail) {
-          setError('User email not found');
+          setError("User email not found");
           return;
         }
 
@@ -39,7 +39,7 @@ export default function AdminProfile() {
         const data = await response.json();
         setAdmin(data); // Set the fetched email
       } catch (error) {
-        setError(error.message || 'Something went wrong');
+        setError(error.message || "Something went wrong");
       } finally {
         setLoading(false);
       }
@@ -57,22 +57,24 @@ export default function AdminProfile() {
     }));
   };
 
+  const handleDeleteProfile = async () => {};
+
   const saveProfile = async () => {
     if (admin.email === email) {
       // No changes made, show a message and skip the API request
-      setMessage('No changes were made');
+      setMessage("No changes were made");
       setIsEditing(false); // Exit edit mode
       return;
     }
 
     setSaving(true); // Start the saving process
-    setMessage(''); // Reset message
+    setMessage(""); // Reset message
 
     try {
       const response = await fetch(`/api/adminDetails`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(admin), // Send the updated admin data (email)
       });
@@ -80,13 +82,13 @@ export default function AdminProfile() {
       const result = await response.json(); // Parse the JSON response
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to save admin data');
+        throw new Error(result.error || "Failed to save admin data");
       }
 
       // Successfully saved profile
       setIsEditing(false); // Exit edit mode
-      setError('');
-      setMessage('Profile updated successfully');
+      setError("");
+      setMessage("Profile updated successfully");
     } catch (err) {
       setError(err.message);
       console.error("Error in saveProfile:", err); // Log the error
@@ -111,7 +113,11 @@ export default function AdminProfile() {
       <Header />
       <div className="flex flex-col items-center">
         <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-          <img src="/images/people.png" className="w-16 h-16" alt="profilelogo" />
+          <img
+            src="/images/people.png"
+            className="w-16 h-16"
+            alt="profilelogo"
+          />
         </div>
         <h1 className="text-2xl font-semibold">{admin.email}</h1>
         <p className="text-gray-500">Admin</p>
@@ -119,14 +125,18 @@ export default function AdminProfile() {
 
       <div className="container mx-auto p-4 max-w-md mt-4">
         <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">Email</label>
+          <label className="text-sm font-medium text-gray-500 mb-1">
+            Email
+          </label>
           <input
             type="text"
             name="email"
             value={admin.email}
             readOnly={!isEditing}
             onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`border border-gray-300 rounded-md px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
       </div>
@@ -139,14 +149,14 @@ export default function AdminProfile() {
             onClick={saveProfile}
             disabled={saving}
           >
-            {saving ? 'Saving...' : 'Save Profile'}
+            {saving ? "Saving..." : "Save Profile"}
           </button>
         ) : (
           <button
             className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
             onClick={() => {
               setIsEditing(true);
-              setMessage(''); // Reset the message when entering edit mode
+              setMessage(""); // Reset the message when entering edit mode
             }}
           >
             Edit Profile
@@ -156,7 +166,7 @@ export default function AdminProfile() {
         {/* Delete Profile Button */}
         <button
           className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
-          onClick={() => setShowDeleteModal(true)}  // Trigger modal visibility   
+          onClick={() => setShowDeleteModal(true)} // Trigger modal visibility
         >
           Delete Profile
         </button>
@@ -171,7 +181,7 @@ export default function AdminProfile() {
             <div className="mt-4 flex justify-end space-x-2">
               <button
                 className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
-              // onClick={deleteProfile} // Call the delete function
+                onClick={handleDeleteProfile} // Call the delete function
               >
                 Confirm
               </button>

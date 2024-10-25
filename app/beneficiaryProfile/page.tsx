@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { getSession } from 'next-auth/react';
-import Header from '@/components/Header'; // Adjust the path to your Header component
+import { useEffect, useState } from "react";
+import { getSession } from "next-auth/react";
+import Header from "@/components/Header"; // Adjust the path to your Header component
 
 export default function Profile() {
   const [beneficiary, setBeneficiary] = useState({
-    agency: '',
-    email: '',
-    poc_name: '',
-    poc_phone: '',
+    agency: "",
+    email: "",
+    poc_name: "",
+    poc_phone: "",
     halal_certification: false,
-    hygiene_certification: '',
-    role: '',
-    createdAt: '',
+    hygiene_certification: "",
+    role: "",
+    createdAt: "",
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [email, setEmail] = useState('');
+  const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
   const [isEditing, setIsEditing] = useState(false); // Track edit mode
   const [saving, setSaving] = useState(false); // Track saving state
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Show delete confirmation pop-up
@@ -30,13 +30,15 @@ export default function Profile() {
         const userEmail = session?.user?.email;
 
         if (!userEmail) {
-          setError('User email not found');
+          setError("User email not found");
           return;
         }
 
         setEmail(userEmail);
 
-        const response = await fetch(`/api/beneficiaryDetails?email=${userEmail}`); // Update API call
+        const response = await fetch(
+          `/api/beneficiaryDetails?email=${userEmail}`
+        ); // Update API call
 
         if (!response.ok) {
           throw new Error(`Error: ${response.status} ${response.statusText}`);
@@ -45,7 +47,7 @@ export default function Profile() {
         const data = await response.json();
         setBeneficiary(data);
       } catch (error) {
-        setError(error.message || 'Something went wrong');
+        setError(error.message || "Something went wrong");
       } finally {
         setLoading(false);
       }
@@ -62,26 +64,28 @@ export default function Profile() {
       [name]: value,
     }));
   };
+  const handleDeleteProfile = async () => {};
 
   // Simulate saving changes to a backend
   const saveProfile = async () => {
     setSaving(true); // Start the saving process
     try {
-      const response = await fetch(`/api/beneficiaryDetails`, { // Update API call
-        method: 'POST',
+      const response = await fetch(`/api/beneficiaryDetails`, {
+        // Update API call
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(beneficiary),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save beneficiary data');
+        throw new Error("Failed to save beneficiary data");
       }
 
       // Successfully saved profile
       setIsEditing(false); // Exit edit mode
-      setError('');
+      setError("");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -105,16 +109,21 @@ export default function Profile() {
       <Header />
       <div className="flex flex-col items-center">
         <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-          <img src="/images/people.png" className="w-16 h-16" alt="profilelogo" />
+          <img
+            src="/images/people.png"
+            className="w-16 h-16"
+            alt="profilelogo"
+          />
         </div>
         <h1 className="text-2xl font-semibold">{beneficiary.agency}</h1>
         <p className="text-gray-500">Beneficiary</p>
       </div>
-
       <div className="container mx-auto p-4 max-w-4xl grid grid-cols-2 gap-6 mt-4">
         {/* Render form inputs */}
         <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">Email</label>
+          <label className="text-sm font-medium text-gray-500 mb-1">
+            Email
+          </label>
           <input
             type="text"
             name="email"
@@ -124,58 +133,78 @@ export default function Profile() {
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">Point of Contact Name</label>
+          <label className="text-sm font-medium text-gray-500 mb-1">
+            Point of Contact Name
+          </label>
           <input
             type="text"
             name="poc_name"
             value={beneficiary.poc_name}
             readOnly={!isEditing}
             onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`border border-gray-300 rounded-md px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">Phone</label>
+          <label className="text-sm font-medium text-gray-500 mb-1">
+            Phone
+          </label>
           <input
             type="text"
             name="poc_phone"
             value={beneficiary.poc_phone}
             readOnly={!isEditing}
             onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`border border-gray-300 rounded-md px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">Agency</label>
+          <label className="text-sm font-medium text-gray-500 mb-1">
+            Agency
+          </label>
           <input
             type="text"
             name="agency"
             value={beneficiary.agency}
             readOnly={!isEditing}
             onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`border border-gray-300 rounded-md px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">Halal Certification</label>
+          <label className="text-sm font-medium text-gray-500 mb-1">
+            Halal Certification
+          </label>
           <input
             type="text"
             name="halal_certification"
-            value={beneficiary.halal_certification ? 'Yes' : 'No'}
+            value={beneficiary.halal_certification ? "Yes" : "No"}
             readOnly={!isEditing}
             onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`border border-gray-300 rounded-md px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">Hygiene Certification</label>
+          <label className="text-sm font-medium text-gray-500 mb-1">
+            Hygiene Certification
+          </label>
           <input
             type="text"
             name="hygiene_certification"
             value={beneficiary.hygiene_certification}
             readOnly={!isEditing}
             onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`border border-gray-300 rounded-md px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
         <div className="flex flex-col">
@@ -186,11 +215,15 @@ export default function Profile() {
             value={beneficiary.role}
             readOnly={!isEditing}
             onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`border border-gray-300 rounded-md px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">Account Created At</label>
+          <label className="text-sm font-medium text-gray-500 mb-1">
+            Account Created At
+          </label>
           <input
             type="text"
             name="createdAt"
@@ -200,7 +233,6 @@ export default function Profile() {
           />
         </div>
       </div>
-
       <div className="ml-4 mt-8 flex justify-center space-x-2">
         {/* Button to toggle between edit and save modes */}
         {isEditing ? (
@@ -209,7 +241,7 @@ export default function Profile() {
             onClick={saveProfile}
             disabled={saving}
           >
-            {saving ? 'Saving...' : 'Save Profile'}
+            {saving ? "Saving..." : "Save Profile"}
           </button>
         ) : (
           <button
@@ -223,12 +255,11 @@ export default function Profile() {
         {/* Delete Profile Button */}
         <button
           className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
-          onClick={() => setShowDeleteModal(true)}  // Trigger modal visibility   
+          onClick={() => setShowDeleteModal(true)} // Trigger modal visibility
         >
           Delete Profile
         </button>
       </div>
-
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -238,7 +269,7 @@ export default function Profile() {
             <div className="mt-4 flex justify-end space-x-2">
               <button
                 className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
-              // onClick={deleteProfile} // Call the delete function
+                onClick={handleDeleteProfile} // Call the delete function
               >
                 Confirm
               </button>
@@ -252,8 +283,8 @@ export default function Profile() {
           </div>
         </div>
       )}
-
-      {error && <p className="text-red-500 mt-4 text-center">{error}</p>} {/* Display error if any */}
+      {error && <p className="text-red-500 mt-4 text-center">{error}</p>}{" "}
+      {/* Display error if any */}
     </div>
   );
 }
