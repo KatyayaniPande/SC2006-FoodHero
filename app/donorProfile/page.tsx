@@ -19,6 +19,8 @@ export default function DonorProfile() {
   const [email, setEmail] = useState('');
   const [isEditing, setIsEditing] = useState(false); // Track edit mode
   const [saving, setSaving] = useState(false); // Track saving state
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // Show delete confirmation pop-up
+
 
   // Fetch donor details from API based on the session
   useEffect(() => {
@@ -71,11 +73,11 @@ export default function DonorProfile() {
         },
         body: JSON.stringify(donor), // Ensure donor contains the updated address and other fields
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to save donor data');
       }
-  
+
       // Successfully saved profile
       setIsEditing(false); // Exit edit mode
       setError('');
@@ -85,7 +87,7 @@ export default function DonorProfile() {
       setSaving(false); // Stop the saving process
     }
   };
-  
+
 
   // Handle loading state
   if (loading) {
@@ -178,8 +180,8 @@ export default function DonorProfile() {
         </div>
       </div>
 
-      {/* Button to toggle between edit and save modes */}
-      <div className="mt-8 flex justify-center">
+      <div className="ml-4 mt-8 flex justify-center space-x-2">
+        {/* Button to toggle between edit and save modes */}
         {isEditing ? (
           <button
             className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
@@ -196,9 +198,40 @@ export default function DonorProfile() {
             Edit Profile
           </button>
         )}
+
+        {/* Delete Profile Button */}
+        <button
+          className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
+          onClick={() => setShowDeleteModal(true)}  // Trigger modal visibility   
+        >
+          Delete Profile
+        </button>
       </div>
 
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-md">
+            <h2 className="text-lg font-semibold mb-4">Confirm Delete</h2>
+            <p>Are you sure you want to delete this profile?</p>
+            <div className="mt-4 flex justify-end space-x-2">
+              <button
+                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+              // onClick={deleteProfile} // Call the delete function
+              >
+                Confirm
+              </button>
+              <button
+                className="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400"
+                onClick={() => setShowDeleteModal(false)} // Close the modal
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
-    </div>
+    </div >
   );
 }
