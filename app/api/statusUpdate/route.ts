@@ -71,6 +71,7 @@ export async function PUT(request: NextRequest) {
       donationId,
       currentStatus = "new",
       deliveryLocation,
+      floorNumber,
       needByTime,
       method,
     } = requestBody;
@@ -139,7 +140,13 @@ export async function PUT(request: NextRequest) {
     } else if (method === "accept") {
       const result = await collection.updateOne(
         { _id: new ObjectId(donationId) }, // Match by _id
-        { $set: { deliveryLocation: deliveryLocation, needByTime: needByTime } } // Update status and donoremail
+        {
+          $set: {
+            deliveryLocation: deliveryLocation,
+            needByTime: needByTime,
+            floorNumber: floorNumber,
+          },
+        } // Update status and donoremail
       );
     }
 

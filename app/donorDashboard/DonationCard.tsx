@@ -20,6 +20,7 @@ import { AiOutlineNumber } from "react-icons/ai";
 import { useState, useEffect } from "react";
 import { IoLocation } from "react-icons/io5";
 import { useRouter, useSearchParams } from "next/navigation"; // Import useSearchParams
+import { DonutIcon } from "lucide-react";
 
 // Utility function to determine the status color
 const getStatusColor = (status: string) => {
@@ -161,36 +162,24 @@ const DonationCard: React.FC<DonationCardProps> = ({
           </Typography>
         )}
 
-        {isCooked && (
-          <Typography className="mb-2">
-            <FaClock className="inline-block mr-2" />
-            Prepared On: {donation.timePrepared}
-          </Typography>
-        )}
-
-        <Typography className="mb-2">
-          <FaClock className="inline-block mr-2" />
-          Best Before By: {donation.bestBeforeDate || donation.consumeByTiming}
-        </Typography>
         {donation.needByTime !== null && (
           <Typography className="mb-2">
             <FaClock className="inline-block mr-2" />
             Need By: {donation.needByTime}
           </Typography>
         )}
+
         <Typography className="mb-2">
-          <FaRegStar className="inline-block mr-2" />
-          Special Request: {donation.specialHandling}
+          <FaClock className="inline-block mr-2" />
+          Consume by: {donation.consumeByTiming}
         </Typography>
 
-        {/* {isSelfPickUp && (
-          <>
-            <Typography className="mb-2">
-              <FaClock className="inline-block mr-2" />
-              Pick-up Time: {donation.pickUpTime}
-            </Typography>
-          </>
-        )} */}
+        {donation.specialHandling && (
+          <Typography className="mb-2">
+            <FaRegStar className="inline-block mr-2" />
+            Special Request: {donation.specialHandling}
+          </Typography>
+        )}
 
         {donation.status === "matched" &&
           donation.needByTime &&

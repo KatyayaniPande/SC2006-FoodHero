@@ -119,15 +119,31 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
           Need by: {request.needByTime}
         </Typography>
 
-        <Typography className="mb-2">
-          <FaRegStar className="inline-block mr-2" />
-          Special Request: {request.specialRequest}
-        </Typography>
+        {request.consumeByTiming && (
+          <Typography className="mb-2">
+            <FaClock className="inline-block mr-2" />
+            Consume by: {request.consumeByTiming}
+          </Typography>
+        )}
+
+        {request.specialRequest && (
+          <Typography className="mb-2">
+            <FaRegStar className="inline-block mr-2" />
+            Special Request: {request.specialRequest}
+          </Typography>
+        )}
 
         <Typography className="mb-2">
           <IoLocation className="inline-block mr-2" />
           Delivery Location: {request.deliveryLocation}
         </Typography>
+
+        {request.floorNumber && (
+          <Typography className="mb-2">
+            <IoLocation className="inline-block mr-2" />
+            Unit Number: {request.floorNumber}
+          </Typography>
+        )}
 
         {/* {isDelivery && (
           <>

@@ -6,6 +6,7 @@ import {
   CardFooter,
   Typography,
   Button,
+  input,
 } from "@material-tailwind/react";
 import {
   FaClock,
@@ -15,7 +16,7 @@ import {
 } from "react-icons/fa";
 import { FaBowlFood } from "react-icons/fa6";
 import { Donation } from "./DonorDashboardClient"; // Adjust this import based on your structure
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AiOutlineNumber } from "react-icons/ai";
 import { FaRegStar } from "react-icons/fa6";
 import { FaTruck } from "react-icons/fa";
@@ -24,6 +25,12 @@ import { IoLocation } from "react-icons/io5";
 import { getSession } from "next-auth/react";
 import { Dialog } from "@headlessui/react"; // Import Dialog for the modal
 import { Input } from "@/components/ui/input";
+import {
+  GoogleMap,
+  useJsApiLoader,
+  StandaloneSearchBox,
+  Autocomplete,
+} from "@react-google-maps/api";
 
 interface DonorCardProps {
   donation: Donation;
@@ -51,33 +58,50 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
   const [isCooked, setIsCooked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Track modal state
   const [deliveryLocation, setDeliveryLocation] = useState("");
+  const [floorNumber, setFloorNumber] = useState("");
   const [deliveryDate, setDeliveryDate] = useState(""); // Track the selected delivery date
   const [errors, setErrors] = useState({ location: "", date: "" }); // Track errors
+  const [isValidLocation, setIsValidLocation] = useState(false);
 
+  const inputRef = useRef(null);
+
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: "AIzaSyB7CV-gPgdBWcYd65zzNlBzGcVxCA-I3xA",
+    libraries: ["places"],
+  });
   useEffect(() => {
     if (donation.foodType === "Cooked Food") {
       setIsCooked(true);
     }
-
-    // if (donation.deliveryMethod === "Scheduled Pickup") {
-    //   setIsSelfPickUp(true);
-    //   setIsDelivery(false);
-    // } else {
-    //   setIsDelivery(true);
-    //   setIsSelfPickUp(false);
-    // }
   }, [donation]);
 
   const handleAcceptClick = () => {
     setIsModalOpen(true); // Open modal when Accept button is clicked
   };
 
+  const handleLocationChange = () => {
+    const place = inputRef.current.getPlace();
+
+    if (place && place.formatted_address) {
+      setDeliveryLocation(place.formatted_address);
+      setErrors({ ...errors, location: "" });
+      setIsValidLocation(true); // Valid location selected
+    } else {
+      setErrors({
+        ...errors,
+        location: "Please select a valid location from the dropdown.",
+      });
+      setIsValidLocation(false); // Invalid location
+    }
+  };
+
   const handleConfirmSubmit = async () => {
     let validationErrors = { location: "", date: "" };
 
-    // Validate Delivery Location
-    if (!deliveryLocation) {
-      validationErrors.location = "Delivery location is required.";
+    // Validate Delivery Location using isValidLocation
+    if (!isValidLocation) {
+      validationErrors.location = "Please select a valid delivery location.";
     }
 
     // Validate Delivery Date
@@ -108,6 +132,7 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
           donationId: donation._id, // Use the _id from the request object as donationId
           currentStatus: donation.status, // Pass the current status
           deliveryLocation: deliveryLocation, // Include an 'accept' action if necessary for logic differentiation
+          floorNumber: floorNumber,
           needByTime: deliveryDate,
           method: "accept",
         }),
@@ -175,22 +200,40 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
               : `Quantity: ${donation.quantity}`}
           </Typography>
 
-          {isCooked && (
+          {donation.needByTime && (
             <Typography className="mb-2">
               <FaClock className="inline-block mr-2" />
-              Prepared On: {donation.timePrepared}
+              Need By: {donation.needByTime}
             </Typography>
           )}
-          <Typography className="mb-2">
-            <FaClock className="inline-block mr-2" />
-            Best Before: {donation.consumeByTiming || donation.bestBeforeDate}
-          </Typography>
 
-          <Typography className="mb-2">
-            <FaRegStar className="inline-block mr-2" />
-            Special Handling:{" "}
-            {donation.specialHandling || "No special handling required"}
-          </Typography>
+          {donation.consumeByTiming && (
+            <Typography className="mb-2">
+              <FaClock className="inline-block mr-2" />
+              ConsumeBy: {donation.consumeByTiming}
+            </Typography>
+          )}
+
+          {donation.specialHandling && (
+            <Typography className="mb-2">
+              <FaRegStar className="inline-block mr-2" />
+              Special Request: {donation.specialHandling}
+            </Typography>
+          )}
+
+          {donation.deliveryLocation && (
+            <Typography className="mb-2">
+              <IoLocation className="inline-block mr-2" />
+              Delivery Location: {donation.deliveryLocation}
+            </Typography>
+          )}
+
+          {donation.floorNumber && (
+            <Typography className="mb-2">
+              <IoLocation className="inline-block mr-2" />
+              Unit Number: {donation.floorNumber}
+            </Typography>
+          )}
         </CardBody>
 
         <CardFooter className="pt-0">
@@ -229,15 +272,45 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
                 <label className="block text-sm font-medium text-gray-700">
                   Delivery Location
                 </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                  value={deliveryLocation}
-                  onChange={(e) => setDeliveryLocation(e.target.value)}
-                />
+                {isLoaded && (
+                  <Autocomplete
+                    onLoad={(ref) => (inputRef.current = ref)}
+                    onPlaceChanged={handleLocationChange}
+                    options={{
+                      componentRestrictions: { country: "SG" },
+                      fields: ["address_components", "formatted_address"],
+                    }}
+                  >
+                    <input
+                      type="text"
+                      className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                      value={deliveryLocation}
+                      onChange={(e) => {
+                        setDeliveryLocation(e.target.value);
+                        setErrors({ ...errors, location: "" });
+                        setIsValidLocation(false); // User is typing, so set to false
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault(); // Prevent autocomplete on Enter
+                        }
+                      }}
+                      autoComplete="off" // Disable browser autocomplete
+                    />
+                  </Autocomplete>
+                )}
                 {errors.location && (
                   <p className="text-red-500 text-sm">{errors.location}</p>
                 )}
+                <label className="block text-sm font-medium text-gray-700 mt-4">
+                  Floor Number
+                </label>
+                <Input
+                  className="shadow-sm"
+                  placeholder="If applicable"
+                  value={floorNumber}
+                  onChange={(e) => setFloorNumber(e.target.value)}
+                />
 
                 {/* Delivery Date */}
                 <label className="block text-sm font-medium text-gray-700 mt-4">
@@ -247,7 +320,12 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
                   className="shadow-sm"
                   type="datetime-local"
                   value={deliveryDate}
-                  onChange={(e) => setDeliveryDate(e.target.value)}
+                  onChange={(e) => {
+                    setDeliveryDate(e.target.value);
+                    if (errors.date) {
+                      setErrors({ ...errors, date: "" });
+                    } // Clear location error
+                  }}
                   min={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // Adds 2 days
                     .toISOString()
                     .slice(0, 16)} // Convert to 'YYYY-MM-DDTHH:MM' format

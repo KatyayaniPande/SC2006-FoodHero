@@ -1,7 +1,7 @@
 "use client";
 import { ChevronLeft } from "lucide-react";
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -28,10 +28,22 @@ import Header from "@/components/Header";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation"; // Import useSearchParams
 import { useToast } from "@/components/ui/use-toast";
-
+import {
+  GoogleMap,
+  useJsApiLoader,
+  StandaloneSearchBox,
+  Autocomplete,
+} from "@react-google-maps/api";
 const Request = () => {
   const searchParams = useSearchParams(); // useSearchParams to handle query params
 
+  const inputRef = useRef(null);
+
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: "AIzaSyB7CV-gPgdBWcYd65zzNlBzGcVxCA-I3xA",
+    libraries: ["places"],
+  });
   const session = useSession();
   const router = useRouter();
   const { toast } = useToast();
@@ -39,12 +51,8 @@ const Request = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [status, setStatus] = useState("");
   const [requestId, setRequestId] = useState<string | null>(null);
-
-  // if (!session?.user) {
-  //   router.replace('/');
-  // } else if (session?.user.role !== 'donor') {
-  //   router.replace('/dashboard');
-  // }
+  const [errors, setErrors] = useState({ deliveryLocation: "" });
+  const [isValidLocation, setIsValidLocation] = useState(false);
 
   useEffect(() => {
     const id = searchParams.get("id");
@@ -72,6 +80,7 @@ const Request = () => {
             numberOfServings: data.numberOfServings,
             needByTime: data.needByTime,
             deliveryLocation: data.deliveryLocation,
+            floorNumber: data.floorNumber,
           });
           setFoodType("Cooked Food");
         } else {
@@ -82,12 +91,14 @@ const Request = () => {
             specialRequest: data.specialRequest,
             needByTime: data.needByTime,
             deliveryLocation: data.deliveryLocation,
+            floorNumber: data.floorNumber,
           });
           setFoodType("Non-Cooked Food");
         }
       } else {
         console.error("Failed to fetch request data:", response.statusText);
       }
+      setIsValidLocation(true);
     } catch (error) {
       console.error("Error fetching request data:", error);
     }
@@ -109,6 +120,7 @@ const Request = () => {
     deliveryLocation: z.string().nonempty({
       message: "Location is required.",
     }),
+    floorNumber: z.string(),
   });
 
   const nonCookedFormSchema = z.object({
@@ -130,6 +142,7 @@ const Request = () => {
     deliveryLocation: z.string().nonempty({
       message: "Location is required.",
     }),
+    floorNumber: z.string(),
   });
 
   const cookedForm = useForm<z.infer<typeof cookedFormSchema>>({
@@ -138,6 +151,7 @@ const Request = () => {
       foodName: "",
       specialRequest: "",
       numberOfServings: 0,
+      floorNumber: "",
     },
   });
 
@@ -148,10 +162,38 @@ const Request = () => {
       foodCategory: "",
       specialRequest: "",
       quantity: 0,
+      floorNumber: "",
     },
   });
 
+  const handleLocationChange = () => {
+    const place = inputRef.current.getPlace();
+
+    if (place && place.formatted_address) {
+      if (foodType === "Cooked Food") {
+        cookedForm.setValue("deliveryLocation", place.formatted_address);
+      } else {
+        nonCookedForm.setValue("deliveryLocation", place.formatted_address);
+      }
+      setErrors({ ...errors, deliveryLocation: "" });
+      setIsValidLocation(true); // Set to true when a valid place is selected
+    } else {
+      setErrors({
+        ...errors,
+        deliveryLocation: "Please select a valid location from the dropdown.",
+      });
+      setIsValidLocation(false); // Set to false if no valid place
+    }
+  };
+
   async function onSubmit(values: any) {
+    if (!isValidLocation) {
+      setErrors({
+        ...errors,
+        deliveryLocation: "Please select a valid location from the dropdown.",
+      });
+      return;
+    }
     // make api call to save request details in mongodb
     if (!session.data?.user) {
       // The user is not found in the session storage, should be prevented by the router
@@ -209,34 +251,6 @@ const Request = () => {
 
       const result = await response.json();
 
-      // if (foodType === "Cooked Food") {
-      //   cookedForm.reset({
-      //     foodName: "",
-      //     specialRequest: "",
-      //     numberOfServings: 0,
-      //     // deliveryMethod: "",
-      //   });
-      //   setSelectedCategory("");
-      //   router.push("/beneficiaryDashboard");
-      //   toast({
-      //     title: "Success!",
-      //     description: "Your request has been submitted successfully.",
-      //   });
-      // } else {
-      //   nonCookedForm.reset({
-      //     foodName: "",
-      //     foodCategory: "",
-      //     specialRequest: "",
-      //     quantity: 0,
-      //     // deliveryMethod: "",
-      //   });
-      //   setSelectedCategory("");
-      //   router.push("/beneficiaryDashboard");
-      //   toast({
-      //     title: "Success!",
-      //     description: "Your request has been submitted successfully.",
-      //   });
-      // }
       router.push("/beneficiaryDashboard");
     } catch (error) {
       toast({
@@ -356,7 +370,11 @@ const Request = () => {
                         Special Requests (e.g. dietary restrictions)
                       </FormLabel>
                       <FormControl>
-                        <Input className="shadow-sm" {...field} />
+                        <Input
+                          className="shadow-sm"
+                          {...field}
+                          placeholder="If applicable"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -395,14 +413,56 @@ const Request = () => {
                   )}
                 />
 
+                {isLoaded && (
+                  <Autocomplete
+                    onLoad={(ref) => (inputRef.current = ref)}
+                    onPlaceChanged={handleLocationChange} // Handling when a place is selected
+                    options={{
+                      componentRestrictions: { country: "SG" },
+                      fields: ["address_components", "formatted_address"],
+                    }}
+                  >
+                    <FormField
+                      control={cookedForm.control}
+                      name="deliveryLocation"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Delivery Location</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="shadow-sm"
+                              {...field}
+                              onChange={(e) => {
+                                field.onChange(e);
+                                setErrors({ ...errors, deliveryLocation: "" });
+                                setIsValidLocation(false); // User is typing, so set to false
+                              }}
+                            />
+                          </FormControl>
+                          {errors.deliveryLocation && (
+                            <p className="text-red-500 text-sm">
+                              {errors.deliveryLocation}
+                            </p>
+                          )}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </Autocomplete>
+                )}
+
                 <FormField
                   control={cookedForm.control}
-                  name="deliveryLocation"
+                  name="floorNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Delivery Location</FormLabel>
+                      <FormLabel>Floor Number</FormLabel>
                       <FormControl>
-                        <Input className="shadow-sm" {...field} />
+                        <Input
+                          className="shadow-sm"
+                          {...field}
+                          placeholder="If applicable"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -502,7 +562,11 @@ const Request = () => {
                         Special Requests (e.g. dietary restrictions)
                       </FormLabel>
                       <FormControl>
-                        <Input className="shadow-sm" {...field} />
+                        <Input
+                          className="shadow-sm"
+                          {...field}
+                          placeholder="If applicable"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -540,15 +604,56 @@ const Request = () => {
                     </FormItem>
                   )}
                 />
+                {isLoaded && (
+                  <Autocomplete
+                    onLoad={(ref) => (inputRef.current = ref)}
+                    onPlaceChanged={handleLocationChange} // Handling when a place is selected
+                    options={{
+                      componentRestrictions: { country: "SG" },
+                      fields: ["address_components", "formatted_address"],
+                    }}
+                  >
+                    <FormField
+                      control={nonCookedForm.control}
+                      name="deliveryLocation"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Delivery Location</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="shadow-sm"
+                              {...field}
+                              onChange={(e) => {
+                                field.onChange(e);
+                                setErrors({ ...errors, deliveryLocation: "" });
+                                setIsValidLocation(false); // User is typing, so set to false
+                              }}
+                            />
+                          </FormControl>
+                          {errors.deliveryLocation && (
+                            <p className="text-red-500 text-sm">
+                              {errors.deliveryLocation}
+                            </p>
+                          )}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </Autocomplete>
+                )}
 
                 <FormField
                   control={nonCookedForm.control}
-                  name="deliveryLocation"
+                  name="floorNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Delivery Location</FormLabel>
+                      <FormLabel>Floor Number</FormLabel>
                       <FormControl>
-                        <Input className="shadow-sm" {...field} />
+                        <Input
+                          className="shadow-sm"
+                          {...field}
+                          placeholder="If applicable"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -29,6 +28,8 @@ export interface Request {
   deliveryLocation: string;
   quantity: number;
   numberOfServings: number;
+  floorNumber: string;
+  consumeByTiming: string;
   status:
     | "new"
     | "matched"
@@ -97,15 +98,15 @@ export default function BeneficiaryDashboardClient() {
       return donation.status === statusFilter; // Filter by status
     });
 
-    const searchedRequests = filteredRequests.filter((request) =>
+  const searchedRequests = filteredRequests.filter(
+    (request) =>
       request.foodName.toLowerCase().includes(searchTerm.toLowerCase()) // Search filter
-    );
+  );
 
-    const searchedDonations = filteredDonations.filter((donation) =>
+  const searchedDonations = filteredDonations.filter(
+    (donation) =>
       donation.foodName.toLowerCase().includes(searchTerm.toLowerCase()) // Search filter
-    );
-    
-    
+  );
 
   if (loading) {
     return <div>Loading...</div>;
@@ -125,16 +126,16 @@ export default function BeneficiaryDashboardClient() {
         </Link>
       </div>
 
-{/* Search Bar */}
-<div className="mb-6">
-  <input
-    type="text"
-    placeholder="Search by food name..."
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm state
-    className="w-full p-2 border border-gray-300 rounded-md"
-  />
-</div>
+      {/* Search Bar */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Search by food name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm state
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
+      </div>
 
       {/* Tab Navigation */}
       <div className="flex ml-1 mb-6">
@@ -218,57 +219,59 @@ export default function BeneficiaryDashboardClient() {
                 My Requests
               </h1>
 
-                 {filteredRequests.length > 0 ? (
-  searchedRequests.map((request, index) => (
-    <BeneficiaryCard
-      key={index} // Add a unique key prop here
-      request={request}
-    />
-  ))
-) : (
-  <p>No requests available.</p>
-)}
-{filteredDonations.length > 0 ? (
-  searchedDonations.map((donation, index) => (
-    <DonorCard
-      key={`donation-${index}`} // Use a unique key
-      donation={donation}
-      onWithdraw={handleWithdraw}
-    />
-  ))
-) : (
-  <p>No donations available.</p>
-)}
-
+              {filteredRequests.length > 0 ? (
+                searchedRequests.map((request, index) => (
+                  <BeneficiaryCard
+                    key={index} // Add a unique key prop here
+                    request={request}
+                  />
+                ))
+              ) : (
+                <p>No requests available.</p>
+              )}
+              {filteredDonations.length > 0 ? (
+                searchedDonations.map((donation, index) => (
+                  <DonorCard
+                    key={`donation-${index}`} // Use a unique key
+                    donation={donation}
+                    onWithdraw={handleWithdraw}
+                  />
+                ))
+              ) : (
+                <p>No donations available.</p>
+              )}
             </div>
           )}
-{activeTab === "availableDonations" && (
-  <div>
-    <h1 className="text-2xl font-bold mb-4 text-black">
-      Available Donations
-    </h1>
-    {availableDonations
-      .filter((donation) => donation.status === "new") // Filter for donations with status 'new'
-      .filter((donation) =>
-        donation.foodName.toLowerCase().includes(searchTerm.toLowerCase())
-      ).length > 0 ? (
-        availableDonations
-          .filter((donation) => donation.status === "new") // Filter for donations with status 'new'
-          .filter((donation) =>
-            donation.foodName.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-          .map((donation, index) => (
-            <DonorCard
-              key={`donation-${index}`} // Use a unique key
-              donation={donation}
-            />
-          ))
-      ) : (
-        <p>No available donations at this time.</p>
-      )}
-  </div>
-)}
-
+          {activeTab === "availableDonations" && (
+            <div>
+              <h1 className="text-2xl font-bold mb-4 text-black">
+                Available Donations
+              </h1>
+              {availableDonations
+                .filter((donation) => donation.status === "new") // Filter for donations with status 'new'
+                .filter((donation) =>
+                  donation.foodName
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ).length > 0 ? (
+                availableDonations
+                  .filter((donation) => donation.status === "new") // Filter for donations with status 'new'
+                  .filter((donation) =>
+                    donation.foodName
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase())
+                  )
+                  .map((donation, index) => (
+                    <DonorCard
+                      key={`donation-${index}`} // Use a unique key
+                      donation={donation}
+                    />
+                  ))
+              ) : (
+                <p>No available donations at this time.</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
