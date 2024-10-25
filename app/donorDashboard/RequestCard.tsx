@@ -319,7 +319,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
                 as="h3"
                 className="text-lg font-medium leading-6 text-gray-900"
               >
-                Enter Cosume By Details
+                Enter Consume By Details
               </Dialog.Title>
               <div className="mt-2">
                 {/* Delivery Date */}
