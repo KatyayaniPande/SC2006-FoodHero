@@ -1,105 +1,120 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getSession } from "next-auth/react";
 import Header from "@/components/Header"; // Adjust the path to your Header component
 
-export default function AdminProfile() {
-  const [admin, setAdmin] = useState({
-    email: "",
-  });
+export default function AdminManagement() {
+  const [admins, setAdmins] = useState([]); // Store list of admins
+  const [newAdminEmail, setNewAdminEmail] = useState(""); // New admin input field
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [email, setEmail] = useState(""); // Store the initial fetched email separately
-  const [isEditing, setIsEditing] = useState(false); // Track edit mode
-  const [saving, setSaving] = useState(false); // Track saving state
-  const [message, setMessage] = useState(""); // Message to show no changes
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // Show delete confirmation pop-up
+  const [message, setMessage] = useState(""); // Display success/failure messages
+  const [showAddModal, setShowAddModal] = useState(false); // Show add new admin modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // Show delete confirmation modal
+  const [selectedAdmin, setSelectedAdmin] = useState(""); // Store selected admin for deletion
+  const [messageType, setMessageType] = useState(""); // 'success', 'info', 'error'
 
-  // Fetch admin details from API based on the session
+  const appUrl = "http://localhost:3000"; // Adjust the base API URL
+
+  // Fetch admin details from API
   useEffect(() => {
-    async function fetchAdmin() {
+    async function fetchAdmins() {
       try {
-        const session = await getSession();
-        const userEmail = session?.user?.email;
-
-        if (!userEmail) {
-          setError("User email not found");
-          return;
-        }
-
-        setEmail(userEmail);
-
-        const response = await fetch(`/api/adminDetails?email=${userEmail}`);
-
+        const response = await fetch(`${appUrl}/api/adminList`);
         if (!response.ok) {
-          throw new Error(`Error: ${response.status} ${response.statusText}`);
+          throw new Error("Error fetching admin list");
         }
-
         const data = await response.json();
-        setAdmin(data); // Set the fetched email
-      } catch (error) {
-        setError(error.message || "Something went wrong");
+        setAdmins(data);
+      } catch (err) {
+        setError(err.message || "Something went wrong");
       } finally {
         setLoading(false);
       }
     }
 
-    fetchAdmin();
+    fetchAdmins();
   }, []);
 
-  // Handle input changes when editing
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setAdmin((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  // Handle input change for new admin email
+  const handleNewAdminChange = (e) => {
+    setNewAdminEmail(e.target.value);
   };
 
-  const handleDeleteProfile = async () => {};
-
-  const saveProfile = async () => {
-    if (admin.email === email) {
-      // No changes made, show a message and skip the API request
-      setMessage("No changes were made");
-      setIsEditing(false); // Exit edit mode
-      return;
-    }
-
-    setSaving(true); // Start the saving process
-    setMessage(""); // Reset message
+  // Add new admin to the list
+  const handleAddAdmin = async () => {
+    if (!newAdminEmail) return;
 
     try {
-      const response = await fetch(`/api/adminDetails`, {
+      const response = await fetch(`/api/adminList`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(admin), // Send the updated admin data (email)
+        body: JSON.stringify({ email: newAdminEmail }),
       });
 
-      const result = await response.json(); // Parse the JSON response
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to save admin data");
+        setMessageType("info");
+        setMessage(result.error || "Failed to add admin email");
+        setShowAddModal(false); // Close the modal
+        return;
       }
 
-      // Successfully saved profile
-      setIsEditing(false); // Exit edit mode
-      setError("");
-      setMessage("Profile updated successfully");
+      setMessageType("success");
+      // Add new admin to the UI without refreshing
+      setAdmins([...admins, { email: newAdminEmail }]);
+      setNewAdminEmail(""); // Clear the input
+      setShowAddModal(false); // Close the modal
+      setMessage(result.message);
     } catch (err) {
       setError(err.message);
-      console.error("Error in saveProfile:", err); // Log the error
-    } finally {
-      setSaving(false); // Stop the saving process
+    }
+  };
+
+  // Handle delete click
+  const handleDeleteClick = (email) => {
+    setShowDeleteModal(true);
+    setSelectedAdmin(email); // Set the selected admin for deletion
+  };
+
+  // Remove admin from the list
+  const handleDeleteAdmin = async () => {
+    try {
+      setError(""); // Clear previous error
+      setMessage(""); // Clear previous messages
+
+      const response = await fetch(`/api/adminList?email=${selectedAdmin}`, {
+        method: "DELETE",
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        // If there's an error, set the error message based on the result from the API
+        setMessageType("info");
+        setMessage(result.error || "Failed to delete admin data");
+        setShowDeleteModal(false); // Close the modal
+        return;
+      }
+      setMessageType("success");
+      // If successful, filter out the admin from the list and display success message
+      setAdmins(admins.filter((admin) => admin.email !== selectedAdmin));
+      setShowDeleteModal(false);
+      setMessage(result.message);
+    } catch (err) {
+      // Set the error message and close the modal
+      setMessageType("error");
+      setError(err.message || "An unexpected error occurred");
+      setShowDeleteModal(false);
     }
   };
 
   // Handle loading state
   if (loading) {
-    return <div>Loading profile...</div>;
+    return <div>Loading admin list...</div>;
   }
 
   // Handle error state
@@ -107,86 +122,81 @@ export default function AdminProfile() {
     return <div>Error: {error}</div>;
   }
 
-  // Render profile UI
   return (
     <div className="bg-gray-100 min-h-screen p-8">
       <Header />
-      <div className="flex flex-col items-center">
-        <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-          <img
-            src="/images/people.png"
-            className="w-16 h-16"
-            alt="profilelogo"
-          />
-        </div>
-        <h1 className="text-2xl font-semibold">{admin.email}</h1>
-        <p className="text-gray-500">Admin</p>
-      </div>
 
-      <div className="container mx-auto p-4 max-w-md mt-4">
-        <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">
-            Email
-          </label>
-          <input
-            type="text"
-            name="email"
-            value={admin.email}
-            readOnly={!isEditing}
-            onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${
-              isEditing ? "bg-white" : "bg-gray-100"
-            }`}
-          />
-        </div>
-      </div>
+      <div className="container mx-auto p-4 max-w-4xl mt-4">
+        <h1 className="text-2xl font-semibold mb-4 text-center">
+          Approved Admin Users
+        </h1>
 
-      <div className="ml-4 mt-8 flex justify-center space-x-2">
-        {/* Button to toggle between edit and save modes */}
-        {isEditing ? (
+        {/* Table for displaying approved admins */}
+        <table className="min-w-full bg-white border rounded-lg shadow-md">
+          <thead>
+            <tr>
+              <th className="py-2 px-4 border-b">Email</th>
+              <th className="py-2 px-4 border-b">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {admins.length > 0 ? (
+              admins.map((admin, index) => (
+                <tr key={index}>
+                  <td className="py-2 px-4 border-b">{admin.email}</td>
+                  <td className="py-2 px-4 border-b text-center">
+                    <button
+                      className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+                      onClick={() => handleDeleteClick(admin.email)} // Correct way to pass the admin email to the handler
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td className="py-2 px-4 border-b text-center" colSpan={2}>
+                  No admins found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+
+        {/* Add New Admin Button */}
+        <div className="mt-4 flex justify-center">
           <button
-            className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
-            onClick={saveProfile}
-            disabled={saving}
+            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+            onClick={() => setShowAddModal(true)}
           >
-            {saving ? "Saving..." : "Save Profile"}
+            Add New Admin
           </button>
-        ) : (
-          <>
-            <button
-              className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
-              onClick={() => setIsEditing(true)}
-            >
-              Edit Profile
-            </button>
-
-            {/* Delete Profile Button */}
-            <button
-              className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
-              onClick={() => setShowDeleteModal(true)} // Trigger modal visibility
-            >
-              Delete Profile
-            </button>
-          </>
-        )}
+        </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteModal && (
+      {/* Add New Admin Modal */}
+      {showAddModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-md">
-            <h2 className="text-lg font-semibold mb-4">Confirm Delete</h2>
-            <p>Are you sure you want to delete this profile?</p>
-            <div className="mt-4 flex justify-end space-x-2">
+            <h2 className="text-lg font-semibold mb-4">Add New Admin</h2>
+            <input
+              type="email"
+              className="border border-gray-300 rounded-md px-3 py-2 mb-4 w-full"
+              placeholder="Enter admin email"
+              value={newAdminEmail}
+              onChange={handleNewAdminChange}
+            />
+            <div className="flex justify-end space-x-2">
               <button
-                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
-                onClick={handleDeleteProfile} // Call the delete function
+                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                onClick={handleAddAdmin}
               >
-                Confirm
+                Add Admin
               </button>
               <button
                 className="px-4 py-2 rounded-md text-black bg-white hover:bg-gray-100 border border-black"
-                onClick={() => setShowDeleteModal(false)} // Close the modal
+                onClick={() => setShowAddModal(false)}
               >
                 Cancel
               </button>
@@ -194,7 +204,45 @@ export default function AdminProfile() {
           </div>
         </div>
       )}
-      {message && <p className="text-green-500 mt-4 text-center">{message}</p>}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-md">
+            <h2 className="text-lg font-semibold mb-4">Confirm Delete</h2>
+            <p>Are you sure you want to remove {selectedAdmin}?</p>{" "}
+            {/* Display selectedAdmin */}
+            <div className="mt-4 flex justify-end space-x-2">
+              <button
+                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+                onClick={handleDeleteAdmin} // Confirm deletion
+              >
+                Confirm
+              </button>
+              <button
+                className="px-4 py-2 rounded-md text-black bg-white hover:bg-gray-100 border border-black"
+                onClick={() => setShowDeleteModal(false)} // Cancel deletion
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {message && (
+        <p
+          className={`mt-4 text-center ${
+            messageType === "success"
+              ? "text-green-500"
+              : messageType === "error" || messageType === "info"
+              ? "text-red-500"
+              : "text-blue-500" // For 'info' messages
+          }`}
+        >
+          {message}
+        </p>
+      )}
       {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
     </div>
   );

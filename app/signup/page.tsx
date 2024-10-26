@@ -257,35 +257,57 @@ function Cards() {
   async function onSubmitAdminSignup(
     values: z.infer<typeof adminSignupScheme>
   ) {
-    if (values.password !== values.confirm_password) {
-      adminSignupForm.setError("confirm_password", {
-        type: "manual",
-        message: `Passwords don't match!`,
-      });
-      return;
-    }
+    try {
+      const response = await fetch(`/api/adminList`);
+      if (response.ok) {
+        const users = await response.json();
 
-    const user = await registerUser({
-      email: values.email,
-      password: values.password,
-      agency: "",
-      uen: "",
-      address: "",
-      poc_name: "",
-      poc_phone: "",
-      halal_certification: false,
-      hygiene_certification: "D",
-      acceptedItems: [],
-      role: "admin",
-    });
+        const isEmailInAdminList = users.some(
+          (user) => user.email === values.email
+        );
+        if (!isEmailInAdminList) {
+          adminSignupForm.setError("email", {
+            type: "manual",
+            message: `You are not allowed to sign up as admin!`,
+          });
+          return;
+        }
 
-    if (user?.error) {
-      adminSignupForm.setError("root", {
-        type: "manual",
-        message: user.error,
-      });
-    } else {
-      router.push("/login?type=admin");
+        if (values.password !== values.confirm_password) {
+          adminSignupForm.setError("confirm_password", {
+            type: "manual",
+            message: `Passwords don't match!`,
+          });
+          return;
+        }
+
+        const user = await registerUser({
+          email: values.email,
+          password: values.password,
+          agency: "",
+          uen: "",
+          address: "",
+          poc_name: "",
+          poc_phone: "",
+          halal_certification: false,
+          hygiene_certification: "D",
+          acceptedItems: [],
+          role: "admin",
+        });
+
+        if (user?.error) {
+          adminSignupForm.setError("root", {
+            type: "manual",
+            message: user.error,
+          });
+        } else {
+          router.push("/login?type=admin");
+        }
+      } else {
+        console.error("Error fetching admin data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching admin data:", error);
     }
   }
 
@@ -495,7 +517,7 @@ function Cards() {
                                 that your organisation is Halal certified.
                               </FormDescription>
                               <FormControl>
-                                <Checkbox 
+                                <Checkbox
                                   checked={field.value}
                                   onCheckedChange={field.onChange}
                                 />
@@ -518,16 +540,16 @@ function Cards() {
                                 defaultValue={field.value}
                               >
                                 <FormControl>
-                                  <SelectTrigger 
+                                  <SelectTrigger
                                     style={{ backgroundColor: "white" }}
-                                    >
+                                  >
                                     <SelectValue placeholder="Select a hygiene rating" />
                                   </SelectTrigger>
                                 </FormControl>
 
                                 <SelectContent
-                                    style={{ backgroundColor: "white" }}
-                                    >
+                                  style={{ backgroundColor: "white" }}
+                                >
                                   <SelectItem value="A">A</SelectItem>
                                   <SelectItem value="B">B</SelectItem>
                                   <SelectItem value="C">C</SelectItem>
@@ -928,10 +950,10 @@ export default function Home() {
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">
-    <Header />
-    <Suspense>
-      <Cards />
-    </Suspense>
-  </div>
+      <Header />
+      <Suspense>
+        <Cards />
+      </Suspense>
+    </div>
   );
 }
