@@ -239,16 +239,78 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
 
           <Typography className="mb-2">
             <FaClock className="inline-block mr-2" />
-            Need by: {request.needByTime}
+            {request.status === "new" ? (
+              <>
+                Need by:{" "}
+                {(() => {
+                  const needByDate = new Date(request.needByTime); // Convert to Date object
+
+                  // Format the date and time to "October 25, 2024, 2:30 PM"
+                  return needByDate.toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                    hour12: true, // Display in 12-hour format
+                  });
+                })()}
+              </>
+            ) : (
+              <>
+                Beneficiary needs the delivery by:{" "}
+                {(() => {
+                  const needByDate = new Date(request.needByTime); // Convert to Date object
+
+                  // Format the needByTime to a more readable format
+                  return needByDate.toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                    hour12: true, // Display in 12-hour format
+                  });
+                })()}
+                .{" "}
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  Please deliver to our warehouse by:{" "}
+                  {(() => {
+                    const needByDate = new Date(request.needByTime); // Convert to Date object
+                    needByDate.setDate(needByDate.getDate() - 1); // Subtract 1 day
+
+                    // Format the date to "October 25, 2024"
+                    return needByDate.toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    });
+                  })()}
+                </span>
+                .
+              </>
+            )}
           </Typography>
 
           {request.consumeByTiming && (
             <Typography className="mb-2">
               <FaClock className="inline-block mr-2" />
-              Consume by: {request.consumeByTiming}
+              Consume by:{" "}
+              {(() => {
+                const consumeByDate = new Date(request.consumeByTiming); // Convert to Date object
+
+                // Format the date and time to "October 25, 2024, 2:30 PM"
+                return consumeByDate.toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: true, // Display in 12-hour format
+                });
+              })()}
             </Typography>
           )}
-
           {request.specialRequest && (
             <Typography className="mb-2">
               <FaRegStar className="inline-block mr-2" />
@@ -256,7 +318,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
             </Typography>
           )}
 
-          {request.status === "matched" &&
+          {/* {request.status === "matched" &&
             request.needByTime &&
             (() => {
               const currentDate = new Date();
@@ -278,7 +340,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
                 );
               }
               return null; // Don't show the message if it's more than 2 days away
-            })()}
+            })()} */}
           {request.status !== "new" && beneficiaryData && (
             <Typography className="mb-2">
               <IoMdContact className="inline-block mr-2" />
@@ -290,7 +352,10 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
 
         <CardFooter className="pt-0">
           {request.status === "new" && (
-            <Button onClick={handleDonateClick} className="text-white bg-custom-dark-green hover:bg-custom-darker-green">
+            <Button
+              onClick={handleDonateClick}
+              className="text-white bg-custom-dark-green hover:bg-custom-darker-green"
+            >
               Donate
             </Button>
           )}
@@ -340,9 +405,9 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
                   type="datetime-local"
                   value={consumeBy}
                   onChange={(e) => setConsumeBy(e.target.value)}
-                  min={new Date(Date.now()) // Adds 2 days
-                    .toISOString()
-                    .slice(0, 16)} // Convert to 'YYYY-MM-DDTHH:MM' format
+                  min={
+                    new Date(request.needByTime).toISOString().slice(0, 16) // Format request.needByTime to 'YYYY-MM-DDTHH:MM'
+                  }
                 />
                 {errors.consumeByDate && (
                   <p className="text-red-500 text-sm">{errors.consumeByDate}</p>

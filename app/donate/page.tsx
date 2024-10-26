@@ -382,7 +382,7 @@ const Donate = () => {
                           className="shadow-sm"
                           type="datetime-local"
                           {...field}
-                          min={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // Adds 2 days
+                          min={new Date(Date.now() + 5 * 24 * 60 * 60 * 1000) // Adds 2 days
                             .toISOString()
                             .slice(0, 16)}
                         />
@@ -567,7 +567,7 @@ const Donate = () => {
                           className="shadow-sm"
                           type="datetime-local"
                           {...field}
-                          min={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // Adds 2 days
+                          min={new Date(Date.now() + 5 * 24 * 60 * 60 * 1000) // Adds 2 days
                             .toISOString()
                             .slice(0, 16)}
                         />
@@ -642,134 +642,6 @@ const Donate = () => {
                     </FormItem>
                   )}
                 />
-
-                {/* <FormField
-                  control={nonCookedForm.control}
-                  name="deliveryMethod"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel>Delivery Method</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          className="flex flex-col space-y-1"
-                        >
-                          <FormItem className="flex items-center space-x-3">
-                            <FormControl>
-                              <RadioGroupItem value="pickup" />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Scheduled Pickup
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3">
-                            <FormControl>
-                              <RadioGroupItem value="selfDeliver" />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Self-Delivery
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                /> */}
-
-                {/* {nonCookedForm.watch("deliveryMethod") === "pickup" && (
-                  <>
-                    <FormField
-                      control={nonCookedForm.control}
-                      name="pickUpLocation"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Pickup Location</FormLabel>
-                          <FormControl>
-                            <Input className="shadow-sm" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={nonCookedForm.control}
-                      name="pickUpTime"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Preferred Pickup Time</FormLabel>
-                          <FormControl>
-                            <Input
-                              className="shadow-sm"
-                              type="datetime-local"
-                              {...field}
-                              ref={(input) => {
-                                if (input) {
-                                  // Set min date dynamically to 2 days from today
-                                  const currentDate = new Date();
-                                  const minDate = new Date(
-                                    currentDate.setDate(
-                                      currentDate.getDate() + 2
-                                    )
-                                  )
-                                    .toISOString()
-                                    .slice(0, 16);
-
-                                  // Set the min attribute
-                                  input.min = minDate;
-                                }
-                              }}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                )}
-
-                {nonCookedForm.watch("deliveryMethod") === "selfDeliver" && (
-                  <>
-                    <FormField
-                      control={nonCookedForm.control}
-                      name="dropOffTime"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Drop Off Time</FormLabel>
-                          <FormControl>
-                            <Input
-                              className="shadow-sm"
-                              type="datetime-local"
-                              {...field}
-                              ref={(input) => {
-                                if (input) {
-                                  // Set min date dynamically to 2 days from today
-                                  const currentDate = new Date();
-                                  const minDate = new Date(
-                                    currentDate.setDate(
-                                      currentDate.getDate() + 2
-                                    )
-                                  )
-                                    .toISOString()
-                                    .slice(0, 16);
-
-                                  // Set the min attribute
-                                  input.min = minDate;
-                                }
-                              }}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                          <FormDescription className="text-gray-500">
-                            Our address is 218 Pandan Loop, Level 6, Singapore
-                            128408. We are open from 9.30am - 6pm from Mondays
-                            to Fridays and 10am - 5pm on Saturdays.
-                          </FormDescription>
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                )} */}
 
                 <div className="flex justify-end">
                   <Button
