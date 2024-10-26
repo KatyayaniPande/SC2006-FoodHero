@@ -1,27 +1,28 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { getSession } from 'next-auth/react';
-import Header from '@/components/Header'; // Adjust the path to your Header component
+import { useEffect, useState } from "react";
+import { getSession } from "next-auth/react";
+import Header from "@/components/Header"; // Adjust the path to your Header component
+import { signOut } from "next-auth/react";
 
 export default function DonorProfile() {
   const [donor, setDonor] = useState({
-    agency: '',
-    address: '',
-    uen: '',
-    poc_name: '',
-    poc_phone: '',
+    agency: "",
+    address: "",
+    uen: "",
+    poc_name: "",
+    poc_phone: "",
     halal_certification: false,
-    hygiene_certification: '',
+    hygiene_certification: "",
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [email, setEmail] = useState('');
+  const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
   const [isEditing, setIsEditing] = useState(false); // Track edit mode
   const [saving, setSaving] = useState(false); // Track saving state
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Show delete confirmation pop-up
-  const [message, setMessage] = useState(''); // Success or info message state
-
+  const [message, setMessage] = useState(""); // Success or info message state
+  const [messageType, setMessageType] = useState(""); // 'success', 'info', 'error'
   // Fetch donor details from API based on the session
   useEffect(() => {
     async function fetchDonor() {
@@ -30,7 +31,7 @@ export default function DonorProfile() {
         const userEmail = session?.user?.email;
 
         if (!userEmail) {
-          setError('User email not found');
+          setError("User email not found");
           return;
         }
 
@@ -45,7 +46,7 @@ export default function DonorProfile() {
         const data = await response.json();
         setDonor(data);
       } catch (error) {
-        setError(error.message || 'Something went wrong');
+        setError(error.message || "Something went wrong");
       } finally {
         setLoading(false);
       }
@@ -63,35 +64,68 @@ export default function DonorProfile() {
     }));
   };
 
+  const handleDeleteProfile = async () => {
+    try {
+      const response = await fetch(
+        `/api/donorDetails?email=${encodeURIComponent(donor.email)}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Parse the response body
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Set message and message type for informational feedback
+        setMessageType("info");
+        setMessage(data.error || "Failed to delete donor data");
+        setShowDeleteModal(false); // Close the modal
+        return; // Exit the function
+      }
+
+      // Successfully deleted profile
+      setMessageType("success");
+      setMessage("Profile deleted successfully!");
+      signOut({ callbackUrl: "/" });
+    } catch (err) {
+      // Handle unexpected errors
+      setMessageType("error");
+      setMessage(err.message || "An unexpected error occurred.");
+      setShowDeleteModal(false); // Close the modal
+    }
+  };
+
   const saveProfile = async () => {
     setSaving(true); // Start the saving process
     try {
       const response = await fetch(`/api/donorDetails`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(donor), // Ensure donor contains the updated address and other fields
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save donor data');
+        throw new Error("Failed to save donor data");
       }
 
       // Successfully saved profile
       setIsEditing(false); // Exit edit mode
-      setMessage('Profile saved successfully!'); // Set success message
+      setMessage("Profile saved successfully!"); // Set success message
 
-      setError('');
+      setError("");
     } catch (err) {
       setError(err.message);
-      setMessage(''); // Clear any previous success message on error
-
+      setMessage(""); // Clear any previous success message on error
     } finally {
       setSaving(false); // Stop the saving process
     }
   };
-
 
   // Handle loading state
   if (loading) {
@@ -109,81 +143,107 @@ export default function DonorProfile() {
       <Header />
       <div className="flex flex-col items-center">
         <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-          <img src="/images/people.png" className="w-16 h-16" alt="profilelogo" />
+          <img
+            src="/images/people.png"
+            className="w-16 h-16"
+            alt="profilelogo"
+          />
         </div>
         <h1 className="text-2xl font-semibold">{donor.agency}</h1>
         <p className="text-gray-500">Donor</p>
       </div>
-
       <div className="container mx-auto p-4 max-w-4xl grid grid-cols-2 gap-6 mt-4">
         <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">Address</label>
+          <label className="text-sm font-medium text-gray-500 mb-1">
+            Address
+          </label>
           <input
             type="text"
             name="address"
             value={donor.address}
             readOnly={!isEditing}
             onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`border border-gray-300 rounded-md px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">UEN Number</label>
+          <label className="text-sm font-medium text-gray-500 mb-1">
+            UEN Number
+          </label>
           <input
             type="text"
             name="uen"
             value={donor.uen}
             readOnly={!isEditing}
             onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`border border-gray-300 rounded-md px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">Point of Contact Name</label>
+          <label className="text-sm font-medium text-gray-500 mb-1">
+            Point of Contact Name
+          </label>
           <input
             type="text"
             name="poc_name"
             value={donor.poc_name}
             readOnly={!isEditing}
             onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`border border-gray-300 rounded-md px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">Point of Contact Phone</label>
+          <label className="text-sm font-medium text-gray-500 mb-1">
+            Point of Contact Phone
+          </label>
           <input
             type="text"
             name="poc_phone"
             value={donor.poc_phone}
             readOnly={!isEditing}
             onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`border border-gray-300 rounded-md px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">Halal Certification</label>
+          <label className="text-sm font-medium text-gray-500 mb-1">
+            Halal Certification
+          </label>
           <input
             type="text"
             name="halal_certification"
-            value={donor.halal_certification ? 'Yes' : 'No'}
+            value={donor.halal_certification ? "Yes" : "No"}
             readOnly={!isEditing}
             onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`border border-gray-300 rounded-md px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-500 mb-1">Hygiene Certification</label>
+          <label className="text-sm font-medium text-gray-500 mb-1">
+            Hygiene Certification
+          </label>
           <input
             type="text"
             name="hygiene_certification"
             value={donor.hygiene_certification}
             readOnly={!isEditing}
             onChange={handleInputChange}
-            className={`border border-gray-300 rounded-md px-3 py-2 ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`border border-gray-300 rounded-md px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
       </div>
-
       <div className="ml-4 mt-8 flex justify-center space-x-2">
         {/* Button to toggle between edit and save modes */}
         {isEditing ? (
@@ -192,7 +252,7 @@ export default function DonorProfile() {
             onClick={saveProfile}
             disabled={saving}
           >
-            {saving ? 'Saving...' : 'Save Profile'}
+            {saving ? "Saving..." : "Save Profile"}
           </button>
         ) : (
           <>
@@ -206,14 +266,13 @@ export default function DonorProfile() {
             {/* Delete Profile Button */}
             <button
               className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
-              onClick={() => setShowDeleteModal(true)}  // Trigger modal visibility   
+              onClick={() => setShowDeleteModal(true)} // Trigger modal visibility
             >
               Delete Profile
             </button>
           </>
         )}
       </div>
-
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -223,7 +282,7 @@ export default function DonorProfile() {
             <div className="mt-4 flex justify-end space-x-2">
               <button
                 className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
-              // onClick={deleteProfile} // Call the delete function
+                onClick={handleDeleteProfile} // Call the delete function
               >
                 Confirm
               </button>
@@ -237,9 +296,21 @@ export default function DonorProfile() {
           </div>
         </div>
       )}
-      {message && <p className="text-green-500 mt-4 text-center">{message}</p>} {/* Success message */}
-
+      {/* Success message */}
+      {message && (
+        <p
+          className={`mt-4 text-center ${
+            messageType === "success"
+              ? "text-green-500"
+              : messageType === "error"
+              ? "text-red-500"
+              : "text-blue-500" // For 'info' messages
+          }`}
+        >
+          {message}
+        </p>
+      )}
       {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
-    </div >
+    </div>
   );
 }

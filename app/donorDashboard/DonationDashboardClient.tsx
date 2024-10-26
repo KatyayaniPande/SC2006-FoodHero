@@ -48,12 +48,12 @@ export interface Request {
   deadline: string;
   donoremail: string;
   status:
-  | "new"
-  | "matched"
-  | "inwarehouse"
-  | "awaitingpickup"
-  | "awaitingdelivery"
-  | "delivered";
+    | "new"
+    | "matched"
+    | "inwarehouse"
+    | "awaitingpickup"
+    | "awaitingdelivery"
+    | "delivered";
 }
 
 export default function DonorDashboardClient() {
@@ -140,33 +140,32 @@ export default function DonorDashboardClient() {
     <div className="bg-gray-50 min-h-screen p-8">
       <Header /> {/* Consistent header */}
       <div className="flex flex-row items-center justify-between px-4">
-        <div className="text-3xl font-extrabold w-[90%]">
-          Donor Dashboard
-        </div>
+        <div className="text-3xl font-extrabold w-[90%]">Donor Dashboard</div>
         <Link href="/donate" className="w-[10%]">
           <button className="bg-custom-dark-green text-white font-semibold py-2 px-4 rounded-md hover:bg-custom-darker-green">
             New Donation
           </button>
         </Link>
       </div>
-
       <div className="grid grid-cols-[400px_1fr_auto] gap-x-2 p-5">
         {/* Tab Navigation */}
         <div className="flex ml-1">
           <button
-            className={`px-8 py-2 border border-gray-300 shadow-sm ${activeTab === "donations"
-              ? "bg-custom-dark-green text-white"
-              : "bg-white text-black"
-              } rounded-l-lg`}
+            className={`px-8 py-2 border border-gray-300 shadow-sm ${
+              activeTab === "donations"
+                ? "bg-custom-dark-green text-white"
+                : "bg-white text-black"
+            } rounded-l-lg`}
             onClick={() => setActiveTab("donations")}
           >
             My Donations
           </button>
           <button
-            className={`px-8 py-2 border border-gray-300 shadow-sm ${activeTab === "requests"
-              ? "bg-custom-dark-green text-white"
-              : "bg-white text-black"
-              } rounded-r-lg`}
+            className={`px-8 py-2 border border-gray-300 shadow-sm ${
+              activeTab === "requests"
+                ? "bg-custom-dark-green text-white"
+                : "bg-white text-black"
+            } rounded-r-lg`}
             onClick={() => setActiveTab("requests")}
           >
             Requests to Fulfill
@@ -251,7 +250,6 @@ export default function DonorDashboardClient() {
           </Card>
         </div>
 
-
         <div className="min-w-[70%] h-[calc(100vh-100px)] overflow-y-auto">
           {activeTab === "donations" && (
             <div>
@@ -267,7 +265,7 @@ export default function DonorDashboardClient() {
                   />
                 ))
               ) : (
-                <p>No donations available.</p>
+                <p></p>
               )}
               {searchedRequests.length > 0 ? (
                 searchedRequests.map((request, index) => (
@@ -284,9 +282,7 @@ export default function DonorDashboardClient() {
 
           {activeTab === "requests" && (
             <div>
-              <h1 className="text-2xl font-bold mb-4">
-                Requests to Fulfill
-              </h1>
+              <h1 className="text-2xl font-bold mb-4">Requests to Fulfill</h1>
               {requests
                 .filter((request) => request.status === "new") // Keep the "new" status filter for Requests to Fulfill
                 .filter((request) =>

@@ -146,36 +146,6 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
             Unit Number: {request.floorNumber}
           </Typography>
         )}
-
-        {/* {isDelivery && (
-          <>
-            <Typography className="mb-2">
-              <FaTruck className="inline-block mr-2" />
-              Delivery Method: {request.deliveryMethod}
-            </Typography>
-            <Typography className="mb-2">
-              <FaClock className="inline-block mr-2" />
-              Delivery Time: {request.deliveryTime}
-            </Typography>
-            <Typography className="mb-2">
-              <IoLocation className="inline-block mr-2" />
-              Delivery Location: {request.deliveryLocation}
-            </Typography>
-          </>
-        )} */}
-
-        {/* {isSelfCollection && (
-          <>
-            <Typography className="mb-2">
-              <FaPersonChalkboard className="inline-block mr-2" />
-              Delivery Method: {request.deliveryMethod}
-            </Typography>
-            <Typography className="mb-2">
-              <FaClock className="inline-block mr-2" />
-              Pick-up Time: {request.deliveryTime}
-            </Typography>
-          </>
-        )} */}
       </CardBody>
       <CardFooter className="pt-0">
         {request.status === "new" && (

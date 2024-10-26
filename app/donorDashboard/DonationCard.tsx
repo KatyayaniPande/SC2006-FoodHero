@@ -53,6 +53,7 @@ const DonationCard: React.FC<DonationCardProps> = ({
   const [isDelivery, setIsDelivery] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false); // New state to track deletion
   const [beneficiaryData, setBeneficiaryData] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Track modal state
 
   useEffect(() => {
     async function fetchBeneficiaryData() {
