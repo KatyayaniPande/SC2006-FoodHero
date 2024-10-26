@@ -118,13 +118,35 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
 
         <Typography className="mb-2">
           <FaClock className="inline-block mr-2" />
-          Need by: {request.needByTime}
+          Need by:{" "}
+          {(() => {
+            const needByDate = new Date(request.needByTime);
+            return needByDate.toLocaleString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+              hour12: true, // 12-hour format
+            });
+          })()}
         </Typography>
 
         {request.consumeByTiming && (
           <Typography className="mb-2">
             <FaClock className="inline-block mr-2" />
-            Consume by: {request.consumeByTiming}
+            Consume by:{" "}
+            {(() => {
+              const consumeByDate = new Date(request.consumeByTiming);
+              return consumeByDate.toLocaleString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true, // 12-hour format
+              });
+            })()}
           </Typography>
         )}
 
@@ -156,7 +178,10 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
             >
               Edit Details
             </Button>
-            <Button className="text-black bg-white hover:bg-gray-100 border border-black" onClick={handleDelete}>
+            <Button
+              className="text-black bg-white hover:bg-gray-100 border border-black"
+              onClick={handleDelete}
+            >
               Withdraw
             </Button>
           </div>

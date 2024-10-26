@@ -97,6 +97,7 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
   };
 
   const handleConfirmSubmit = async () => {
+    console.log(deliveryDate);
     let validationErrors = { location: "", date: "" };
 
     // Validate Delivery Location using isValidLocation
@@ -199,18 +200,39 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
               ? `Number of servings: ${donation.numberOfServings}`
               : `Quantity: ${donation.quantity}`}
           </Typography>
-
           {donation.needByTime && (
             <Typography className="mb-2">
               <FaClock className="inline-block mr-2" />
-              Need By: {donation.needByTime}
+              Need By:{" "}
+              {(() => {
+                const needByDate = new Date(donation.needByTime);
+                return needByDate.toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: true, // 12-hour format with AM/PM
+                });
+              })()}
             </Typography>
           )}
 
           {donation.consumeByTiming && (
             <Typography className="mb-2">
               <FaClock className="inline-block mr-2" />
-              ConsumeBy: {donation.consumeByTiming}
+              Consume By:{" "}
+              {(() => {
+                const consumeByDate = new Date(donation.consumeByTiming);
+                return consumeByDate.toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: true, // 12-hour format with AM/PM
+                });
+              })()}
             </Typography>
           )}
 
@@ -238,7 +260,10 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
 
         <CardFooter className="pt-0">
           {donation.status === "new" && (
-            <Button className="text-white bg-custom-dark-green hover:bg-custom-darker-green" onClick={handleAcceptClick}>
+            <Button
+              className="text-white bg-custom-dark-green hover:bg-custom-darker-green"
+              onClick={handleAcceptClick}
+            >
               Accept
             </Button>
           )}
@@ -324,11 +349,17 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
                     setDeliveryDate(e.target.value);
                     if (errors.date) {
                       setErrors({ ...errors, date: "" });
-                    } // Clear location error
+                    }
                   }}
-                  min={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // Adds 2 days
+                  min={new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
                     .toISOString()
-                    .slice(0, 16)} // Convert to 'YYYY-MM-DDTHH:MM' format
+                    .slice(0, 16)} // 3 days from now
+                  // Subtracting 1 day from the consumeByTiming
+                  max={(() => {
+                    const consumeByDate = new Date(donation.consumeByTiming);
+                    consumeByDate.setDate(consumeByDate.getDate() - 1); // Subtract 1 day
+                    return consumeByDate.toISOString().slice(0, 16); // Format the result as 'YYYY-MM-DDTHH:MM'
+                  })()}
                 />
                 {errors.date && (
                   <p className="text-red-500 text-sm">{errors.date}</p>

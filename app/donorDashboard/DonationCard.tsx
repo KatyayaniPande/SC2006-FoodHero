@@ -189,15 +189,55 @@ const DonationCard: React.FC<DonationCardProps> = ({
         {donation.needByTime !== null && (
           <Typography className="mb-2">
             <FaClock className="inline-block mr-2" />
-            Need By: {donation.needByTime}
+            Beneficiary needs the delivery by:{" "}
+            {(() => {
+              const needByDate = new Date(donation.needByTime); // Convert to Date object
+
+              // Format the needByTime to a more readable format
+              return needByDate.toLocaleString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true, // Display in 12-hour format
+              });
+            })()}
+            .{" "}
+            <span style={{ color: "red", fontWeight: "bold" }}>
+              Please deliver to our warehouse by:{" "}
+              {(() => {
+                const needByDate = new Date(donation.needByTime); // Convert to Date object
+                needByDate.setDate(needByDate.getDate() - 1); // Subtract 1 day
+
+                // Format the date to "October 25, 2024"
+                return needByDate.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                });
+              })()}
+            </span>
+            .
           </Typography>
         )}
-
         <Typography className="mb-2">
           <FaClock className="inline-block mr-2" />
-          Consume by: {donation.consumeByTiming}
-        </Typography>
+          Consume by:{" "}
+          {(() => {
+            const consumeByDate = new Date(donation.consumeByTiming); // Convert to Date object
 
+            // Format the date to "October 25, 2024, 2:30 PM"
+            return consumeByDate.toLocaleString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+              hour12: true, // Display in 12-hour format
+            });
+          })()}
+        </Typography>
         {donation.specialHandling && (
           <Typography className="mb-2">
             <FaRegStar className="inline-block mr-2" />
@@ -212,14 +252,14 @@ const DonationCard: React.FC<DonationCardProps> = ({
           </Typography>
         )}
 
-        {donation.status === "matched" &&
+        {/* {donation.status === "matched" &&
           donation.needByTime &&
           (() => {
             const currentDate = new Date();
             const needByDate = new Date(donation.needByTime);
 
             // Calculate the difference in time
-            const diffTime = needByDate.getTime() - currentDate.getTime();
+            const diffTime = needByDate.getDate() - currentDate.getTime();
 
             // Convert time difference to days
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -234,7 +274,7 @@ const DonationCard: React.FC<DonationCardProps> = ({
               );
             }
             return null; // Don't show the message if it's more than 2 days away
-          })()}
+          })()} */}
       </CardBody>
       <CardFooter className="pt-0">
         {/* Only render buttons if the status is not 'inwarehouse' */}
@@ -243,7 +283,10 @@ const DonationCard: React.FC<DonationCardProps> = ({
             {/* Show both Withdraw and Mark as Delivered when the status is 'matched' */}
             {donation.status === "matched" && (
               <>
-                <Button className="text-white bg-custom-dark-green hover:bg-custom-darker-green" onClick={handleMarkAsDelivered}>
+                <Button
+                  className="text-white bg-custom-dark-green hover:bg-custom-darker-green"
+                  onClick={handleMarkAsDelivered}
+                >
                   Mark as Delivered
                 </Button>
               </>
@@ -258,7 +301,10 @@ const DonationCard: React.FC<DonationCardProps> = ({
                 >
                   Edit Details
                 </Button>
-                <Button className="text-black bg-white hover:bg-gray-100 border border-black" onClick={handleWithdraw}>
+                <Button
+                  className="text-black bg-white hover:bg-gray-100 border border-black"
+                  onClick={handleWithdraw}
+                >
                   Withdraw
                 </Button>
               </div>
