@@ -130,21 +130,26 @@ export default function AdminManagement() {
         <h1 className="text-2xl font-semibold mb-4 text-center">
           Approved Admin Users
         </h1>
+        <hr className="border-gray-300 mb-4" />
 
         {/* Table for displaying approved admins */}
         <table className="min-w-full bg-white border rounded-lg shadow-md">
           <thead>
-            <tr>
-              <th className="py-2 px-4 border-b">Email</th>
-              <th className="py-2 px-4 border-b">Actions</th>
+            <tr className="border-b bg-custom-dark-green">
+              <th className="py-3 px-6 text-white font-medium text-center w-1/6">No.</th>
+              <th className="py-3 px-6 text-white font-medium text-center w-4/6">Email</th>
+              <th className="py-3 px-6 text-white font-medium text-center w-1/6">Action</th>
             </tr>
           </thead>
           <tbody>
             {admins.length > 0 ? (
               admins.map((admin, index) => (
-                <tr key={index}>
-                  <td className="py-2 px-4 border-b">{admin.email}</td>
-                  <td className="py-2 px-4 border-b text-center">
+                <tr key={index}
+                  className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+                >
+                   <td className="py-3 px-6 text-gray-700 text-center">{index + 1}</td>
+                  <td className="py-3 px-6 text-gray-700 text-center">{admin.email}</td>
+                  <td className="py-3 px-6 text-center">
                     <button
                       className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
                       onClick={() => handleDeleteClick(admin.email)} // Correct way to pass the admin email to the handler
@@ -156,7 +161,7 @@ export default function AdminManagement() {
               ))
             ) : (
               <tr>
-                <td className="py-2 px-4 border-b text-center" colSpan={2}>
+                <td className="py-3 px-6 border-b text-center" colSpan={2}>
                   No admins found.
                 </td>
               </tr>
@@ -167,7 +172,7 @@ export default function AdminManagement() {
         {/* Add New Admin Button */}
         <div className="mt-4 flex justify-center">
           <button
-            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+            className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
             onClick={() => setShowAddModal(true)}
           >
             Add New Admin
@@ -189,7 +194,7 @@ export default function AdminManagement() {
             />
             <div className="flex justify-end space-x-2">
               <button
-                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                className="bg-custom-dark-green text-white px-4 py-2 rounded-md hover:bg-custom-darker-green"
                 onClick={handleAddAdmin}
               >
                 Add Admin
@@ -232,13 +237,12 @@ export default function AdminManagement() {
 
       {message && (
         <p
-          className={`mt-4 text-center ${
-            messageType === "success"
-              ? "text-green-500"
-              : messageType === "error" || messageType === "info"
+          className={`mt-4 text-center ${messageType === "success"
+            ? "text-green-500"
+            : messageType === "error" || messageType === "info"
               ? "text-red-500"
               : "text-blue-500" // For 'info' messages
-          }`}
+            }`}
         >
           {message}
         </p>

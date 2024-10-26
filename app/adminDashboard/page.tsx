@@ -66,82 +66,180 @@ const Dashboard: React.FC = () => {
   return (
     <div className="bg-gray-50 min-h-screen p-8">
       <Header />
-      <main className="max-w-7xl mx-auto">
-        <div className="relative bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white p-8 rounded-lg shadow-lg">
-          <div className="absolute inset-0 bg-black/50 rounded-lg" />
-          <div className="relative z-10">
-            <h1 className="text-4xl font-bold mb-4">Welcome Admin</h1>
-            <p className="text-lg">
-              Explore our features and manage donation activities.
+      <div className="flex flex-row items-center justify-between px-4 mb-6">
+        <div className="text-3xl font-extrabold">
+          Admin Dashboard
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="flex ml-1">
+          <button
+            className={`px-8 py-2 border border-gray-300 shadow-sm  ${activeTab === "donationsInventory"
+              ? "bg-custom-dark-green text-white"
+              : "bg-white text-black"
+              } rounded-l-lg`}
+            onClick={() => handleTabClick("donationsInventory")}
+          >
+            Donations Inventory
+            <p className="text-lg font-semibold text-black">
+              {collectDonations.length}
             </p>
+          </button>
+          <button
+            className={`px-8 py-2 border border-gray-300 shadow-sm  ${activeTab === "pendingDelivery"
+              ? "bg-custom-dark-green text-white"
+              : "bg-white text-black"
+              } rounded-r-lg`}
+            onClick={() => handleTabClick("pendingDelivery")}
+          >
+            Pending Delivery
+            <p className="text-lg font-semibold text-black">
+              {deliverDonations.length}
+            </p>
+          </button>
+        </div>
+      </div>
+
+      <div className="flex flex-row justify-between gap-4">
+        <div className="flex w-[30%]">
+          <div className="relative h-full w-full flex items-center justify-center overflow-hidden text-center">
+            {/* Background Image with Gradient Overlay */}
+            <div
+              className="absolute inset-0 h-full w-full bg-cover bg-center rounded-xl"
+              style={{
+                backgroundImage:
+                  "url('https://images.unsplash.com/photo-1552960562-daf630e9278b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80')",
+              }}
+            >
+              <div className="absolute inset-0 h-full w-full bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
+            </div>
+
+            {/* Content */}
+            <div className="relative z-10 py-14 px-6 md:px-12 text-white">
+              <h2 className="text-4xl font-medium mb-6 leading-[1.5]">Welcome Back Admin!</h2>
+              <p className="text-lg text-gray-400 mb-4">
+                Manage donation inventory or pending delivery.
+              </p>
+            </div>
           </div>
         </div>
 
-        <section className="bg-white rounded-lg shadow-lg p-12 mb-12">
-          <div className="flex justify-around">
-            <div
-              className={`p-6 bg-[#F0F4E4] rounded-lg shadow-md cursor-pointer ${
-                activeTab === "donationsInventory" ? "bg-[#E0E8D8]" : ""
-              }`}
-              onClick={() => handleTabClick("donationsInventory")}
-            >
-              <div className="flex flex-col items-center w-full text-center">
-                <h2 className="text-2xl font-semibold mb-2 text-[#A2C765]">
-                  Donations Inventory
-                </h2>
-                <p className="text-4xl font-semibold text-gray-700">
-                  {collectDonations.length}
-                </p>
-              </div>
-            </div>
-
-            <div
-              className={`p-6 bg-[#F0F4E4] rounded-lg shadow-md cursor-pointer ${
-                activeTab === "pendingDelivery" ? "bg-[#E0E8D8]" : ""
-              }`}
-              onClick={() => handleTabClick("pendingDelivery")}
-            >
-              <div className="flex flex-col items-center w-full text-center">
-                <h2 className="text-2xl font-semibold mb-2 text-[#A2C765]">
-                  Pending Delivery
-                </h2>
-                <p className="text-4xl font-semibold text-gray-700">
-                  {deliverDonations.length}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-[#F0F4E4] p-12 rounded-lg shadow-lg">
+        <div className="min-w-[70%] h-[calc(100vh-100px)] overflow-y-auto">
           {activeTab === "donationsInventory" && (
             <>
-              <h1 className="text-4xl font-bold text-center mb-8 text-[#A2C765]">
+              <h1 className="text-2xl font-bold mb-4 text-black">
                 Donations Inventory
               </h1>
               <div>
-                {collectDonations.map((item, index) => (
-                  <SomeCard key={index} donation={item} />
-                ))}
+                {collectDonations.length > 0 ? (
+                  collectDonations.map((item, index) => (
+                    <SomeCard key={index} donation={item} />
+                  ))
+                ) : (
+                  <p>No donations available.</p>
+                )}
               </div>
             </>
           )}
           {activeTab === "pendingDelivery" && (
             <>
-              <h1 className="text-4xl font-bold text-center mb-8 text-[#A2C765]">
+              <h1 className="text-2xl font-bold mb-4 text-black">
                 Pending Delivery
               </h1>
               <div>
-                {deliverDonations.map((item, index) => (
-                  <SomeCard key={index} donation={item} />
-                ))}
+                {deliverDonations.length > 0 ? (
+                  deliverDonations.map((item, index) => (
+                    <SomeCard key={index} donation={item} />
+                  ))
+                ) : (
+                  <p>No deliveries to be made at this time.</p>
+                )}
               </div>
             </>
           )}
-        </section>
-      </main>
+        </div>
+      </div>
     </div>
   );
+
+  // return (
+  //   <div className="bg-gray-50 min-h-screen p-8">
+  //     <Header />
+  //     <main className="max-w-7xl mx-auto">
+  //       <div className="relative bg-custom-dark-green text-white p-8 rounded-lg shadow-lg">
+  //         <div className="absolute inset-0  rounded-lg" />
+  //         <div className="relative z-10">
+  //           <h1 className="text-4xl font-bold mb-4">Welcome Back, Admin!</h1>
+  //           <p className="text-lg">
+  //             Explore our features and manage donation activities.
+  //           </p>
+  //         </div>
+  //       </div>
+
+  //       <section className="bg-white rounded-lg shadow-lg p-12 mb-12">
+  //         <div className="flex justify-around">
+  //           <div
+  //             className={`p-6 bg-[#F0F4E4] rounded-lg shadow-md cursor-pointer ${
+  //               activeTab === "donationsInventory" ? "bg-[#E0E8D8]" : "bg-white"
+  //             }`}
+  //             onClick={() => handleTabClick("donationsInventory")}
+  //           >
+  //             <div className="flex flex-col items-center w-full text-center">
+  //               <h2 className="text-2xl font-semibold mb-2 text-[#A2C765]">
+  //                 Donations Inventory
+  //               </h2>
+  //               <p className="text-4xl font-semibold text-gray-700">
+  //                 {collectDonations.length}
+  //               </p>
+  //             </div>
+  //           </div>
+
+  //           <div
+  //             className={`p-6 bg-[#F0F4E4] rounded-lg shadow-md cursor-pointer ${
+  //               activeTab === "pendingDelivery" ? "bg-[#E0E8D8]" : ""
+  //             }`}
+  //             onClick={() => handleTabClick("pendingDelivery")}
+  //           >
+  //             <div className="flex flex-col items-center w-full text-center">
+  //               <h2 className="text-2xl font-semibold mb-2 text-[#A2C765]">
+  //                 Pending Delivery
+  //               </h2>
+  //               <p className="text-4xl font-semibold text-gray-700">
+  //                 {deliverDonations.length}
+  //               </p>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </section>
+  // <section className="bg-[#F0F4E4] p-12 rounded-lg shadow-lg">
+  //   {activeTab === "donationsInventory" && (
+  //     <>
+  //       <h1 className="text-4xl font-bold text-center mb-8 text-[#A2C765]">
+  //         Donations Inventory
+  //       </h1>
+  //       <div>
+  //         {collectDonations.map((item, index) => (
+  //           <SomeCard key={index} donation={item} />
+  //         ))}
+  //       </div>
+  //     </>
+  //   )}
+  //   {activeTab === "pendingDelivery" && (
+  //     <>
+  //       <h1 className="text-4xl font-bold text-center mb-8 text-[#A2C765]">
+  //         Pending Delivery
+  //       </h1>
+  //       <div>
+  //         {deliverDonations.map((item, index) => (
+  //           <SomeCard key={index} donation={item} />
+  //         ))}
+  //       </div>
+  //     </>
+  //   )}
+  // </section>
+  //     </main>
+  //   </div>
+  // );
 };
 
 export default Dashboard;

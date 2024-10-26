@@ -295,7 +295,7 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
           <div className="flex space-x-4">
             {/* Button to mark as delivered */}
             <Button
-              className="bg-green-500 hover:bg-green-600 text-white"
+              className="bg-custom-dark-green hover:bg-custom-darker-green text-white"
               onClick={handleMarkAsDelivered}
             >
               Mark as Delivered
@@ -303,7 +303,7 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
 
             {/* Button to display map */}
             <Button
-              className="bg-blue-500 hover:bg-blue-600 text-white"
+              className="bg-white hover:bg-gray-100 text-black border border-black"
               onClick={handleDisplayMap}
             >
               Display Map
@@ -311,7 +311,7 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
           </div>
         ) : (
           <Button
-            className="bg-blue-500 hover:bg-blue-600 text-white"
+            className="bg-custom-dark-green hover:bg-custom-darker-green text-white"
             onClick={handleTakeOnDelivery}
           >
             Take on this delivery
@@ -338,9 +338,9 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
                 <Button
                   className={`text-white px-4 py-2 rounded ${
                     travelMode === google.maps.TravelMode.DRIVING
-                      ? "bg-blue-500"
+                      ? "bg-custom-dark-green"
                       : "bg-gray-500"
-                  } hover:bg-blue-600`}
+                  } hover:bg-custom-darker-green`}
                   onClick={() =>
                     handleTravelModeChange(google.maps.TravelMode.DRIVING)
                   }
@@ -350,9 +350,9 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
                 <Button
                   className={`text-white px-4 py-2 rounded ${
                     travelMode === google.maps.TravelMode.WALKING
-                      ? "bg-blue-500"
+                      ? "bg-custom-dark-green"
                       : "bg-gray-500"
-                  } hover:bg-blue-600`}
+                  } hover:bg-custom-darker-green`}
                   onClick={() =>
                     handleTravelModeChange(google.maps.TravelMode.WALKING)
                   }
@@ -362,9 +362,9 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
                 <Button
                   className={`text-white px-4 py-2 rounded ${
                     travelMode === google.maps.TravelMode.BICYCLING
-                      ? "bg-blue-500"
+                      ? "bg-custom-dark-green"
                       : "bg-gray-500"
-                  } hover:bg-blue-600`}
+                  } hover:bg-custom-darker-green`}
                   onClick={() =>
                     handleTravelModeChange(google.maps.TravelMode.BICYCLING)
                   }

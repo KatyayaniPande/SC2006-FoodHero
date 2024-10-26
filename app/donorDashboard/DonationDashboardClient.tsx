@@ -241,7 +241,7 @@ export default function DonorDashboardClient() {
                 color="white"
                 className="mb-6 font-medium leading-[1.5]"
               >
-                Welcome Back!
+                Welcome Back Donor!
               </Typography>
               <Typography variant="h5" className="mb-4 text-gray-400">
                 Manage your donations or fulfill requests.
@@ -265,7 +265,7 @@ export default function DonorDashboardClient() {
                   />
                 ))
               ) : (
-                <p></p>
+                <p>No donations available.</p>
               )}
               {searchedRequests.length > 0 ? (
                 searchedRequests.map((request, index) => (
