@@ -243,7 +243,7 @@ const DonationCard: React.FC<DonationCardProps> = ({
             {/* Show both Withdraw and Mark as Delivered when the status is 'matched' */}
             {donation.status === "matched" && (
               <>
-                <Button className="text-white " onClick={handleMarkAsDelivered}>
+                <Button className="text-white bg-custom-dark-green hover:bg-custom-darker-green" onClick={handleMarkAsDelivered}>
                   Mark as Delivered
                 </Button>
               </>
@@ -251,14 +251,14 @@ const DonationCard: React.FC<DonationCardProps> = ({
 
             {/* If it's not matched but status is something else, show only Withdraw */}
             {donation.status === "new" && (
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 ">
                 <Button
-                  className="text-white"
+                  className="text-white bg-custom-dark-green hover:bg-custom-darker-green"
                   onClick={() => router.push(`/donate?id=${donation._id}`)}
                 >
                   Edit Details
                 </Button>
-                <Button className="text-white" onClick={handleWithdraw}>
+                <Button className="text-black bg-white hover:bg-gray-100 border border-black" onClick={handleWithdraw}>
                   Withdraw
                 </Button>
               </div>

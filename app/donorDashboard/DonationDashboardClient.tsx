@@ -147,7 +147,7 @@ export default function DonorDashboardClient() {
           </button>
         </Link>
       </div>
-      <div className="grid grid-cols-[400px_1fr_auto] gap-x-8 p-6">
+      <div className="grid grid-cols-[400px_1fr_auto] gap-x-2 p-5">
         {/* Tab Navigation */}
         <div className="flex ml-1">
           <button
@@ -200,7 +200,7 @@ export default function DonorDashboardClient() {
 
         {/* Filter Dropdown for Donations */}
         {activeTab === "donations" && (
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-between">
             <label htmlFor="statusFilter" className="mr-2">
               Filter by status:
             </label>
@@ -220,9 +220,9 @@ export default function DonorDashboardClient() {
           </div>
         )}
       </div>
-      <div className="flex gap-8">
+      <div className="flex flex-row justify-between gap-4">
         {/* Left Column for Welcome Card */}
-        <div className="flex-1 min-w-[30%]">
+        <div className="flex w-[30%]">
           <Card
             shadow={false}
             className="relative h-full w-full items-end justify-center overflow-hidden text-center"
@@ -250,12 +250,12 @@ export default function DonorDashboardClient() {
           </Card>
         </div>
 
-        <div className="flex-1 min-w-[70%] max-h-[calc(100vh-100px)] overflow-y-auto">
+        <div className="min-w-[70%] h-[calc(100vh-100px)] overflow-y-auto">
           {activeTab === "donations" && (
             <div>
-              <h1 className="text-2xl font-bold mb-4 text-black">
-                My Donations
-              </h1>
+              <div>
+                <h1 className="text-2xl font-bold mb-4">My Donations</h1>
+              </div>
               {filteredDonations.length > 0 ? (
                 searchedDonations.map((donation, index) => (
                   <DonationCard
@@ -282,9 +282,7 @@ export default function DonorDashboardClient() {
 
           {activeTab === "requests" && (
             <div>
-              <h1 className="text-2xl font-bold mb-4 text-black">
-                Requests to Fulfill
-              </h1>
+              <h1 className="text-2xl font-bold mb-4">Requests to Fulfill</h1>
               {requests
                 .filter((request) => request.status === "new") // Keep the "new" status filter for Requests to Fulfill
                 .filter((request) =>

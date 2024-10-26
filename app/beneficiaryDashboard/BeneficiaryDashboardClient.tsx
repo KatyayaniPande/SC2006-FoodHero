@@ -126,7 +126,7 @@ export default function BeneficiaryDashboardClient() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-[400px_1fr_auto] gap-x-8 p-6">
+      <div className="grid grid-cols-[400px_1fr_auto] gap-x-2 p-5">
         {/* Tab Navigation */}
         <div className="flex ml-1">
           <button
@@ -199,9 +199,9 @@ export default function BeneficiaryDashboardClient() {
         )}
         </div>
 
-        <div className="flex gap-8">
+        <div className="flex flex-row justify-between gap-4">
           {/* Left Column for Welcome Card */}
-          <div className="flex-1 min-w-[30%]">
+          <div className="flex w-[30%]">
             <Card
               shadow={false}
               className="relative h-full w-full items-end justify-center overflow-hidden text-center"
@@ -229,7 +229,7 @@ export default function BeneficiaryDashboardClient() {
             </Card>
           </div>
 
-          <div className="flex-1 min-w-[70%] max-h-[calc(100vh-100px)] overflow-y-auto">
+          <div className="min-w-[70%] h-[calc(100vh-100px)] overflow-y-auto">
             {activeTab === "myRequests" && (
               <div>
                 <h1 className="text-2xl font-bold mb-4 text-black">

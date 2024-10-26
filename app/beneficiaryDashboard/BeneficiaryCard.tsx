@@ -151,12 +151,12 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
         {request.status === "new" && (
           <div className="flex space-x-2">
             <Button
-              className="text-white"
+              className="text-white bg-custom-dark-green hover:bg-custom-darker-green"
               onClick={() => router.push(`/request?id=${request._id}`)}
             >
               Edit Details
             </Button>
-            <Button className="text-white bg-black" onClick={handleDelete}>
+            <Button className="text-black bg-white hover:bg-gray-100 border border-black" onClick={handleDelete}>
               Withdraw
             </Button>
           </div>

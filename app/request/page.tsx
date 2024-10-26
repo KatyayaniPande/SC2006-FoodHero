@@ -270,15 +270,15 @@ const Request = () => {
       <Header />
 
       {/* Form Content */}
-      <section className="bg-white rounded-lg shadow-lg p-12 mb-12 flex justify-center">
-        <div className="relative w-full">
-          <h1 className="text-2xl font-bold mb-2 text-center">
+      <section className="bg-white rounded-lg shadow-lg p-12 mb-12 flex justify-center relative">
+        <div className="flex flex-col items-center w-full max-w-4xl">
+          <h1 className="text-2xl font-bold mb-2">
             Request for Food
           </h1>
           <p className="text-sm text-gray-700 mb-7 text-center pt-4">
           Complete the form below to request food donations from our generous donors.</p>
           {/* Back button aligned to the left */}
-          <div className="absolute top-0 left-0">
+          <div className="absolute top-9 left-10">
             <Button
               onClick={() => router.push("/beneficiaryDashboard")}
               variant="outline"

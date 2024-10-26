@@ -130,7 +130,7 @@ const Header: React.FC = () => {
               Chatbot
             </a>
             <div
-              className="relative inline-block text-black"
+              className="relative inline-block text-black z-50"
               onMouseEnter={() => setDropdownOpen(true)}
               onMouseLeave={() => setDropdownOpen(false)}
             >
@@ -196,7 +196,7 @@ const Header: React.FC = () => {
 
             {/* Notifications Icon with Dropdown */}
             <div
-              className="relative inline-block text-black"
+              className="relative inline-block text-black z-50"
               onMouseEnter={() => setIsNotifOpen(true)}
               onMouseLeave={() => setIsNotifOpen(false)}
             >

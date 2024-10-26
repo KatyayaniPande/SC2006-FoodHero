@@ -312,7 +312,7 @@ const Donate = () => {
       <section className="bg-white rounded-lg shadow-lg p-12 mb-12 flex justify-center relative">
         <div className="flex flex-col items-center w-full max-w-4xl">
           <h1 className="text-2xl font-bold mb-2">Donate Food</h1>
-          <p className="text-sm text-gray-700 mb-7">
+          <p className="text-sm text-gray-700 text-center mb-7 pt-2">
             Help us make a difference, one meal at a time. Share your food
             today!
           </p>
