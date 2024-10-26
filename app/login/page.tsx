@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Form,
@@ -7,7 +7,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 import {
   Card,
   CardContent,
@@ -15,70 +15,70 @@ import {
   CardHeader,
   CardTitle,
   CardFooter,
-} from '@/components/ui/card';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import React, { Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Tabs, TabsList, TabsContent, TabsTrigger } from '@/components/ui/tabs';
-import Link from 'next/link';
-import { getSession, signIn, signOut, useSession } from 'next-auth/react';
+} from "@/components/ui/card";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import React, { Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
+import Link from "next/link";
+import { getSession, signIn, signOut, useSession } from "next-auth/react";
 
 {
   /* Custom imports */
 }
-import { LOGIN_TYPES, QUERY_PARAM_NAME } from '@/lib/login/constants';
-import Header from '@/components/Header';
+import { LOGIN_TYPES, QUERY_PARAM_NAME } from "@/lib/login/constants";
+import Header from "@/components/Header";
 
 const loginScheme = z.object({
-  email: z.string().email('Email is required'),
+  email: z.string().email("Email is required"),
   password: z.string(),
 });
 
 function Cards() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const form = searchParams?.get(QUERY_PARAM_NAME) ?? '';
+  const form = searchParams?.get(QUERY_PARAM_NAME) ?? "";
   const session = useSession();
   const formToRender = LOGIN_TYPES.includes(form) ? form : LOGIN_TYPES[0];
 
   const donorLoginForm = useForm<z.infer<typeof loginScheme>>({
     resolver: zodResolver(loginScheme),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
   const beneficiaryLoginForm = useForm<z.infer<typeof loginScheme>>({
     resolver: zodResolver(loginScheme),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
   const adminLoginForm = useForm<z.infer<typeof loginScheme>>({
     resolver: zodResolver(loginScheme),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
   async function onSubmitDonorLogin(values: z.infer<typeof loginScheme>) {
-    const signin = await signIn('credentials', {
+    const signin = await signIn("credentials", {
       email: values.email,
       password: values.password,
       redirect: false,
     });
 
     if (signin?.error) {
-      donorLoginForm.setError('root', {
-        type: 'manual',
+      donorLoginForm.setError("root", {
+        type: "manual",
         message: signin.error,
       });
       return;
@@ -87,28 +87,28 @@ function Cards() {
     if (signin?.ok) {
       const session = await getSession();
 
-      if (session?.user.role !== 'donor') {
+      if (session?.user.role !== "donor") {
         signOut({ redirect: false });
-        donorLoginForm.setError('root', {
-          type: 'manual',
-          message: 'You are not registered as a donor!',
+        donorLoginForm.setError("root", {
+          type: "manual",
+          message: "You are not registered as a donor!",
         });
       } else {
-        router.push('/donorDashboard');
+        router.push("/donorDashboard");
       }
     }
   }
 
   async function onSubmitBeneficiaryLogin(values: z.infer<typeof loginScheme>) {
-    const signin = await signIn('credentials', {
+    const signin = await signIn("credentials", {
       email: values.email,
       password: values.password,
       redirect: false,
     });
 
     if (signin?.error) {
-      beneficiaryLoginForm.setError('root', {
-        type: 'manual',
+      beneficiaryLoginForm.setError("root", {
+        type: "manual",
         message: signin.error,
       });
       return;
@@ -117,45 +117,77 @@ function Cards() {
     if (signin?.ok) {
       const session = await getSession();
 
-      if (session?.user.role !== 'beneficiary') {
+      if (session?.user.role !== "beneficiary") {
         signOut({ redirect: false });
-        beneficiaryLoginForm.setError('root', {
-          type: 'manual',
-          message: 'You are not registered as a beneficiary!',
+        beneficiaryLoginForm.setError("root", {
+          type: "manual",
+          message: "You are not registered as a beneficiary!",
         });
       } else {
-        router.push('/beneficiaryDashboard');
+        router.push("/beneficiaryDashboard");
       }
     }
   }
 
   async function onSubmitAdminLogin(values: z.infer<typeof loginScheme>) {
-    const signin = await signIn('credentials', {
-      email: values.email,
-      password: values.password,
-      redirect: false,
-    });
+    try {
+      const adminListResponse = await fetch(`/api/adminList`);
 
-    if (signin?.error) {
-      adminLoginForm.setError('root', {
-        type: 'manual',
-        message: signin.error,
-      });
-      return;
-    }
+      if (adminListResponse.ok) {
+        const users = await adminListResponse.json();
 
-    if (signin?.ok) {
-      const session = await getSession();
+        const isEmailInAdminList = users.some(
+          (user) => user.email === values.email
+        );
 
-      if (session?.user.role !== 'admin') {
-        signOut({ redirect: false });
-        adminLoginForm.setError('root', {
-          type: 'manual',
-          message: 'You are not registered as an admin!',
-        });
-      } else {
-        router.push('/adminDashboard');
+        if (!isEmailInAdminList) {
+          adminLoginForm.setError("email", {
+            type: "manual",
+            message: `You are not allowed to login as an admin!`,
+          });
+          return;
+        }
       }
+
+      const response = await fetch(`/api/adminDetails?email=${values.email}`); // Update API call
+
+      if (!response.ok) {
+        adminLoginForm.setError("email", {
+          type: "manual",
+          message: `Please register as an admin first`,
+        });
+        return;
+      }
+
+      const signin = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+      });
+
+      if (signin?.error) {
+        adminLoginForm.setError("root", {
+          type: "manual",
+          message: signin.error,
+        });
+        return;
+      }
+
+      if (signin?.ok) {
+        const session = await getSession();
+
+        if (session?.user.role !== "admin") {
+          signOut({ redirect: false });
+          adminLoginForm.setError("root", {
+            type: "manual",
+            message: "You are not registered as an admin!",
+          });
+        } else {
+          router.push("/adminDashboard");
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching admin data:", error);
     }
   }
 
@@ -168,40 +200,40 @@ function Cards() {
    */
   function updateUrlHistory(render: string) {
     const newParams = new URLSearchParams(searchParams?.toString());
-    newParams.set('type', render);
-    window.history.replaceState(null, '', `?${newParams.toString()}`);
+    newParams.set("type", render);
+    window.history.replaceState(null, "", `?${newParams.toString()}`);
   }
 
   return (
-    <section className='h-full w-full flex flex-col items-center'>
-      <div className='container mx-auto'>
-        <div className='flex flex-col items-center mb-4'>
-          <Tabs defaultValue={formToRender} className='w-[75%] min-w-[512px]'>
+    <section className="h-full w-full flex flex-col items-center">
+      <div className="container mx-auto">
+        <div className="flex flex-col items-center mb-4">
+          <Tabs defaultValue={formToRender} className="w-[75%] min-w-[512px]">
             {/* Define the list of tabs */}
-            <TabsList className='grid w-full grid-cols-3 bg-white'>
+            <TabsList className="grid w-full grid-cols-3 bg-white">
               <TabsTrigger
-                className='data-[state=active]:text-white data-[state=active]:bg-custom-dark-green'
-                value='donor'
+                className="data-[state=active]:text-white data-[state=active]:bg-custom-dark-green"
+                value="donor"
                 onClick={() => {
-                  updateUrlHistory('donor');
+                  updateUrlHistory("donor");
                 }}
               >
                 Donor Login
               </TabsTrigger>
               <TabsTrigger
-                className='data-[state=active]:text-white data-[state=active]:bg-custom-dark-green'
-                value='beneficiary'
+                className="data-[state=active]:text-white data-[state=active]:bg-custom-dark-green"
+                value="beneficiary"
                 onClick={() => {
-                  updateUrlHistory('beneficiary');
+                  updateUrlHistory("beneficiary");
                 }}
               >
                 Beneficiary Login
               </TabsTrigger>
               <TabsTrigger
-                className='data-[state=active]:text-white data-[state=active]:bg-custom-dark-green'
-                value='admin'
+                className="data-[state=active]:text-white data-[state=active]:bg-custom-dark-green"
+                value="admin"
                 onClick={() => {
-                  updateUrlHistory('admin');
+                  updateUrlHistory("admin");
                 }}
               >
                 Admin Login
@@ -210,11 +242,11 @@ function Cards() {
 
             {/* Define the contents of the tabs here */}
             {/* Donor card */}
-            <TabsContent value='donor'>
-              <Card className='w-[100%] mt-4 min-w-[412px]'>
+            <TabsContent value="donor">
+              <Card className="w-[100%] mt-4 min-w-[412px]">
                 <CardHeader>
-                  <CardTitle className='pt-4'>Donor Login</CardTitle>
-                  <CardDescription className='pt-2 pb-2'>
+                  <CardTitle className="pt-4">Donor Login</CardTitle>
+                  <CardDescription className="pt-2 pb-2">
                     Enter in your email and password to your Donor account to
                     get started!
                   </CardDescription>
@@ -223,17 +255,17 @@ function Cards() {
                   <Form {...donorLoginForm}>
                     <form
                       onSubmit={donorLoginForm.handleSubmit(onSubmitDonorLogin)}
-                      className='flex flex-col gap-4'
+                      className="flex flex-col gap-4"
                     >
                       <FormField
                         control={donorLoginForm.control}
-                        name='email'
+                        name="email"
                         render={({ field }) => {
                           return (
                             <FormItem>
                               <FormLabel>Email</FormLabel>
                               <FormControl>
-                                <Input {...field} placeholder='Email...' />
+                                <Input {...field} placeholder="Email..." />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -242,7 +274,7 @@ function Cards() {
                       />
                       <FormField
                         control={donorLoginForm.control}
-                        name='password'
+                        name="password"
                         render={({ field }) => {
                           return (
                             <FormItem>
@@ -250,8 +282,8 @@ function Cards() {
                               <FormControl>
                                 <Input
                                   {...field}
-                                  placeholder='Password...'
-                                  type='password'
+                                  placeholder="Password..."
+                                  type="password"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -261,32 +293,32 @@ function Cards() {
                       />
 
                       {donorLoginForm.formState.errors.root && (
-                        <p className='text-red-600'>
+                        <p className="text-red-600">
                           {donorLoginForm.formState.errors.root.message}
                         </p>
                       )}
 
                       {donorLoginForm.formState.isSubmitSuccessful && (
-                        <p className='text-green-600'>
+                        <p className="text-green-600">
                           Login Success! Redirecting...
                         </p>
                       )}
 
                       <Button
-                        className='text-white w-full mt-4 bg-custom-dark-green hover:bg-custom-darker-green'
-                        type='submit'
+                        className="text-white w-full mt-4 bg-custom-dark-green hover:bg-custom-darker-green"
+                        type="submit"
                       >
                         Login
                       </Button>
                     </form>
                   </Form>
                 </CardContent>
-                <CardFooter className='flex flex-col items-center mt-4'>
-                  <p className='text-sm'>
-                    Do not have a donor account yet? Click{' '}
-                    <Link href='/signup?type=donor' className='underline'>
+                <CardFooter className="flex flex-col items-center mt-4">
+                  <p className="text-sm">
+                    Do not have a donor account yet? Click{" "}
+                    <Link href="/signup?type=donor" className="underline">
                       here
-                    </Link>{' '}
+                    </Link>{" "}
                     to sign up!
                   </p>
                 </CardFooter>
@@ -294,13 +326,13 @@ function Cards() {
             </TabsContent>
 
             {/* Beneficiary card */}
-            <TabsContent value='beneficiary'>
-              <Card className='w-[100%] mt-4 min-w-[412px]'>
+            <TabsContent value="beneficiary">
+              <Card className="w-[100%] mt-4 min-w-[412px]">
                 <CardHeader>
-                  <CardTitle className='pt-4'>Beneficiary Login</CardTitle>
-                  <CardDescription className='pt-2 pb-2'>
-                    Enter in your email and password to your Beneficiary account to
-                    get started!
+                  <CardTitle className="pt-4">Beneficiary Login</CardTitle>
+                  <CardDescription className="pt-2 pb-2">
+                    Enter in your email and password to your Beneficiary account
+                    to get started!
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -309,17 +341,17 @@ function Cards() {
                       onSubmit={beneficiaryLoginForm.handleSubmit(
                         onSubmitBeneficiaryLogin
                       )}
-                      className='flex flex-col gap-4'
+                      className="flex flex-col gap-4"
                     >
                       <FormField
                         control={beneficiaryLoginForm.control}
-                        name='email'
+                        name="email"
                         render={({ field }) => {
                           return (
                             <FormItem>
                               <FormLabel>Email</FormLabel>
                               <FormControl>
-                                <Input {...field} placeholder='Email...' />
+                                <Input {...field} placeholder="Email..." />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -328,7 +360,7 @@ function Cards() {
                       />
                       <FormField
                         control={beneficiaryLoginForm.control}
-                        name='password'
+                        name="password"
                         render={({ field }) => {
                           return (
                             <FormItem>
@@ -336,8 +368,8 @@ function Cards() {
                               <FormControl>
                                 <Input
                                   {...field}
-                                  placeholder='Password...'
-                                  type='password'
+                                  placeholder="Password..."
+                                  type="password"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -347,32 +379,32 @@ function Cards() {
                       />
 
                       {beneficiaryLoginForm.formState.errors.root && (
-                        <p className='text-red-600'>
+                        <p className="text-red-600">
                           {beneficiaryLoginForm.formState.errors.root.message}
                         </p>
                       )}
 
                       {beneficiaryLoginForm.formState.isSubmitSuccessful && (
-                        <p className='text-green-600'>
+                        <p className="text-green-600">
                           Login Success! Redirecting...
                         </p>
                       )}
 
                       <Button
-                        className='text-white w-full mt-4 bg-custom-dark-green hover:bg-custom-darker-green'
-                        type='submit'
+                        className="text-white w-full mt-4 bg-custom-dark-green hover:bg-custom-darker-green"
+                        type="submit"
                       >
                         Login
                       </Button>
                     </form>
                   </Form>
                 </CardContent>
-                <CardFooter className='flex flex-col items-center mt-4'>
-                  <p className='text-sm'>
-                    Do not have a beneficiary account yet? Click{' '}
-                    <Link href='/signup?type=beneficiary' className='underline'>
+                <CardFooter className="flex flex-col items-center mt-4">
+                  <p className="text-sm">
+                    Do not have a beneficiary account yet? Click{" "}
+                    <Link href="/signup?type=beneficiary" className="underline">
                       here
-                    </Link>{' '}
+                    </Link>{" "}
                     to sign up!
                   </p>
                 </CardFooter>
@@ -380,11 +412,11 @@ function Cards() {
             </TabsContent>
 
             {/* Admin card */}
-            <TabsContent value='admin'>
-              <Card className='w-[100%] mt-4 min-w-[412px]'>
+            <TabsContent value="admin">
+              <Card className="w-[100%] mt-4 min-w-[412px]">
                 <CardHeader>
-                  <CardTitle className='pt-4'>Admin Login</CardTitle>
-                  <CardDescription className='pt-2 pb-2'>
+                  <CardTitle className="pt-4">Admin Login</CardTitle>
+                  <CardDescription className="pt-2 pb-2">
                     Enter in your Administrator credentials to get started!
                   </CardDescription>
                 </CardHeader>
@@ -392,17 +424,17 @@ function Cards() {
                   <Form {...adminLoginForm}>
                     <form
                       onSubmit={adminLoginForm.handleSubmit(onSubmitAdminLogin)}
-                      className='flex flex-col gap-4'
+                      className="flex flex-col gap-4"
                     >
                       <FormField
                         control={adminLoginForm.control}
-                        name='email'
+                        name="email"
                         render={({ field }) => {
                           return (
                             <FormItem>
                               <FormLabel>Email</FormLabel>
                               <FormControl>
-                                <Input {...field} placeholder='Email...' />
+                                <Input {...field} placeholder="Email..." />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -411,7 +443,7 @@ function Cards() {
                       />
                       <FormField
                         control={adminLoginForm.control}
-                        name='password'
+                        name="password"
                         render={({ field }) => {
                           return (
                             <FormItem>
@@ -419,8 +451,8 @@ function Cards() {
                               <FormControl>
                                 <Input
                                   {...field}
-                                  placeholder='Password...'
-                                  type='password'
+                                  placeholder="Password..."
+                                  type="password"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -430,32 +462,32 @@ function Cards() {
                       />
 
                       {adminLoginForm.formState.errors.root && (
-                        <p className='text-red-600'>
+                        <p className="text-red-600">
                           {adminLoginForm.formState.errors.root.message}
                         </p>
                       )}
 
                       {adminLoginForm.formState.isSubmitSuccessful && (
-                        <p className='text-green-600'>
+                        <p className="text-green-600">
                           Login Success! Redirecting...
                         </p>
                       )}
 
                       <Button
-                        className='text-white w-full mt-4 bg-custom-dark-green hover:bg-custom-darker-green'
-                        type='submit'
+                        className="text-white w-full mt-4 bg-custom-dark-green hover:bg-custom-darker-green"
+                        type="submit"
                       >
                         Login
                       </Button>
                     </form>
                   </Form>
                 </CardContent>
-                <CardFooter className='flex flex-col items-center mt-4'>
-                  <p className='text-sm'>
-                    Do not have an admin account yet? Click{' '}
-                    <Link href='/signup?type=admin' className='underline'>
+                <CardFooter className="flex flex-col items-center mt-4">
+                  <p className="text-sm">
+                    Do not have an admin account yet? Click{" "}
+                    <Link href="/signup?type=admin" className="underline">
                       here
-                    </Link>{' '}
+                    </Link>{" "}
                     to sign up!
                   </p>
                 </CardFooter>
@@ -470,7 +502,7 @@ function Cards() {
 
 export default function Home() {
   return (
-    <div className='bg-gray-100 min-h-screen p-8'>
+    <div className="bg-gray-100 min-h-screen p-8">
       <Header />
       <Suspense>
         <Cards />
