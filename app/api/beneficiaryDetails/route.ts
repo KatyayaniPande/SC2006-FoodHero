@@ -138,40 +138,65 @@ export async function DELETE(request) {
       );
     }
 
+    // Connect to the donations and requests collections in the 'db' database
+    const donationsCollection = await connectToDB("database", "donations");
+    const requestsCollection = await connectToDB("database", "requests");
+
+    // Check for pending donations or requests
+    const pendingDonation = await donationsCollection.findOne({
+      beneficiaryemail: email,
+      status: { $in: ["matched", "awaitingdelivery", "inwarehouse"] },
+    });
+
+    const pendingRequest = await requestsCollection.findOne({
+      beneficiaryemail: email,
+      status: { $in: ["matched", "awaitingdelivery", "inwarehouse"] },
+    });
+
+    if (pendingDonation || pendingRequest) {
+      return new Response(
+        JSON.stringify({
+          error:
+            "Cannot delete profile. You have pending donations or requests. Please complete them before deleting your profile.",
+        }),
+        { status: 400 }
+      );
+    }
+
+    // Connect to the users collection in the 'test' database
     const usersCollection = await connectToDB("test", "users");
+
+    // Delete the donor from the users collection
     const userDeleteResult = await usersCollection.deleteOne({
       email: email,
     });
 
     if (userDeleteResult.deletedCount === 0) {
       return new Response(
-        JSON.stringify({ error: "Donor not found or role mismatch" }),
-        {
-          status: 404,
-        }
+        JSON.stringify({ error: "Beneficiary not found or role mismatch" }),
+        { status: 404 }
       );
     }
 
-    const donationsCollection = await connectToDB("db", "donations");
-    const requestsCollection = await connectToDB("db", "requests");
-
+    // Delete associated donations and requests
     const donationsDeleteResult = await donationsCollection.deleteMany({
       beneficiaryemail: email,
     });
     const requestsDeleteResult = await requestsCollection.deleteMany({
       beneficiaryemail: email,
     });
+
     // Return success message
     return new Response(
       JSON.stringify({
-        message: "Donor and associated data deleted successfully",
+        message: "Beneficiary and associated data deleted successfully",
         deletedDonations: donationsDeleteResult.deletedCount,
         deletedRequests: requestsDeleteResult.deletedCount,
       }),
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error deleting donor details:", error);
+    console.error("Error deleting Beneficiary details:", error);
     return new Response(JSON.stringify({ error: "Internal Server Error" }), {
       status: 500,
     });

@@ -130,40 +130,46 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
 
   // Handler to take on the delivery
   const handleTakeOnDelivery = async () => {
-    if (!donation._id) {
-      alert("Donation ID is missing.");
-      return;
-    }
+    const confirmed = window.confirm(
+      "Are you sure you want to take on this delivery?"
+    );
 
-    try {
-      const response = await fetch("/api/statusUpdate", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          donationId: donation._id, // Use the donation ID from the prop
-          currentStatus: donation.status, // Pass the current status from the prop
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        alert(`Success: ${data.message}`);
-        window.location.reload();
-      } else {
-        const errorData = await response.json();
-        alert(`Error: ${errorData.error}`);
+    if (confirmed) {
+      if (!donation._id) {
+        alert("Donation ID is missing.");
+        return;
       }
-    } catch (error) {
-      console.error("Error updating status:", error);
-      alert("An error occurred while updating the donation status.");
+
+      try {
+        const response = await fetch("/api/statusUpdate", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            donationId: donation._id, // Use the donation ID from the prop
+            currentStatus: donation.status, // Pass the current status from the prop
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          alert(`Success: ${data.message}`);
+          window.location.reload();
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.error}`);
+        }
+      } catch (error) {
+        console.error("Error updating status:", error);
+        alert("An error occurred while updating the donation status.");
+      }
     }
   };
 
   // Handler to mark as delivered
   const handleMarkAsDelivered = async () => {
-    const confirmed = window.confirm("Have you delivered to the warehouse?");
+    const confirmed = window.confirm("Have you delivered to the beneficiary?");
     if (confirmed) {
       try {
         const response = await fetch("/api/statusUpdate", {
@@ -276,12 +282,13 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
             Floor number: {donation.floorNumber}
           </Typography>
         )}
-
-        <Typography className="mb-2">
-          <IoMdContact className="inline-block mr-2" />
-          Point of Contact: {beneficiaryData.poc_name}, Phone Number:{" "}
-          {beneficiaryData.poc_phone}
-        </Typography>
+        {beneficiaryData && (
+          <Typography className="mb-2">
+            <IoMdContact className="inline-block mr-2" />
+            Point of Contact: {beneficiaryData.poc_name}, Phone Number:{" "}
+            {beneficiaryData.poc_phone}
+          </Typography>
+        )}
       </CardBody>
       <CardFooter className="pt-0">
         {donation.status === "awaitingdelivery" ? (

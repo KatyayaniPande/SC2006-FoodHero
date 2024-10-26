@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
 import Header from "@/components/Header"; // Adjust the path to your Header component
+import { signOut } from "next-auth/react";
 
 export default function DonorProfile() {
   const [donor, setDonor] = useState({
@@ -21,7 +22,7 @@ export default function DonorProfile() {
   const [saving, setSaving] = useState(false); // Track saving state
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Show delete confirmation pop-up
   const [message, setMessage] = useState(""); // Success or info message state
-
+  const [messageType, setMessageType] = useState(""); // 'success', 'info', 'error'
   // Fetch donor details from API based on the session
   useEffect(() => {
     async function fetchDonor() {
@@ -65,24 +66,36 @@ export default function DonorProfile() {
 
   const handleDeleteProfile = async () => {
     try {
-      const response = await fetch(`/api/donorDetails`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(donor), // Ensure donor contains the updated address and other fields
-      });
+      const response = await fetch(
+        `/api/donorDetails?email=${encodeURIComponent(donor.email)}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Parse the response body
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error("Failed to save donor data");
+        // Set message and message type for informational feedback
+        setMessageType("info");
+        setMessage(data.error || "Failed to delete donor data");
+        setShowDeleteModal(false); // Close the modal
+        return; // Exit the function
       }
 
-      // Successfully saved profile
-      setError("");
+      // Successfully deleted profile
+      setMessageType("success");
+      setMessage("Profile deleted successfully!");
+      signOut({ callbackUrl: "/" });
     } catch (err) {
-      setError(err.message);
-    } finally {
-      // setSaving(false); // Stop the saving process
+      // Handle unexpected errors
+      setMessageType("error");
+      setMessage(err.message || "An unexpected error occurred.");
+      setShowDeleteModal(false); // Close the modal
     }
   };
 
@@ -283,8 +296,20 @@ export default function DonorProfile() {
           </div>
         </div>
       )}
-      {message && <p className="text-green-500 mt-4 text-center">{message}</p>}{" "}
       {/* Success message */}
+      {message && (
+        <p
+          className={`mt-4 text-center ${
+            messageType === "success"
+              ? "text-green-500"
+              : messageType === "error"
+              ? "text-red-500"
+              : "text-blue-500" // For 'info' messages
+          }`}
+        >
+          {message}
+        </p>
+      )}
       {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
     </div>
   );

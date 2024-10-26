@@ -48,12 +48,12 @@ export interface Request {
   deadline: string;
   donoremail: string;
   status:
-  | "new"
-  | "matched"
-  | "inwarehouse"
-  | "awaitingpickup"
-  | "awaitingdelivery"
-  | "delivered";
+    | "new"
+    | "matched"
+    | "inwarehouse"
+    | "awaitingpickup"
+    | "awaitingdelivery"
+    | "delivered";
 }
 
 export default function DonorDashboardClient() {
@@ -140,33 +140,32 @@ export default function DonorDashboardClient() {
     <div className="bg-gray-50 min-h-screen p-8">
       <Header /> {/* Consistent header */}
       <div className="flex flex-row items-center justify-between px-4">
-        <div className="text-3xl font-extrabold w-[90%]">
-          Donor Dashboard
-        </div>
+        <div className="text-3xl font-extrabold w-[90%]">Donor Dashboard</div>
         <Link href="/donate" className="w-[10%]">
           <button className="bg-custom-dark-green text-white font-semibold py-2 px-4 rounded-md hover:bg-custom-darker-green">
             New Donation
           </button>
         </Link>
       </div>
-
       <div className="grid grid-cols-[400px_1fr_auto] gap-x-8 p-6">
         {/* Tab Navigation */}
         <div className="flex ml-1">
           <button
-            className={`px-8 py-2 border border-gray-300 shadow-sm ${activeTab === "donations"
+            className={`px-8 py-2 border border-gray-300 shadow-sm ${
+              activeTab === "donations"
                 ? "bg-custom-dark-green text-white"
                 : "bg-white text-black"
-              } rounded-l-lg`}
+            } rounded-l-lg`}
             onClick={() => setActiveTab("donations")}
           >
             My Donations
           </button>
           <button
-            className={`px-8 py-2 border border-gray-300 shadow-sm ${activeTab === "requests"
+            className={`px-8 py-2 border border-gray-300 shadow-sm ${
+              activeTab === "requests"
                 ? "bg-custom-dark-green text-white"
                 : "bg-white text-black"
-              } rounded-r-lg`}
+            } rounded-r-lg`}
             onClick={() => setActiveTab("requests")}
           >
             Requests to Fulfill
@@ -198,7 +197,7 @@ export default function DonorDashboardClient() {
             </svg>
           </div>
         </div>
-        
+
         {/* Filter Dropdown for Donations */}
         {activeTab === "donations" && (
           <div className="flex items-center justify-end">
@@ -266,7 +265,7 @@ export default function DonorDashboardClient() {
                   />
                 ))
               ) : (
-                <p>No donations available.</p>
+                <p></p>
               )}
               {searchedRequests.length > 0 ? (
                 searchedRequests.map((request, index) => (

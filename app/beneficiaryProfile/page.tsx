@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
 import Header from "@/components/Header"; // Adjust the path to your Header component
+import { signOut } from "next-auth/react";
 
 export default function Profile() {
   const [beneficiary, setBeneficiary] = useState({
@@ -22,6 +23,7 @@ export default function Profile() {
   const [saving, setSaving] = useState(false); // Track saving state
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Show delete confirmation pop-up
   const [message, setMessage] = useState(""); // To display success or info messages
+  const [messageType, setMessageType] = useState(""); // 'success', 'info', 'error'
 
   // Fetch beneficiary details from API based on the session
   useEffect(() => {
@@ -65,7 +67,42 @@ export default function Profile() {
       [name]: value,
     }));
   };
-  const handleDeleteProfile = async () => {};
+  const handleDeleteProfile = async () => {
+    try {
+      const response = await fetch(
+        `/api/beneficiaryDetails?email=${encodeURIComponent(
+          beneficiary.email
+        )}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Parse the response body
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Set message and message type for informational feedback
+        setMessageType("info");
+        setMessage(data.error || "Failed to delete beneficiary data");
+        setShowDeleteModal(false); // Close the modal
+        return; // Exit the function
+      }
+
+      // Successfully deleted profile
+      setMessageType("success");
+      setMessage("Profile deleted successfully!");
+      signOut({ callbackUrl: "/" });
+    } catch (err) {
+      // Handle unexpected errors
+      setMessageType("error");
+      setMessage(err.message || "An unexpected error occurred.");
+      setShowDeleteModal(false); // Close the modal
+    }
+  };
 
   // Simulate saving changes to a backend
   const saveProfile = async () => {
@@ -288,7 +325,19 @@ export default function Profile() {
           </div>
         </div>
       )}
-      {message && <p className="text-green-500 mt-4 text-center">{message}</p>}
+      {message && (
+        <p
+          className={`mt-4 text-center ${
+            messageType === "success"
+              ? "text-green-500"
+              : messageType === "error"
+              ? "text-red-500"
+              : "text-blue-500" // For 'info' messages
+          }`}
+        >
+          {message}
+        </p>
+      )}
       {error && <p className="text-red-500 mt-4 text-center">{error}</p>}{" "}
       {/* Display error if any */}
     </div>
