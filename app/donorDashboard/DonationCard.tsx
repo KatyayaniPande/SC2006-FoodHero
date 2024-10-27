@@ -247,7 +247,7 @@ const DonationCard: React.FC<DonationCardProps> = ({
         {donation.status !== "new" && beneficiaryData && (
           <Typography className="mb-2">
             <IoMdContact className="inline-block mr-2" />
-            Point of Contact: {beneficiaryData.poc_name}, Phone Number:{" "}
+            Beneficiary name: {beneficiaryData.poc_name}, Phone Number:{" "}
             {beneficiaryData.poc_phone}
           </Typography>
         )}

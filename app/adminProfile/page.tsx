@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Header from "@/components/Header"; // Adjust the path to your Header component
+import { getSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function AdminManagement() {
   const [admins, setAdmins] = useState([]); // Store list of admins
@@ -13,13 +15,22 @@ export default function AdminManagement() {
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Show delete confirmation modal
   const [selectedAdmin, setSelectedAdmin] = useState(""); // Store selected admin for deletion
   const [messageType, setMessageType] = useState(""); // 'success', 'info', 'error'
+  const [email, setEmail] = useState("");
 
   const appUrl = "http://localhost:3000"; // Adjust the base API URL
+  const router = useRouter();
 
   // Fetch admin details from API
   useEffect(() => {
     async function fetchAdmins() {
       try {
+        const session = await getSession();
+        const userEmail = session?.user?.email;
+        if (!userEmail) {
+          setError("User email not found");
+          return;
+        }
+        setEmail(userEmail);
         const response = await fetch(`${appUrl}/api/adminList`);
         if (!response.ok) {
           throw new Error("Error fetching admin list");
@@ -104,6 +115,10 @@ export default function AdminManagement() {
       setAdmins(admins.filter((admin) => admin.email !== selectedAdmin));
       setShowDeleteModal(false);
       setMessage(result.message);
+
+      if (email === selectedAdmin) {
+        router.push("/");
+      }
     } catch (err) {
       // Set the error message and close the modal
       setMessageType("error");
@@ -128,6 +143,9 @@ export default function AdminManagement() {
 
       <div className="container mx-auto p-4 max-w-4xl mt-4">
         <h1 className="text-2xl font-semibold mb-4 text-center">
+          Hello {email}
+        </h1>
+        <h1 className="text-2xl font-semibold mb-4 text-center">
           Approved Admin Users
         </h1>
         <hr className="border-gray-300 mb-4" />
@@ -136,19 +154,30 @@ export default function AdminManagement() {
         <table className="min-w-full bg-white border rounded-lg shadow-md">
           <thead>
             <tr className="border-b bg-custom-dark-green">
-              <th className="py-3 px-6 text-white font-medium text-center w-1/6">No.</th>
-              <th className="py-3 px-6 text-white font-medium text-center w-4/6">Email</th>
-              <th className="py-3 px-6 text-white font-medium text-center w-1/6">Action</th>
+              <th className="py-3 px-6 text-white font-medium text-center w-1/6">
+                No.
+              </th>
+              <th className="py-3 px-6 text-white font-medium text-center w-4/6">
+                Email
+              </th>
+              <th className="py-3 px-6 text-white font-medium text-center w-1/6">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
             {admins.length > 0 ? (
               admins.map((admin, index) => (
-                <tr key={index}
-                  className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+                <tr
+                  key={index}
+                  className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
                 >
-                   <td className="py-3 px-6 text-gray-700 text-center">{index + 1}</td>
-                  <td className="py-3 px-6 text-gray-700 text-center">{admin.email}</td>
+                  <td className="py-3 px-6 text-gray-700 text-center">
+                    {index + 1}
+                  </td>
+                  <td className="py-3 px-6 text-gray-700 text-center">
+                    {admin.email}
+                  </td>
                   <td className="py-3 px-6 text-center">
                     <button
                       className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
@@ -237,12 +266,13 @@ export default function AdminManagement() {
 
       {message && (
         <p
-          className={`mt-4 text-center ${messageType === "success"
-            ? "text-green-500"
-            : messageType === "error" || messageType === "info"
+          className={`mt-4 text-center ${
+            messageType === "success"
+              ? "text-green-500"
+              : messageType === "error" || messageType === "info"
               ? "text-red-500"
               : "text-blue-500" // For 'info' messages
-            }`}
+          }`}
         >
           {message}
         </p>
