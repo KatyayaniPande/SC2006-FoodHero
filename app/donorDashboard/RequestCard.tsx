@@ -81,10 +81,13 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
           const data = await response.json();
           setBeneficiaryData(data);
         } else {
-          console.error("Error fetching donor data:", response.statusText);
+          console.error(
+            "Error fetching beneficiary data:",
+            response.statusText
+          );
         }
       } catch (error) {
-        console.error("Error fetching donor data:", error);
+        console.error("Error fetching beneficiary data:", error);
       }
     }
 
@@ -344,7 +347,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
           {request.status !== "new" && beneficiaryData && (
             <Typography className="mb-2">
               <IoMdContact className="inline-block mr-2" />
-              Point of Contact: {beneficiaryData.poc_name}, Phone Number:{" "}
+              Beneficiary name: {beneficiaryData.poc_name}, Phone Number:{" "}
               {beneficiaryData.poc_phone}
             </Typography>
           )}

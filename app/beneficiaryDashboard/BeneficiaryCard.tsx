@@ -20,6 +20,7 @@ import { IoLocation } from "react-icons/io5";
 import { Request } from "./BeneficiaryDashboardClient";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation"; // Import useSearchParams
+import { IoMdContact } from "react-icons/io";
 
 interface RequestCardProps {
   request: Request;
@@ -53,6 +54,7 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
   const [isDelivery, setIsDelivery] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const router = useRouter();
+  const [donorData, setDonorData] = useState(null);
 
   // Effects
   useEffect(() => {
@@ -61,6 +63,30 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
     setIsDelivery(request.deliveryMethod !== "Self-Collection");
   }, [request]);
 
+  useEffect(() => {
+    async function fetchBeneficiaryData() {
+      try {
+        const response = await fetch(
+          `/api/donorDetails?email=${request.donoremail}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setDonorData(data);
+        } else {
+          console.error(
+            "Error fetching beneficiary data:",
+            response.statusText
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching beneficiary data:", error);
+      }
+    }
+
+    if (request.donoremail) {
+      fetchBeneficiaryData();
+    }
+  }, [request.donoremail]);
   // Early return after hooks
   if (isDeleted) return null;
 
@@ -108,14 +134,12 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
           <FaBowlFood className="inline-block mr-2" />
           {request.foodName} {!isCooked && `[${request.foodCategory}]`}
         </Typography>
-
         <Typography className="mb-2">
           <AiOutlineNumber className="inline-block mr-2" />
           {isCooked
             ? `Number of servings: ${request.numberOfServings}`
             : `Quantity: ${request.quantity}`}
         </Typography>
-
         <Typography className="mb-2">
           <FaClock className="inline-block mr-2" />
           Need by:{" "}
@@ -131,7 +155,6 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
             });
           })()}
         </Typography>
-
         {request.consumeByTiming && (
           <Typography className="mb-2">
             <FaClock className="inline-block mr-2" />
@@ -149,23 +172,28 @@ const BeneficiaryCard: React.FC<RequestCardProps> = ({ request, onDelete }) => {
             })()}
           </Typography>
         )}
-
         {request.specialRequest && (
           <Typography className="mb-2">
             <FaRegStar className="inline-block mr-2" />
             Special Request: {request.specialRequest}
           </Typography>
         )}
-
         <Typography className="mb-2">
           <IoLocation className="inline-block mr-2" />
           Delivery Location: {request.deliveryLocation}
         </Typography>
-
         {request.floorNumber && (
           <Typography className="mb-2">
             <IoLocation className="inline-block mr-2" />
             Unit Number: {request.floorNumber}
+          </Typography>
+        )}
+
+        {request.status !== "new" && donorData && (
+          <Typography className="mb-2">
+            <IoMdContact className="inline-block mr-2" />
+            Donor name: {donorData.poc_name}, Phone Number:{" "}
+            {donorData.poc_phone}
           </Typography>
         )}
       </CardBody>

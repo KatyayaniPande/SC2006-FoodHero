@@ -31,6 +31,7 @@ import {
   StandaloneSearchBox,
   Autocomplete,
 } from "@react-google-maps/api";
+import { IoMdContact } from "react-icons/io";
 
 interface DonorCardProps {
   donation: Donation;
@@ -62,6 +63,7 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
   const [deliveryDate, setDeliveryDate] = useState(""); // Track the selected delivery date
   const [errors, setErrors] = useState({ location: "", date: "" }); // Track errors
   const [isValidLocation, setIsValidLocation] = useState(false);
+  const [donorData, setDonorData] = useState(null);
 
   const inputRef = useRef(null);
 
@@ -75,6 +77,28 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
       setIsCooked(true);
     }
   }, [donation]);
+
+  useEffect(() => {
+    async function fetchBeneficiaryData() {
+      try {
+        const response = await fetch(
+          `/api/donorDetails?email=${donation.donoremail}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setDonorData(data);
+        } else {
+          console.error("Error fetching donor data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching donor data:", error);
+      }
+    }
+
+    if (donation.donoremail) {
+      fetchBeneficiaryData();
+    }
+  }, [donation.donoremail]);
 
   const handleAcceptClick = () => {
     setIsModalOpen(true); // Open modal when Accept button is clicked
@@ -254,6 +278,14 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
             <Typography className="mb-2">
               <IoLocation className="inline-block mr-2" />
               Unit Number: {donation.floorNumber}
+            </Typography>
+          )}
+
+          {donation.status !== "new" && donorData && (
+            <Typography className="mb-2">
+              <IoMdContact className="inline-block mr-2" />
+              Donor name: {donorData.poc_name}, Phone Number:{" "}
+              {donorData.poc_phone}
             </Typography>
           )}
         </CardBody>
