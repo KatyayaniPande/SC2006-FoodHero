@@ -207,9 +207,9 @@ function Cards() {
   ) {
     const adminEmails = await fetchAdminList();
     if (adminEmails.includes(values.email)) {
-      donorSignupForm.setError("email", {
+      donorSignupForm.setError("root", {
         type: "manual",
-        message: `This email is reserved.`,
+        message: `Email already exists`,
       });
       return;
     }
@@ -251,7 +251,7 @@ function Cards() {
     if (adminEmails.includes(values.email)) {
       beneficiarySignupForm.setError("email", {
         type: "manual",
-        message: `This email is reserved.`,
+        message: `Email already exists`,
       });
       return;
     }
