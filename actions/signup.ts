@@ -47,12 +47,14 @@ export const registerUser = async (values: any) => {
   } = values;
 
   try {
-    // await mongoDBConnection();
+    await mongoDBConnection();
 
-    const usersConnection = await connectToDB("test", "users");
+    const isUserFound = await User.findOne({ email });
 
-    const isUserFound = await usersConnection.findOne({ email });
-    console.log(isUserFound);
+    // const usersConnection = await connectToDB("test", "users");
+
+    // const isUserFound = await usersConnection.findOne({ email });
+    // console.log(isUserFound);
 
     if (isUserFound) {
       return {

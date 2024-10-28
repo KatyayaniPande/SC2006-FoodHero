@@ -186,9 +186,33 @@ function Cards() {
     resolver: zodResolver(adminSignupScheme),
   });
 
+  async function fetchAdminList() {
+    try {
+      const response = await fetch(`/api/adminList`);
+      if (response.ok) {
+        const users = await response.json();
+        return users.map((user) => user.email);
+      } else {
+        console.error("Error fetching admin data:", response.statusText);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching admin data:", error);
+      return [];
+    }
+  }
+
   async function onSubmitDonorSignup(
     values: z.infer<typeof donorSignupScheme>
   ) {
+    const adminEmails = await fetchAdminList();
+    if (adminEmails.includes(values.email)) {
+      donorSignupForm.setError("email", {
+        type: "manual",
+        message: `This email is reserved.`,
+      });
+      return;
+    }
     if (values.password !== values.confirm_password) {
       donorSignupForm.setError("confirm_password", {
         type: "manual",
@@ -223,6 +247,14 @@ function Cards() {
   async function onSubmitBeneficiarySignup(
     values: z.infer<typeof beneficiarySignupScheme>
   ) {
+    const adminEmails = await fetchAdminList();
+    if (adminEmails.includes(values.email)) {
+      beneficiarySignupForm.setError("email", {
+        type: "manual",
+        message: `This email is reserved.`,
+      });
+      return;
+    }
     if (values.password !== values.confirm_password) {
       beneficiarySignupForm.setError("confirm_password", {
         type: "manual",
