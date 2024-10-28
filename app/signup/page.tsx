@@ -249,7 +249,7 @@ function Cards() {
   ) {
     const adminEmails = await fetchAdminList();
     if (adminEmails.includes(values.email)) {
-      beneficiarySignupForm.setError("email", {
+      beneficiarySignupForm.setError("root", {
         type: "manual",
         message: `Email already exists`,
       });
