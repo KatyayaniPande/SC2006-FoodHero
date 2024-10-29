@@ -38,7 +38,7 @@ FoodHero aims to reduce the percentage of people experiencing food insecurity by
   1. Software Requirements Specification
   2. Code and API Documentations
   3. Use Case Diagram and Descriptions
-  4. User Interface Mockups
+  4. [User Interface Mockups] (https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Supporting%20Documents/UI%20Mockups.pdf)
 </details>
 
 
