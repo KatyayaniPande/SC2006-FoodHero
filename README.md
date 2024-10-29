@@ -16,7 +16,7 @@ FoodHero aims to reduce the percentage of people experiencing food insecurity by
 <details>
   <summary>🎥 Demo Video</summary>
 
-  [Video](https://www.youtube.com/watch?v=mvUtt7vF098)
+  1. [Video](https://www.youtube.com/watch?v=mvUtt7vF098)
 </details>
 
 <details>
