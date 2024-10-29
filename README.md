@@ -2,7 +2,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ## FoodHero
 
 Welcome to the official repository for NTU Course code SC2006 Software Engineering, TDDB-47 group project Foodhero!
-![Uploading image.png…]()
+![Mission](https://github.com/user-attachments/assets/e521b8e9-c354-4920-8f64-ef4a9d3a927e)
+
 
 ## Getting Started
 
