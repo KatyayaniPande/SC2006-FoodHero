@@ -139,13 +139,20 @@ Please refer to the [API Docs](https://github.com/user-attachments/files/1756151
 2. Gemini (Chatbot)
 [Link](https://ai.google.dev/gemini-api?gad_source=1&gbraid=0AAAAACn9t640wmFS7HvY1pE8sHzWzsjgR&gclid=Cj0KCQjwj4K5BhDYARIsAD1Ly2penGvppLtgX5Mbjhqo7zavu4liFxiST4orVNN-LEPGRtfa9-Ytp-MaAqvhEALw_wcB)
 
-3. Supermarket 
+3. Supermarket Listings
+[Link](https://data.gov.sg/datasets/d_1bf762ee1d6d7fb61192cb442fb2f5b4/view)
 
 
 
-
-
-
+## Contributors
+| Name | Github Username  | Role |
+|------|-----------------------|-------------------|
+| a   | [user](link)     | Frontend                |
+| a   | [user](link)     | Frontend                |
+| a   | [user](link)     | Frontend                |
+| a   | [user](link)     | Frontend                |
+| a   | [user](link)     | Frontend                |
+| a   | [user](link)     | Frontend                |
 
 
 
