@@ -8,7 +8,9 @@ Welcome to the official repository for NTU Course code SC2006 Software Engineeri
 ## Getting Started
 First, change directory to code:
 
+```bash
 cd code 
+```
 
 Second, run the development server:
 
