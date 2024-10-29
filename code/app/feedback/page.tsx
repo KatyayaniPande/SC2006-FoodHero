@@ -196,10 +196,10 @@ function FeedbackForm() {
       {showModal && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-sm">
-            <h2 className="text-2xl font-semibold text-green-600 mb-4">Feedback Submitted Successfully!</h2>
+            <h2 className="text-2xl font-semibold text-custom-dark-green mb-4">Feedback Submitted Successfully!</h2>
             <p className="mb-6 text-gray-700">Thank you for your feedback.</p>
             <Button
-              className="bg-[#A2C765] hover:bg-[#8BBE3D] text-white py-2 px-4 rounded-lg"
+              className="bg-custom-dark-green hover:bg-custom-darker-green text-white py-2 px-4 rounded-lg"
               onClick={goToDashboard}
             >
               Go Back to Dashboard
