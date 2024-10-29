@@ -64,6 +64,7 @@ interface Donation {
   deliveryMethod: string;
   beneficiaryemail: string;
   floorNumber: string;
+  donoremail: string;
 }
 
 interface SomeCardProps {
@@ -84,6 +85,7 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
   const [isSelfPickUp, setIsSelfPickUp] = useState(false);
   const [isDelivery, setIsDelivery] = useState(false);
   const [beneficiaryData, setBeneficiaryData] = useState(null);
+  const [donorData, setDonorData] = useState(null);
 
   // Load Google Maps script on component mount
   useEffect(() => {
@@ -127,6 +129,28 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
       setIsDelivery(true);
     }
   }, [donation]);
+
+  useEffect(() => {
+    async function fetchDonordata() {
+      try {
+        const response = await fetch(
+          `/api/donorDetails?email=${donation.donoremail}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setDonorData(data);
+        } else {
+          console.error("Error fetching donor data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching donor data:", error);
+      }
+    }
+
+    if (donation.donoremail) {
+      fetchDonordata();
+    }
+  }, [donation.donoremail]);
 
   // Handler to take on the delivery
   const handleTakeOnDelivery = async () => {
@@ -285,8 +309,15 @@ const SomeCard: React.FC<SomeCardProps> = ({ donation }) => {
         {beneficiaryData && (
           <Typography className="mb-2">
             <IoMdContact className="inline-block mr-2" />
-            Point of Contact: {beneficiaryData.poc_name}, Phone Number:{" "}
+            Beneficiary name: {beneficiaryData.poc_name}, Phone Number:{" "}
             {beneficiaryData.poc_phone}
+          </Typography>
+        )}
+        {donorData && (
+          <Typography className="mb-2">
+            <IoMdContact className="inline-block mr-2" />
+            Donor name: {donorData.poc_name}, Phone Number:{" "}
+            {donorData.poc_phone}
           </Typography>
         )}
       </CardBody>

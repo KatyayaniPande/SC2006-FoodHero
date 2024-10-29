@@ -68,7 +68,7 @@ const MissionPage: React.FC = () => {
           </p>
           <div className="text-center">
             <a
-              href="/get-involved"
+              href="/signup"
               className="inline-block bg-custom-dark-green text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-custom-darker-green"
             >
               Get Involved

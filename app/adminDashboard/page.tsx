@@ -3,16 +3,59 @@
 import React, { useEffect, useState } from "react";
 import Header from "@/components/Header"; // Adjust the path as needed
 import SomeCard from "./SomeCard"; // Import SomeCard
+import { getSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const Dashboard: React.FC = () => {
+  const router = useRouter();
   const [combinedData, setCombinedData] = useState([]); // Store combined donorData and requestData
   const [acceptedDeliveries, setAcceptedDeliveries] = useState([]); // Store accepted deliveries for the logged-in admin
   const [activeTab, setActiveTab] = useState<
     "donationsInventory" | "pendingDelivery"
   >("donationsInventory"); // Track which tab is active
-
   const appUrl = "http://localhost:3000";
 
+  useEffect(() => {
+    async function fetchUserExist() {
+      try {
+        const session = await getSession();
+        const userEmail = session?.user?.email;
+
+        if (!userEmail) {
+          // No user email found, handle redirect or action
+          // router.push("/login");
+          return;
+        }
+
+        const response = await fetch(`${appUrl}/api/adminList`);
+        const data = await response.json();
+
+        // Assuming data.email is an array
+        if (Array.isArray(data)) {
+          const userExists = data.some((item) => item.email === userEmail);
+          console.log(userExists);
+
+          if (!userExists) {
+            // If userEmail is not found in any object, redirect to login
+            signOut({ callbackUrl: "/" });
+          } else {
+            // Handle cases where data is not an array or is undefined
+            console.error(
+              "Data is not in the expected array of objects format."
+            );
+            // router.push("/login"); // Optional redirect based on failure
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user existence:", error);
+        // Handle error or fallback logic, maybe redirect to login
+        // router.push("/login");
+      }
+    }
+
+    fetchUserExist();
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -58,6 +101,7 @@ const Dashboard: React.FC = () => {
   const collectDonations = combinedData.filter(
     (item) => item.status === "inwarehouse"
   );
+
   const deliverDonations =
     acceptedDeliveries.length > 0
       ? acceptedDeliveries.filter((item) => item.status === "awaitingdelivery")
@@ -67,17 +111,16 @@ const Dashboard: React.FC = () => {
     <div className="bg-gray-50 min-h-screen p-8">
       <Header />
       <div className="flex flex-row items-center justify-between px-4 mb-6">
-        <div className="text-3xl font-extrabold">
-          Admin Dashboard
-        </div>
+        <div className="text-3xl font-extrabold">Admin Dashboard</div>
 
         {/* Tab Navigation */}
         <div className="flex ml-1">
           <button
-            className={`px-8 py-2 border border-gray-300 shadow-sm  ${activeTab === "donationsInventory"
-              ? "bg-custom-dark-green text-white"
-              : "bg-white text-black"
-              } rounded-l-lg`}
+            className={`px-8 py-2 border border-gray-300 shadow-sm  ${
+              activeTab === "donationsInventory"
+                ? "bg-custom-dark-green text-white"
+                : "bg-white text-black"
+            } rounded-l-lg`}
             onClick={() => handleTabClick("donationsInventory")}
           >
             Donations Inventory
@@ -86,10 +129,11 @@ const Dashboard: React.FC = () => {
             </p>
           </button>
           <button
-            className={`px-8 py-2 border border-gray-300 shadow-sm  ${activeTab === "pendingDelivery"
-              ? "bg-custom-dark-green text-white"
-              : "bg-white text-black"
-              } rounded-r-lg`}
+            className={`px-8 py-2 border border-gray-300 shadow-sm  ${
+              activeTab === "pendingDelivery"
+                ? "bg-custom-dark-green text-white"
+                : "bg-white text-black"
+            } rounded-r-lg`}
             onClick={() => handleTabClick("pendingDelivery")}
           >
             Pending Delivery
@@ -116,7 +160,9 @@ const Dashboard: React.FC = () => {
 
             {/* Content */}
             <div className="relative z-10 py-14 px-6 md:px-12 text-white">
-              <h2 className="text-4xl font-medium mb-6 leading-[1.5]">Welcome Back Admin!</h2>
+              <h2 className="text-4xl font-medium mb-6 leading-[1.5]">
+                Welcome Back Admin!
+              </h2>
               <p className="text-lg text-gray-400 mb-4">
                 Manage donation inventory or pending delivery.
               </p>
