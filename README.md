@@ -1,4 +1,4 @@
-## FoodHero - A platform to connect those in need with those who have
+<img width="694" alt="image" src="https://github.com/user-attachments/assets/7b5ab9af-6fa4-4d93-9644-5e844821953d">## FoodHero - A platform to connect those in need with those who have
 
 Welcome to the official repository for NTU Course code SC2006 Software Engineering, TDDB-47 group project Foodhero!
 ![Mission](https://github.com/user-attachments/assets/e521b8e9-c354-4920-8f64-ef4a9d3a927e)
@@ -109,6 +109,18 @@ Please refer to the [API Docs](https://github.com/user-attachments/files/1756151
 
 ![image](https://github.com/user-attachments/assets/48e9f6dc-d841-4d64-a297-a59b8bfba0c2)
 
+### Frontend
+The frontend of this application is built with Next.js, which allows us to create both static and dynamic pages seamlessly. The frontend architecture includes reusable components and server-rendered pages for optimal performance and SEO.
+1. ```/pages``` represents unqiue route in the application. For example, ```pages/user/profile.js``` loads the user profile page.
+2. Reusable components in the ```/components``` directory help maintain clean an modular structure. Such compoenets include cards, buttons and forms.
+3. Static Site Generation is utilized for pages such as About and FAQ as they dont change frequently.
+
+### Backend
+
+Managed entirely through ```/app/api```. It is a standalone backend endpoint.
+For detailed documentaion please refer to [API Documentation](https://github.com/user-attachments/files/17561849/API.Documentation.pdf)
+
+NextAuth.js is used to handle user authentication, including role based access control.
 
 
 ## Design patterns 
