@@ -1,4 +1,8 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## FoodHero
+
+Welcome to the official repository for NTU Course code SC2006 Software Engineering, TDDB-47 group project Foodhero!
+![Uploading image.png…]()
 
 ## Getting Started
 
