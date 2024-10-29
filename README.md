@@ -128,8 +128,8 @@ NextAuth.js is used to handle user authentication, including role based access c
 1. Singelton pattern
    - Ensures only one MongoDB connection instance is created across API routes.
 
-2. Observer pattern 
-  - Used to trigger notifications when a new donation is created 
+2. Observer pattern
+   - Used to trigger notifications when a new donation is created 
 
 ## SOLID Principles
 
