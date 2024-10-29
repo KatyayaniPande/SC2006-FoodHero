@@ -6,8 +6,11 @@ Welcome to the official repository for NTU Course code SC2006 Software Engineeri
 
 
 ## Getting Started
+First, change directory to code:
 
-First, run the development server:
+cd code 
+
+Second, run the development server:
 
 ```bash
 npm run dev
