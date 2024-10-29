@@ -12,7 +12,11 @@ const MissionPage: React.FC = () => {
           <h1 className="text-4xl font-bold text-center mb-8 text-custom-dark-green">
             Our Mission
           </h1>
-
+          <img
+            src="/images/ourMission.jpg"
+            alt="Our Mission"
+            className="mx-auto mb-8"
+          />
           <p className="text-xl text-gray-700 leading-relaxed text-center mb-12">
             Our mission is to eradicate hunger and minimize food waste by
             ensuring that excess food reaches those who need it most. We believe
