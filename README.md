@@ -5,6 +5,8 @@ Welcome to the official repository for NTU Course code SC2006 Software Engineeri
 
 FoodHero aims to reduce the percentage of people experiencing food insecurity by connecting people in need with local supermarkets that have leftover food to distribute. FoodHero platform allows donors to post available food items, while beneficiaries can request them as needed. 
 
+Simply deliver any leftovers to us based on a match, and we will deliver it on the beneficiary on your behalf!
+
 ## Features 
   * User registration and authentication for different roles (Donor, Beneficiary, Admin).
   * Donation mangement: Donors are able to create,update and delete donation entries.
