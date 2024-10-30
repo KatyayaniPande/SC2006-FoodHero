@@ -22,12 +22,12 @@ FoodHero aims to reduce the percentage of people experiencing food insecurity by
 <details>
   <summary>📊 Diagrams </summary>
 
-  1.App Overview Diagram
+  1. App Overview Diagram
   2. Use Case Diagram
   3. Architecture Diagram
   4. Class Diagram
   5. Sequence Diagrams
-  6. Dialog Map
+  6. [Dialog Map](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab%203/initial%20dialog%20map.pdf)
 
 </details>
 
