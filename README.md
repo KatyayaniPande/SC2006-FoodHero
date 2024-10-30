@@ -191,7 +191,7 @@ For ease of use from donors (specifically supermarkets).
 | a   | [user](link)     | Frontend                |
 | a   | [user](link)     | Frontend                |
 | a   | [user](link)     | Frontend                |
-| Tan Jun Hern   | [jh]([link](https://github.com/TanJunHern))     | Frontend                |
+| Tan Jun Hern   | [jh](https://github.com/TanJunHern)    | Frontend                |
 
 ## Learn More
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
