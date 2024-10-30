@@ -1,4 +1,4 @@
-<img width="694" alt="image" src="https://github.com/user-attachments/assets/7b5ab9af-6fa4-4d93-9644-5e844821953d">## FoodHero - A platform to connect those in need with those who have
+## FoodHero - A platform to connect those in need with those who have
 
 Welcome to the official repository for NTU Course code SC2006 Software Engineering, TDDB-47 group project Foodhero!
 ![Mission](https://github.com/user-attachments/assets/e521b8e9-c354-4920-8f64-ef4a9d3a927e)
