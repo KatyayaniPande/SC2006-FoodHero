@@ -51,7 +51,7 @@ Simply deliver any leftovers to us based on a match, and we will deliver it on t
   git clone https://github.com/softwarelab3/2006-TDDB-47
 ```
 ```
-  cd 2006-TDDB-47
+  cd 2006-TDDB-47/code
   ```
 ### 2. Install the required dependencies and nodes with : 
 ```
