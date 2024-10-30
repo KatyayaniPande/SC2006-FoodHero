@@ -133,6 +133,18 @@ NextAuth.js is used to handle user authentication, including role based access c
 
 ## SOLID Principles
 
+ * Single Responsibility Principle
+   Seperate packages are created, each with distinct responsibilities. Each class witiin each package handle particular
+   logic groups.
+<img width="214" alt="image" src="https://github.com/user-attachments/assets/8c52c07a-a71c-4429-ac6a-c4ee8ee37d23">
+
+
+ * Open-Closed Principle
+   
+
+
+
+
 
 
 ## Techonologies
