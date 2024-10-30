@@ -190,7 +190,7 @@ For ease of use from donors (specifically supermarkets).
 |------|-----------------------|-------------------|
 | a   | [user](link)     | Frontend                |
 | a   | [user](link)     | Frontend                |
-| a   | [user](link)     | Frontend                |
+| Chong Kai Bin   | [kaibin157](https://github.com/kaibin157)     | Frontend                |
 | Edmund Yeo   | [bobesaur](https://github.com/bobesaur)     | Frontend                |
 | Liu Cong   | [liuconggg](https://github.com/liuconggg)    | Backend               |
 | Tan Jun Hern   | [jh](https://github.com/TanJunHern)    | Frontend                |
