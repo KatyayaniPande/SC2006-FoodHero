@@ -62,7 +62,7 @@ npm install
 npm run dev
 
 ```
-and finally open htp://localhost:3000 to view the application in any browser.
+and finally open [http://localhost:3000](http://localhost:3000) to view the application in any browser.
 
 You are now ready to start your journey with FoodHero to minimise food wastage and to help those in need!
 
@@ -140,18 +140,33 @@ NextAuth.js is used to handle user authentication, including role based access c
 
 
  * Open-Closed Principle
-   
+   Prop-driven approach aligns with OCP as the components can be extended with new data or behaviours without changing
+   the internal structure.
+<img width="573" alt="image" src="https://github.com/user-attachments/assets/8de7c63f-2fcd-4220-8193-ef65cfa01281">
 
 
+ * Interface Segregration Principle
+   Numerous small and specific interfaces are used. 
+<img width="269" alt="image" src="https://github.com/user-attachments/assets/cc06549a-c8c1-4c81-8033-83783976cc3d">
 
-
+ * Dependency Inversion Principle
+   High and low level modules depend on abstractions through the use of interfaces. Here, ```beneficiaryDashboardClient ```is passing the ```request``` object as a prop to ```beneficiaryCard```. 
+<img width="324" alt="image" src="https://github.com/user-attachments/assets/27270bf3-9372-42e5-8cbd-ac28d972997b">
 
 
 ## Techonologies
-  * Frontend: a,b,c
 
-  * Backend: a,b,c
-  * Authentication. NextAuth.js for secure athentication and session maangement.
+### Frontend: 
+- Next.js (React framework with server-side rendering and static site)
+- TypeScript
+- Tailwind CSS
+
+### Backend
+- Next.js API Routes (Used for buildin serverless API endpoints)
+- MongoDB
+
+### Authentication
+- NextAuth.js for secure athentication and session maangement.
 
 
 
@@ -177,14 +192,6 @@ NextAuth.js is used to handle user authentication, including role based access c
 | a   | [user](link)     | Frontend                |
 | a   | [user](link)     | Frontend                |
 | a   | [user](link)     | Frontend                |
-
-
-
-
-
-
-
-
 
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
