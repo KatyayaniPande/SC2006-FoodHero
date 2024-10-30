@@ -192,7 +192,7 @@ For ease of use from donors (specifically supermarkets).
 | a   | [user](link)     | Frontend                |
 | a   | [user](link)     | Frontend                |
 | a   | [user](link)     | Frontend                |
-| a   | [user](link)     | Frontend                |
+| Liu Cong   | [liuconggg]([link](https://github.com/liuconggg))     | Backend               |
 | Tan Jun Hern   | [jh](https://github.com/TanJunHern)    | Frontend                |
 
 ## Learn More
