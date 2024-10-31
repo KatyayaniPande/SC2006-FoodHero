@@ -189,7 +189,7 @@ For ease of use from donors (specifically supermarkets).
 | Name | Github Username  | Role |
 |------|-----------------------|-------------------|
 | a   | [user](link)     | Frontend                |
-| a   | [user](link)     | Frontend                |
+| James Rodrigues   | [jainsleyrod]([link](https://github.com/jainsleyrod))     | Frontend                |
 | Chong Kai Bin   | [kaibin157](https://github.com/kaibin157)     | Frontend                |
 | Edmund Yeo   | [bobesaur](https://github.com/bobesaur)     | Frontend                |
 | Liu Cong   | [liuconggg](https://github.com/liuconggg)    | Backend               |
