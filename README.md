@@ -188,7 +188,7 @@ For ease of use from donors (specifically supermarkets).
 ## Contributors
 | Name | Github Username  | Role |
 |------|-----------------------|-------------------|
-| a   | [user](link)     | Frontend                |
+| Katyayani Pande   | [KatyayaniPande](https://github.com/KatyayaniPande)     | Backend                |
 | James Rodrigues   | [jainsleyrod](https://github.com/jainsleyrod)     | Frontend                |
 | Chong Kai Bin   | [kaibin157](https://github.com/kaibin157)     | Frontend                |
 | Edmund Yeo   | [bobesaur](https://github.com/bobesaur)     | Frontend                |
