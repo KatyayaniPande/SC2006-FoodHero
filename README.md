@@ -38,7 +38,7 @@ Simply deliver any leftovers to us based on a match, and we will deliver it on t
   
   1. Software Requirements Specification
   2. [API Documentations](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Supporting%20Documents/API%20Documentation.pdf)
-  3. [Use Case Diagram and Descriptions](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Supporting%20Documents/Use%20Case%20Description.pdf)
+  3. [Use Case Diagram and Descriptions](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Supporting%20Documents/Use%20Case%20Diagram%20and%20Description.pdf)
   4. [User Interface Mockups](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Supporting%20Documents/UI%20Mockups.pdf)
   
 </details>
