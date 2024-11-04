@@ -265,7 +265,7 @@ export default function DonorDashboardClient() {
                   />
                 ))
               ) : (
-                <p>No donations available.</p>
+                <></>
               )}
               {searchedRequests.length > 0 ? (
                 searchedRequests.map((request, index) => (
@@ -297,7 +297,7 @@ export default function DonorDashboardClient() {
                   />
                 ))}
               {requests.filter((request) => request.status === "new").length ===
-                0 && <p>No requests to fulfill at this time.</p>}
+                0 && <></>}
             </div>
           )}
         </div>

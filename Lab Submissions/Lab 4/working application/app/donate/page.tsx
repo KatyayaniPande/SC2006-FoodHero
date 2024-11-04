@@ -417,56 +417,6 @@ const Donate = () => {
                   )}
                 />
 
-                <FormField
-                  control={cookedForm.control}
-                  name="foodImages"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Food Images</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          multiple
-                          ref={fileInputRef}
-                          accept="image/*"
-                          className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                          onChange={handleFileChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                      {previewImages.length > 0 && (
-                        <div className="flex justify-center my-4">
-                          <Carousel
-                            opts={{
-                              align: "center",
-                            }}
-                            className="w-full max-w-sm"
-                          >
-                            <CarouselContent>
-                              {previewImages.map((src, index) => (
-                                <CarouselItem key={index}>
-                                  <div className="p-1">
-                                    <Image
-                                      src={src}
-                                      objectFit="contain"
-                                      width={244}
-                                      height={244}
-                                      alt={`Food preview ${index + 1}`}
-                                      className="w-full h-auto rounded-md"
-                                    />
-                                  </div>
-                                </CarouselItem>
-                              ))}
-                            </CarouselContent>
-                            <CarouselPrevious type="button" />
-                            <CarouselNext type="button" />
-                          </Carousel>
-                        </div>
-                      )}
-                    </FormItem>
-                  )}
-                />
-
                 <div className="flex justify-end">
                   <Button
                     className="rounded-md text-white bg-custom-dark-green hover:bg-custom-darker-green"
@@ -573,56 +523,6 @@ const Donate = () => {
                         />
                       </FormControl>
                       <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={nonCookedForm.control}
-                  name="foodImages"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Food Images</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          multiple
-                          ref={fileInputRef}
-                          accept="image/*"
-                          className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                          onChange={handleFileChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                      {previewImages.length > 0 && (
-                        <div className="flex justify-center my-4">
-                          <Carousel
-                            opts={{
-                              align: "center",
-                            }}
-                            className="w-full max-w-sm"
-                          >
-                            <CarouselContent>
-                              {previewImages.map((src, index) => (
-                                <CarouselItem key={index}>
-                                  <div className="p-1">
-                                    <Image
-                                      src={src}
-                                      objectFit="contain"
-                                      width={244}
-                                      height={244}
-                                      alt={`Food preview ${index + 1}`}
-                                      className="w-full h-auto rounded-md"
-                                    />
-                                  </div>
-                                </CarouselItem>
-                              ))}
-                            </CarouselContent>
-                            <CarouselPrevious type="button" />
-                            <CarouselNext type="button" />
-                          </Carousel>
-                        </div>
-                      )}
                     </FormItem>
                   )}
                 />

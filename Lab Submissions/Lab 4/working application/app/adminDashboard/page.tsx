@@ -182,7 +182,7 @@ const Dashboard: React.FC = () => {
                     <SomeCard key={index} donation={item} />
                   ))
                 ) : (
-                  <p>No donations available.</p>
+                  <></>
                 )}
               </div>
             </>
@@ -198,7 +198,7 @@ const Dashboard: React.FC = () => {
                     <SomeCard key={index} donation={item} />
                   ))
                 ) : (
-                  <p>No deliveries to be made at this time.</p>
+                  <></>
                 )}
               </div>
             </>
@@ -207,85 +207,6 @@ const Dashboard: React.FC = () => {
       </div>
     </div>
   );
-
-  // return (
-  //   <div className="bg-gray-50 min-h-screen p-8">
-  //     <Header />
-  //     <main className="max-w-7xl mx-auto">
-  //       <div className="relative bg-custom-dark-green text-white p-8 rounded-lg shadow-lg">
-  //         <div className="absolute inset-0  rounded-lg" />
-  //         <div className="relative z-10">
-  //           <h1 className="text-4xl font-bold mb-4">Welcome Back, Admin!</h1>
-  //           <p className="text-lg">
-  //             Explore our features and manage donation activities.
-  //           </p>
-  //         </div>
-  //       </div>
-
-  //       <section className="bg-white rounded-lg shadow-lg p-12 mb-12">
-  //         <div className="flex justify-around">
-  //           <div
-  //             className={`p-6 bg-[#F0F4E4] rounded-lg shadow-md cursor-pointer ${
-  //               activeTab === "donationsInventory" ? "bg-[#E0E8D8]" : "bg-white"
-  //             }`}
-  //             onClick={() => handleTabClick("donationsInventory")}
-  //           >
-  //             <div className="flex flex-col items-center w-full text-center">
-  //               <h2 className="text-2xl font-semibold mb-2 text-[#A2C765]">
-  //                 Donations Inventory
-  //               </h2>
-  //               <p className="text-4xl font-semibold text-gray-700">
-  //                 {collectDonations.length}
-  //               </p>
-  //             </div>
-  //           </div>
-
-  //           <div
-  //             className={`p-6 bg-[#F0F4E4] rounded-lg shadow-md cursor-pointer ${
-  //               activeTab === "pendingDelivery" ? "bg-[#E0E8D8]" : ""
-  //             }`}
-  //             onClick={() => handleTabClick("pendingDelivery")}
-  //           >
-  //             <div className="flex flex-col items-center w-full text-center">
-  //               <h2 className="text-2xl font-semibold mb-2 text-[#A2C765]">
-  //                 Pending Delivery
-  //               </h2>
-  //               <p className="text-4xl font-semibold text-gray-700">
-  //                 {deliverDonations.length}
-  //               </p>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </section>
-  // <section className="bg-[#F0F4E4] p-12 rounded-lg shadow-lg">
-  //   {activeTab === "donationsInventory" && (
-  //     <>
-  //       <h1 className="text-4xl font-bold text-center mb-8 text-[#A2C765]">
-  //         Donations Inventory
-  //       </h1>
-  //       <div>
-  //         {collectDonations.map((item, index) => (
-  //           <SomeCard key={index} donation={item} />
-  //         ))}
-  //       </div>
-  //     </>
-  //   )}
-  //   {activeTab === "pendingDelivery" && (
-  //     <>
-  //       <h1 className="text-4xl font-bold text-center mb-8 text-[#A2C765]">
-  //         Pending Delivery
-  //       </h1>
-  //       <div>
-  //         {deliverDonations.map((item, index) => (
-  //           <SomeCard key={index} donation={item} />
-  //         ))}
-  //       </div>
-  //     </>
-  //   )}
-  // </section>
-  //     </main>
-  //   </div>
-  // );
 };
 
 export default Dashboard;
