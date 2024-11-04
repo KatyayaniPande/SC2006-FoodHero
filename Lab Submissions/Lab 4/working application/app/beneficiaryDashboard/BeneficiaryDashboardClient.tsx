@@ -31,12 +31,12 @@ export interface Request {
   floorNumber: string;
   consumeByTiming: string;
   status:
-  | "new"
-  | "matched"
-  | "inwarehouse"
-  | "awaitingpickup"
-  | "awaitingdelivery"
-  | "delivered"; // Add status field
+    | "new"
+    | "matched"
+    | "inwarehouse"
+    | "awaitingpickup"
+    | "awaitingdelivery"
+    | "delivered"; // Add status field
 }
 
 export default function BeneficiaryDashboardClient() {
@@ -130,19 +130,21 @@ export default function BeneficiaryDashboardClient() {
         {/* Tab Navigation */}
         <div className="flex ml-1">
           <button
-            className={`px-8 py-2 border border-gray-300 shadow-sm ${activeTab === "myRequests"
-              ? "bg-custom-dark-green text-white"
-              : "bg-white text-black"
-              } rounded-l-lg`}
+            className={`px-8 py-2 border border-gray-300 shadow-sm ${
+              activeTab === "myRequests"
+                ? "bg-custom-dark-green text-white"
+                : "bg-white text-black"
+            } rounded-l-lg`}
             onClick={() => setActiveTab("myRequests")}
           >
             My Requests
           </button>
           <button
-            className={`px-8 py-2 border border-gray-300 shadow-sm ${activeTab === "availableDonations"
-              ? "bg-custom-dark-green text-white"
-              : "bg-white text-black"
-              } rounded-r-lg`}
+            className={`px-8 py-2 border border-gray-300 shadow-sm ${
+              activeTab === "availableDonations"
+                ? "bg-custom-dark-green text-white"
+                : "bg-white text-black"
+            } rounded-r-lg`}
             onClick={() => setActiveTab("availableDonations")}
           >
             Available Donations
@@ -197,100 +199,100 @@ export default function BeneficiaryDashboardClient() {
             </select>
           </div>
         )}
+      </div>
+
+      <div className="flex flex-row justify-between gap-4">
+        {/* Left Column for Welcome Card */}
+        <div className="flex w-[30%]">
+          <Card
+            shadow={false}
+            className="relative h-full w-full items-end justify-center overflow-hidden text-center"
+          >
+            <CardHeader
+              floated={false}
+              shadow={false}
+              color="transparent"
+              className="absolute inset-0 m-0 h-full w-full rounded-none bg-[url('https://images.unsplash.com/photo-1552960562-daf630e9278b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80')] bg-cover bg-center"
+            >
+              <div className="to-bg-black-10 absolute inset-0 h-full w-full bg-gradient-to-t from-black/80 via-black/50" />
+            </CardHeader>
+            <CardBody className="relative py-14 px-6 md:px-12">
+              <Typography
+                variant="h2"
+                color="white"
+                className="mb-6 font-medium leading-[1.5]"
+              >
+                Welcome Back Beneficiary!
+              </Typography>
+              <Typography variant="h5" className="mb-4 text-gray-400">
+                Manage your requests or view available donations.
+              </Typography>
+            </CardBody>
+          </Card>
         </div>
 
-        <div className="flex flex-row justify-between gap-4">
-          {/* Left Column for Welcome Card */}
-          <div className="flex w-[30%]">
-            <Card
-              shadow={false}
-              className="relative h-full w-full items-end justify-center overflow-hidden text-center"
-            >
-              <CardHeader
-                floated={false}
-                shadow={false}
-                color="transparent"
-                className="absolute inset-0 m-0 h-full w-full rounded-none bg-[url('https://images.unsplash.com/photo-1552960562-daf630e9278b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80')] bg-cover bg-center"
-              >
-                <div className="to-bg-black-10 absolute inset-0 h-full w-full bg-gradient-to-t from-black/80 via-black/50" />
-              </CardHeader>
-              <CardBody className="relative py-14 px-6 md:px-12">
-                <Typography
-                  variant="h2"
-                  color="white"
-                  className="mb-6 font-medium leading-[1.5]"
-                >
-                  Welcome Back Beneficiary!
-                </Typography>
-                <Typography variant="h5" className="mb-4 text-gray-400">
-                  Manage your requests or view available donations.
-                </Typography>
-              </CardBody>
-            </Card>
-          </div>
+        <div className="min-w-[70%] h-[calc(100vh-100px)] overflow-y-auto">
+          {activeTab === "myRequests" && (
+            <div>
+              <h1 className="text-2xl font-bold mb-4 text-black">
+                My Requests
+              </h1>
 
-          <div className="min-w-[70%] h-[calc(100vh-100px)] overflow-y-auto">
-            {activeTab === "myRequests" && (
-              <div>
-                <h1 className="text-2xl font-bold mb-4 text-black">
-                  My Requests
-                </h1>
-
-                {filteredRequests.length > 0 ? (
-                  searchedRequests.map((request, index) => (
-                    <BeneficiaryCard
-                      key={index} // Add a unique key prop here
-                      request={request}
-                    />
-                  ))
-                ) : (
-                  <p>No requests available.</p>
-                )}
-                {filteredDonations.length > 0 ? (
-                  searchedDonations.map((donation, index) => (
-                    <DonorCard
-                      key={`donation-${index}`} // Use a unique key
-                      donation={donation}
-                      onWithdraw={handleWithdraw}
-                    />
-                  ))
-                ) : (
-                  <></>
-                )}
-              </div>
-            )}
-            {activeTab === "availableDonations" && (
-              <div>
-                <h1 className="text-2xl font-bold mb-4 text-black">
-                  Available Donations
-                </h1>
-                {availableDonations
+              {filteredRequests.length > 0 ? (
+                searchedRequests.map((request, index) => (
+                  <BeneficiaryCard
+                    key={index} // Add a unique key prop here
+                    request={request}
+                  />
+                ))
+              ) : (
+                <></>
+              )}
+              {filteredDonations.length > 0 ? (
+                searchedDonations.map((donation, index) => (
+                  <DonorCard
+                    key={`donation-${index}`} // Use a unique key
+                    donation={donation}
+                    onWithdraw={handleWithdraw}
+                  />
+                ))
+              ) : (
+                <></>
+              )}
+            </div>
+          )}
+          {activeTab === "availableDonations" && (
+            <div>
+              <h1 className="text-2xl font-bold mb-4 text-black">
+                Available Donations
+              </h1>
+              {availableDonations
+                .filter((donation) => donation.status === "new") // Filter for donations with status 'new'
+                .filter((donation) =>
+                  donation.foodName
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ).length > 0 ? (
+                availableDonations
                   .filter((donation) => donation.status === "new") // Filter for donations with status 'new'
                   .filter((donation) =>
                     donation.foodName
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase())
-                  ).length > 0 ? (
-                  availableDonations
-                    .filter((donation) => donation.status === "new") // Filter for donations with status 'new'
-                    .filter((donation) =>
-                      donation.foodName
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                    )
-                    .map((donation, index) => (
-                      <DonorCard
-                        key={`donation-${index}`} // Use a unique key
-                        donation={donation}
-                      />
-                    ))
-                ) : (
-                  <p>No available donations at this time.</p>
-                )}
-              </div>
-            )}
-          </div>
+                  )
+                  .map((donation, index) => (
+                    <DonorCard
+                      key={`donation-${index}`} // Use a unique key
+                      donation={donation}
+                    />
+                  ))
+              ) : (
+                <></>
+              )}
+            </div>
+          )}
         </div>
       </div>
-      );
+    </div>
+  );
 }
