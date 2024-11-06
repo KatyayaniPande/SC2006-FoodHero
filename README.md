@@ -1,4 +1,4 @@
-## FoodHero - A platform to connect those in need with those who have
+## FoodHero - Turning Surplus into Sustenance
 
 Welcome to the official repository for NTU Course code SC2006 Software Engineering, TDDB-47 group project Foodhero!
 ![Mission](https://github.com/user-attachments/assets/e521b8e9-c354-4920-8f64-ef4a9d3a927e)
