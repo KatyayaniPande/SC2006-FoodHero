@@ -85,7 +85,7 @@ The following accounts were created for testing purposes. They will also be used
 | Hud      | Beneficiary | beneficiary1@gmail.com | password |
 | Dasmond  | Beneficiary | beneficiary2@gmail.com | password |
 | nill     | Admin       | admin1@gmail.com       | password |
-| nill     | Admin       | admin1@gmail.com       | password |
+| nill     | Admin       | admin2@gmail.com       | password |
 
 ## Usage
 
