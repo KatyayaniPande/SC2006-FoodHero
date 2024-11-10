@@ -181,14 +181,19 @@ NextAuth.js is used to handle user authentication, including role based access c
 
 ## External APIs
 
-1. Google Maps
+1. Google Maps:
    [Link](https://developers.google.com/maps)
+
    For route generation from our headquarters to the beneficiary's location.
-2. Gemini (Chatbot)
+   
+3. Gemini (Chatbot):
    [Link](https://ai.google.dev/gemini-api?gad_source=1&gbraid=0AAAAACn9t640wmFS7HvY1pE8sHzWzsjgR&gclid=Cj0KCQjwj4K5BhDYARIsAD1Ly2penGvppLtgX5Mbjhqo7zavu4liFxiST4orVNN-LEPGRtfa9-Ytp-MaAqvhEALw_wcB)
+   
    For 24/7 chatbot assistnace reguarding our website.
-3. Supermarket Listings
+   
+5. Supermarket Listings:
    [Link](https://data.gov.sg/datasets/d_1bf762ee1d6d7fb61192cb442fb2f5b4/view)
+   
    For ease of use from donors (specifically supermarkets).
 
 ## Contributors
