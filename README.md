@@ -143,19 +143,23 @@ NextAuth.js is used to handle user authentication, including role based access c
 - Single Responsibility Principle
   Seperate packages are created, each with distinct responsibilities. Each class witiin each package handle particular
   logic groups.
+  
   <img width="214" alt="image" src="https://github.com/user-attachments/assets/8c52c07a-a71c-4429-ac6a-c4ee8ee37d23">
 
 - Open-Closed Principle
   Prop-driven approach aligns with OCP as the components can be extended with new data or behaviours without changing
   the internal structure.
+  
   <img width="573" alt="image" src="https://github.com/user-attachments/assets/8de7c63f-2fcd-4220-8193-ef65cfa01281">
 
 - Interface Segregration Principle
   Numerous small and specific interfaces are used.
+  
   <img width="269" alt="image" src="https://github.com/user-attachments/assets/cc06549a-c8c1-4c81-8033-83783976cc3d">
 
 - Dependency Inversion Principle
   High and low level modules depend on abstractions through the use of interfaces. Here, `beneficiaryDashboardClient `is passing the `request` object as a prop to `beneficiaryCard`.
+  
   <img width="324" alt="image" src="https://github.com/user-attachments/assets/27270bf3-9372-42e5-8cbd-ac28d972997b">
 
 ## Techonologies
