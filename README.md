@@ -25,12 +25,12 @@ Simply deliver any leftovers to us based on a match, and we will deliver it on t
 <details>
   <summary>📊 Diagrams </summary>
 
-1. [App Overview Diagram](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Diagrams/App%20Overview.pdf)
-2. [Use Case Diagram](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Diagrams/Use%20Case%20Diagram%20Final.jpg)
-3. [Architecture Diagram](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Diagrams/Architecture%20Diagram.jpg)
-4. [Class Diagram](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Diagrams/Class%20Diagram.jpg)
-5. [Sequence Diagrams](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Diagrams/Sequence%20Diagrams.pdf)
-6. [Dialog Map](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab%203/Dialog%20map.pdf)
+1. [App Overview Diagram](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/App%20Overview.pdf)
+2. [Use Case Diagram](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/Use%20Case%20Diagram%20Final%20(1).jpg)
+3. [Architecture Diagram](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/System%20Architecture.jpg)
+4. [Class Diagram](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/Class%20Diagram.jpg)
+5. [Sequence Diagrams](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/Sequence%20Diagrams.pdf)
+6. [Dialog Map](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/Dialog%20map.pdf)
 
 </details>
 
@@ -38,9 +38,9 @@ Simply deliver any leftovers to us based on a match, and we will deliver it on t
   <summary>📄 Documentation</summary>
   
   1. Software Requirements Specification
-  2. [API Documentations](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Supporting%20Documents/API%20Documentation.pdf)
-  3. [Use Case Diagram and Descriptions](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Supporting%20Documents/Use%20Case%20Diagram%20and%20Description.pdf)
-  4. [User Interface Mockups](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Supporting%20Documents/UI%20Mockups.pdf)
+  2. [API Documentations](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/API%20Documentation.pdf)
+  3. [Use Case Diagram and Descriptions](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/Use%20Case%20Diagram%20and%20Description.pdf)
+  4. [User Interface Mockups](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/UI%20Mockups.pdf)
   
 </details>
 
