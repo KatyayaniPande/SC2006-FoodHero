@@ -26,7 +26,7 @@ Simply deliver any leftovers to us based on a match, and we will deliver it on t
   <summary>📊 Diagrams </summary>
 
 1. [App Overview Diagram](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/App%20Overview.pdf)
-2. [Use Case Diagram](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/Use%20Case%20Diagram%20Final%20(1).jpg)
+2. [Use Case Diagram](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/Use%20Case%20Diagram%20Final%20.jpg)
 3. [Architecture Diagram](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/System%20Architecture.jpg)
 4. [Class Diagram](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/Class%20Diagram.jpg)
 5. [Sequence Diagrams](https://github.com/softwarelab3/2006-TDDB-47/blob/main/Lab%20Submissions/Lab5/Final%20Documentations/Sequence%20Diagrams.pdf)
