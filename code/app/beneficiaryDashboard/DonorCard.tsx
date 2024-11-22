@@ -69,7 +69,7 @@ const DonorCard: React.FC<DonorCardProps> = ({ donation }) => {
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: "AIzaSyB7CV-gPgdBWcYd65zzNlBzGcVxCA-I3xA",
+    googleMapsApiKey: "YOUR API KEY",
     libraries: ["places"],
   });
   useEffect(() => {
